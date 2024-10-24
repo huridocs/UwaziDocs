@@ -45,7 +45,7 @@ DB.connect(config.DBHOST, dbAuth)
       permissionsContext.setCommandContext();
 
       const servicesList = [
-        ocrManager,
+        // ocrManager,
         new ATServiceListener(),
         new InformationExtraction(),
         new ConvertToPdfWorker(),
