@@ -4,6 +4,8 @@ import Redis, { RedisClient } from 'redis';
 import { Repeater } from 'api/utils/Repeater';
 import { config } from 'api/config';
 import { handleError } from 'api/utils';
+import { Logger } from 'api/log.v2/contracts/Logger';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 
 type DefaultTaskType = string;
 
@@ -31,6 +33,7 @@ export interface Service<R = ResultsMessage> {
   serviceName: string;
   processResults?: (results: R) => Promise<void>;
   processResultsMessageHiddenTime?: number;
+  stopTimeout?: number;
 }
 
 export class TaskManager<T = TaskMessage, R = ResultsMessage> {
@@ -46,15 +49,27 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
 
   redisClient: RedisClient;
 
-  constructor(service: Service<R>) {
+  private stopTimeout?: number;
+
+  constructor(
+    service: Service<R>,
+    private logger: Logger = DefaultLogger()
+  ) {
     this.service = service;
     this.taskQueue = `${config.ENVIRONMENT}_${service.serviceName}_tasks`;
     this.resultsQueue = `${config.ENVIRONMENT}_${service.serviceName}_results`;
     const redisUrl = `redis://${config.redis.host}:${config.redis.port}`;
     this.redisClient = Redis.createClient(redisUrl);
     this.redisSMQ = new RedisSMQ({ client: this.redisClient });
+    this.stopTimeout = service.stopTimeout;
 
     this.subscribeToEvents();
+  }
+
+  private logStopTimeoutMessage() {
+    this.logger.info(
+      `The task ${this.service.serviceName} tried to be stopped and reached stop timeout of ${this.repeater?.stopPromise.timeout} milliseconds`
+    );
   }
 
   subscribeToEvents() {
@@ -86,7 +101,10 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
   }
 
   subscribeToResults(interval = 500): void {
-    this.repeater = new Repeater(this.checkForResults.bind(this), interval);
+    this.repeater = new Repeater(this.checkForResults.bind(this), interval, {
+      onTimeout: () => this.logStopTimeoutMessage(),
+      timeout: this.stopTimeout,
+    });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.repeater.start();
   }
