@@ -83,11 +83,9 @@ export class ConvertToPdfWorker {
 
   start(interval = 500) {
     this.taskManager.subscribeToResults(interval);
-
-    return this.stop;
   }
 
-  stop = async () => {
+  async stop() {
     await this.taskManager.stop();
-  };
+  }
 }

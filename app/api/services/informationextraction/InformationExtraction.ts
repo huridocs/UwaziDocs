@@ -141,13 +141,11 @@ class InformationExtraction {
 
   start() {
     this.taskManager.subscribeToResults();
-
-    return this.stop;
   }
 
-  stop = async () => {
+  async stop() {
     await this.taskManager.stop();
-  };
+  }
 
   requestResults = async (message: InternalIXResultsMessage) => {
     const response = await request.get(message.data_url);
