@@ -3,6 +3,7 @@ import Redlock from 'redlock';
 import { handleError } from 'api/utils/handleError';
 import { Logger } from 'api/log.v2/contracts/Logger';
 import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { PromiseManager } from './PromiseManager';
 
 export type OptionsProps = {
   maxLockTime?: number;
@@ -22,13 +23,9 @@ export class DistributedLoop {
 
   private redlock: Redlock;
 
-  private stopTask: Function | undefined;
-
   private redisClient: Redis.RedisClient;
 
   private maxLockTime: number;
-
-  private delayTimeBetweenTasks: number;
 
   private retryDelay: number;
 
@@ -36,7 +33,9 @@ export class DistributedLoop {
 
   private host: string;
 
-  private stopTimeout: number;
+  taskDelayPromise: PromiseManager;
+
+  stopPromise: PromiseManager;
 
   constructor(
     lockName: string,
@@ -51,10 +50,8 @@ export class DistributedLoop {
     }: OptionsProps,
     private logger: Logger = DefaultLogger()
   ) {
-    this.stopTimeout = stopTimeout;
     this.maxLockTime = maxLockTime;
     this.retryDelay = retryDelay;
-    this.delayTimeBetweenTasks = delayTimeBetweenTasks;
     this.lockName = `locks:${lockName}`;
     this.task = task;
     this.port = port;
@@ -64,19 +61,16 @@ export class DistributedLoop {
       retryJitter: 0,
       retryDelay: this.retryDelay,
     });
+    this.taskDelayPromise = new PromiseManager({ timeout: delayTimeBetweenTasks });
+    this.stopPromise = new PromiseManager({
+      timeout: stopTimeout,
+      onTimeout: () => this.logStopTimeoutMessage(),
+    });
   }
 
   start() {
     // eslint-disable-next-line no-void
     void this.lockTask();
-
-    return this.stop;
-  }
-
-  async waitBetweenTasks(delay = this.delayTimeBetweenTasks) {
-    await new Promise(resolve => {
-      setTimeout(resolve, delay);
-    });
   }
 
   async runTask() {
@@ -86,45 +80,31 @@ export class DistributedLoop {
       handleError(error, { useContext: false });
     }
 
-    await this.waitBetweenTasks();
+    await this.taskDelayPromise.init();
   }
 
   private logStopTimeoutMessage() {
     this.logger.info(
-      `The task ${this.lockName} tried to be stopped and reached stop timeout of ${this.stopTimeout} milliseconds`
+      `The task ${this.lockName} tried to be stopped and reached stop timeout of ${this.stopPromise.timeout} milliseconds`
     );
   }
 
-  private async _stop() {
-    let timeoutId;
-
-    await new Promise(resolve => {
-      this.stopTask = resolve;
-
-      timeoutId = setTimeout(() => {
-        this.logStopTimeoutMessage();
-        resolve(undefined);
-      }, this.stopTimeout);
-    });
-
-    clearTimeout(timeoutId);
-  }
-
-  stop = async () => {
-    await this._stop();
+  async stop() {
+    this.taskDelayPromise.stop();
+    await this.stopPromise.init();
     await this.redlock.quit();
     this.redisClient.end(true);
-  };
+  }
 
   async lockTask(): Promise<void> {
     try {
       const lock = await this.redlock.lock(
         this.lockName,
-        this.maxLockTime + this.delayTimeBetweenTasks
+        this.maxLockTime + this.taskDelayPromise.timeout
       );
 
-      if (this.stopTask) {
-        this.stopTask();
+      if (this.stopPromise.isPending) {
+        this.stopPromise.stop();
         return;
       }
 

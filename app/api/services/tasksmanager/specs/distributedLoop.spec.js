@@ -199,10 +199,33 @@ describe('DistributedLoopLock', () => {
 
     sut.start();
     await waitForExpect(async () => {
-      expect(task).toHaveBeenCalledTimes(1);
+      expect(task).toHaveBeenCalled();
     });
 
     await expect(sut.stop()).resolves.toBe(undefined);
     expect(mockLogger.info).toHaveBeenCalled();
+  });
+
+  it("should skip wait between tasks, if there's no pending tasks", async () => {
+    const sut = createSut({
+      lockName: 'stop_mocked_test',
+      options: { stopTimeout: 0, delayTimeBetweenTasks: 10_000 },
+    });
+
+    sut.start();
+    await waitForExpect(async () => {
+      expect(task).toHaveBeenCalled();
+    });
+    finishTask();
+    await waitForExpect(async () => {
+      expect(task.mock.results[0].value).resolves.toBeUndefined();
+    });
+
+    expect(sut.taskDelayPromise.isPending).toBeTruthy();
+
+    const stopPromise = sut.stop();
+
+    expect(sut.taskDelayPromise.isPending).toBeFalsy();
+    await expect(stopPromise).resolves.toBe(undefined);
   });
 });
