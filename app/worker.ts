@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { DB } from 'api/odm';
 import { config } from 'api/config';
 import { tenants } from 'api/tenants';
@@ -12,8 +13,8 @@ import { syncWorker } from 'api/sync/syncWorker';
 import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
 import { setupWorkerSockets } from 'api/socketio/setupSockets';
 import { ConvertToPdfWorker } from 'api/services/convertToPDF/ConvertToPdfWorker';
-import { handleError } from './api/utils/handleError.js';
 import { ATServiceListener } from 'api/externalIntegrations.v2/automaticTranslation/adapters/driving/ATServiceListener';
+import { handleError } from './api/utils/handleError.js';
 
 let dbAuth = {};
 
@@ -43,62 +44,64 @@ DB.connect(config.DBHOST, dbAuth)
 
       permissionsContext.setCommandContext();
 
-      const stopList = [
-        ocrManager.start(),
-        new ATServiceListener().start(),
-        new InformationExtraction().start(),
-        new ConvertToPdfWorker().start(),
-      ];
+      const servicesList = [
+        ocrManager,
+        new ATServiceListener(),
+        new InformationExtraction(),
+        new ConvertToPdfWorker(),
+      ] as any[];
 
       const segmentationConnector = new PDFSegmentation();
-      stopList.push(segmentationConnector.start());
+      servicesList.push(segmentationConnector);
 
-      stopList.push(
+      servicesList.push(
         new DistributedLoop('segmentation_repeat', segmentationConnector.segmentPdfs, {
           port: config.redis.port,
           host: config.redis.host,
           delayTimeBetweenTasks: 5000,
-        }).start()
+        })
       );
 
       const twitterIntegration = new TwitterIntegration();
-      stopList.push(twitterIntegration.start());
+      servicesList.push(twitterIntegration);
 
-      stopList.push(
+      servicesList.push(
         new DistributedLoop('twitter_repeat', twitterIntegration.addTweetsRequestsToQueue, {
           port: config.redis.port,
           host: config.redis.host,
           delayTimeBetweenTasks: 120000,
-        }).start()
+        })
       );
 
-      stopList.push(
+      servicesList.push(
         new DistributedLoop('preserve_integration', async () => preserveSync.syncAllTenants(), {
           port: config.redis.port,
           host: config.redis.host,
           delayTimeBetweenTasks: 30000,
-        }).start()
+        })
       );
 
-      stopList.push(
+      servicesList.push(
         new DistributedLoop('toc_service', async () => tocService.processAllTenants(), {
           port: config.redis.port,
           host: config.redis.host,
           delayTimeBetweenTasks: 30000,
-        }).start()
+        })
       );
 
-      stopList.push(
+      servicesList.push(
         new DistributedLoop('sync_job', async () => syncWorker.runAllTenants(), {
           port: config.redis.port,
           host: config.redis.host,
           delayTimeBetweenTasks: 1000,
-        }).start()
+        })
       );
+
+      servicesList.forEach(service => service.start());
 
       process.on('SIGINT', async () => {
         console.log('Received SIGINT, waiting for graceful stop...');
-        await Promise.all(stopList.map(async stop => stop()));
+        await Promise.all(servicesList.map(async service => service.stop()));
         console.log('Graceful stop process has finished, now exiting...');
 
         process.exit(0);
