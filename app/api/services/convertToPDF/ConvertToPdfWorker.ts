@@ -11,6 +11,8 @@ import path from 'path';
 import { pipeline } from 'stream/promises';
 import { TaskManager } from '../tasksmanager/TaskManager';
 import { convertToPDFService } from './convertToPdfService';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { Logger } from 'api/log.v2/contracts/Logger';
 
 const ajv = new Ajv();
 
@@ -38,47 +40,53 @@ export class ConvertToPdfWorker {
 
   taskManager: TaskManager;
 
-  constructor() {
-    this.taskManager = new TaskManager({
-      serviceName: this.SERVICE_NAME,
-      processResults: async result => {
-        if (result.success === false) {
-          throw new Error(result.error_message);
-        }
-        if (!validateResult(result)) {
-          throw new ValidationError(validateResult.errors || [{ message: 'validation failed' }]);
-        }
-        await tenants.run(async () => {
-          permissionsContext.setCommandContext();
-          const [attachment] = await files.get({ filename: result.params.filename });
-          if (!attachment.entity) {
-            throw new Error('attachment does not have an entity');
+  constructor(logger: Logger = DefaultLogger()) {
+    this.taskManager = new TaskManager(
+      {
+        serviceName: this.SERVICE_NAME,
+        processResults: async result => {
+          if (result.success === false) {
+            throw new Error(result.error_message);
           }
-          await files.save({ ...attachment, status: 'ready' });
+          if (!validateResult(result)) {
+            throw new ValidationError(validateResult.errors || [{ message: 'validation failed' }]);
+          }
+          await tenants.run(async () => {
+            permissionsContext.setCommandContext();
+            const [attachment] = await files.get({ filename: result.params.filename });
+            if (!attachment.entity) {
+              throw new Error('attachment does not have an entity');
+            }
+            await files.save({ ...attachment, status: 'ready' });
 
-          const filename = `${generateFileName({})}.pdf`;
+            const filename = `${generateFileName({})}.pdf`;
 
-          await storage.storeFile(
-            filename,
-            await convertToPDFService.download(new URL(result.file_url)),
-            'document'
-          );
-          await pipeline(
-            await storage.readableFile(filename, 'document'),
-            createWriteStream(path.join(os.tmpdir(), filename))
-          );
+            await storage.storeFile(
+              filename,
+              await convertToPDFService.download(new URL(result.file_url)),
+              'document'
+            );
+            await pipeline(
+              await storage.readableFile(filename, 'document'),
+              createWriteStream(path.join(os.tmpdir(), filename))
+            );
 
-          await processDocument(attachment.entity, {
-            filename,
-            destination: os.tmpdir(),
-            originalname: chageFileExtesion(attachment.originalname || generateFileName({}), 'pdf'),
-            mimetype: 'application/pdf',
-          });
+            await processDocument(attachment.entity, {
+              filename,
+              destination: os.tmpdir(),
+              originalname: chageFileExtesion(
+                attachment.originalname || generateFileName({}),
+                'pdf'
+              ),
+              mimetype: 'application/pdf',
+            });
 
-          emitToTenant(result.params.namespace, 'documentProcessed', attachment.entity);
-        }, result.params.namespace);
+            emitToTenant(result.params.namespace, 'documentProcessed', attachment.entity);
+          }, result.params.namespace);
+        },
       },
-    });
+      logger
+    );
   }
 
   start(interval = 500) {

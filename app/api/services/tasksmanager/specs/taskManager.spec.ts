@@ -3,6 +3,8 @@ import waitForExpect from 'wait-for-expect';
 import { TaskManager, Service } from 'api/services/tasksmanager/TaskManager';
 import { config } from 'api/config';
 import * as handleError from 'api/utils/handleError.js';
+import { Logger } from 'api/log.v2/contracts/Logger';
+import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 import { ExternalDummyService } from './ExternalDummyService';
 
 describe('taskManager', () => {
@@ -10,6 +12,7 @@ describe('taskManager', () => {
 
   let service: Service;
   let externalDummyService: ExternalDummyService;
+  let mockLoger: Logger;
 
   beforeAll(async () => {
     const redisUrl = `redis://${config.redis.host}:${config.redis.port}`;
@@ -22,7 +25,8 @@ describe('taskManager', () => {
     externalDummyService = new ExternalDummyService(1234, service.serviceName);
     await externalDummyService.start(redisUrl);
 
-    taskManager = new TaskManager(service);
+    mockLoger = createMockLogger();
+    taskManager = new TaskManager(service, mockLoger);
     taskManager.subscribeToResults();
 
     await new Promise(resolve => {

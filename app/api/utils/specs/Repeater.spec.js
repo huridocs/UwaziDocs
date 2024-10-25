@@ -53,7 +53,7 @@ describe('Repeater', () => {
 
   it('should be able to have two independant repeaters', async () => {
     repeaterOne = new Repeater(callbackOne, 1);
-    repeaterTwo = new Repeater(callbackTwo, 1);
+    repeaterTwo = new Repeater(callbackTwo, 2);
 
     repeaterTwo.start();
     repeaterOne.start();

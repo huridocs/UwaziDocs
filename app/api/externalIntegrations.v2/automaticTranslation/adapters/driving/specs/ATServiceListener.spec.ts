@@ -8,6 +8,7 @@ import RedisSMQ from 'rsmq';
 import { UserSchema } from 'shared/types/userType';
 import waitForExpect from 'wait-for-expect';
 import { ATServiceListener } from '../ATServiceListener';
+import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 
 const prepareATFactory = (executeSpy: jest.Mock<any, any, any>) => {
   // @ts-ignore
@@ -39,7 +40,7 @@ describe('ATServiceListener', () => {
       userInContext = permissionsContext.getUserInContext();
     });
 
-    listener = new ATServiceListener(prepareATFactory(executeSpy));
+    listener = new ATServiceListener(prepareATFactory(executeSpy), createMockLogger());
     redisClient = Redis.createClient(redisUrl);
     redisSMQ = new RedisSMQ({ client: redisClient });
 
