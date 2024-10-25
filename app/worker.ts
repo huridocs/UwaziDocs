@@ -3,7 +3,7 @@ import { DB } from 'api/odm';
 import { config } from 'api/config';
 import { tenants } from 'api/tenants';
 import { permissionsContext } from 'api/permissions/permissionsContext';
-import { ocrManager } from 'api/services/ocr/OcrManager';
+import { OcrManager } from 'api/services/ocr/OcrManager';
 import { PDFSegmentation } from 'api/services/pdfsegmentation/PDFSegmentation';
 import { DistributedLoop } from 'api/services/tasksmanager/DistributedLoop';
 import { TwitterIntegration } from 'api/services/twitterintegration/TwitterIntegration';
@@ -45,7 +45,7 @@ DB.connect(config.DBHOST, dbAuth)
       permissionsContext.setCommandContext();
 
       const servicesList = [
-        // ocrManager,
+        new OcrManager(),
         new ATServiceListener(),
         new InformationExtraction(),
         new ConvertToPdfWorker(),

@@ -17,6 +17,8 @@ import { ResultsMessage, TaskManager } from '../../tasksmanager/TaskManager';
 import { mockTaskManagerImpl } from '../../tasksmanager/specs/TaskManagerImplementationMocker';
 import { fixtures, fixturesFactory } from './fixtures/fixtures';
 import { cleanupRecordsOfFiles } from '../ocrRecords';
+import { Logger } from 'api/log.v2/contracts/Logger';
+import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 
 jest.mock('api/services/tasksmanager/TaskManager.ts');
 
@@ -86,6 +88,7 @@ describe('OcrManager', () => {
   let mockedMessageFromRedis: ResultsMessage;
   let ocrManager: OcrManager;
   let mocks: Mocks;
+  let mockLogger: Logger;
 
   beforeAll(async () => {
     await testingEnvironment.setUp(fixtures);
@@ -99,7 +102,8 @@ describe('OcrManager', () => {
       success: true,
     };
 
-    ocrManager = new OcrManager();
+    mockLogger = createMockLogger();
+    ocrManager = new OcrManager(mockLogger);
     ocrManager.start();
   });
 
