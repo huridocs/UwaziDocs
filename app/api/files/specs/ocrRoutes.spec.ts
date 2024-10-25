@@ -6,7 +6,6 @@ import request from 'supertest';
 import { storage } from 'api/files';
 import relationships from 'api/relationships';
 import { search } from 'api/search';
-import { ocrManager } from 'api/services/ocr/OcrManager';
 import settings from 'api/settings/settings';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import db, { DBFixture } from 'api/utils/testing_db';
@@ -92,10 +91,6 @@ describe('OCR service', () => {
     requestMockedUser = adminUser;
     jest.spyOn(Date, 'now').mockReturnValue(1000);
     jest.spyOn(setupSockets, 'emitToTenant').mockImplementation(() => {});
-  });
-
-  beforeAll(() => {
-    ocrManager.start();
   });
 
   afterAll(async () => {

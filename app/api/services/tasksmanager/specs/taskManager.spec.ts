@@ -4,6 +4,7 @@ import { TaskManager, Service } from 'api/services/tasksmanager/TaskManager';
 import { config } from 'api/config';
 import * as handleError from 'api/utils/handleError.js';
 import { ExternalDummyService } from './ExternalDummyService';
+import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 
 describe('taskManager', () => {
   let taskManager: TaskManager | undefined;
@@ -22,7 +23,7 @@ describe('taskManager', () => {
     externalDummyService = new ExternalDummyService(1234, service.serviceName);
     await externalDummyService.start(redisUrl);
 
-    taskManager = new TaskManager(service);
+    taskManager = new TaskManager(service, createMockLogger());
     taskManager.subscribeToResults();
 
     await new Promise(resolve => {

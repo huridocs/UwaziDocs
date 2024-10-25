@@ -17,6 +17,7 @@ import { ResultsMessage, TaskManager } from '../../tasksmanager/TaskManager';
 import { mockTaskManagerImpl } from '../../tasksmanager/specs/TaskManagerImplementationMocker';
 import { fixtures, fixturesFactory } from './fixtures/fixtures';
 import { cleanupRecordsOfFiles } from '../ocrRecords';
+import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 
 jest.mock('api/services/tasksmanager/TaskManager.ts');
 
@@ -99,11 +100,11 @@ describe('OcrManager', () => {
       success: true,
     };
 
-    ocrManager = new OcrManager();
+    ocrManager = new OcrManager(createMockLogger());
     ocrManager.start();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mocks.jestMocks['storage.fileContents'] = jest
       .spyOn(storage, 'fileContents')
       .mockResolvedValue(Buffer.from('file_content'));
@@ -112,6 +113,7 @@ describe('OcrManager', () => {
   afterAll(async () => {
     mocks.release();
     await testingEnvironment.tearDown();
+    await ocrManager.stop();
   });
 
   describe('on success', () => {

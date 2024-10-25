@@ -1,7 +1,7 @@
 import { Application, Request, Response, NextFunction } from 'express';
 import { storage } from 'api/files';
 import needsAuthorization from 'api/auth/authMiddleware';
-import { isOcrEnabled, ocrManager, getOcrStatus } from 'api/services/ocr/OcrManager';
+import { isOcrEnabled, getOcrStatus, OcrManager } from 'api/services/ocr/OcrManager';
 import { files } from './files';
 import { validation, createError } from '../utils';
 
@@ -57,9 +57,11 @@ const ocrRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     validation.validateRequest(ocrRequestDecriptor),
     async (req, res) => {
+      const ocrManager = new OcrManager();
       const file = await fileFromRequest(req);
 
       await ocrManager.addToQueue(file);
+      await ocrManager.stop();
 
       res.sendStatus(200);
     }

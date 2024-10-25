@@ -1,6 +1,20 @@
 import Redis from 'redis';
 import Redlock from 'redlock';
 import { handleError } from 'api/utils/handleError';
+import { Logger } from 'api/log.v2/contracts/Logger';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { PromiseManager } from './PromiseManager';
+
+const TEN_SECONDS_IN_MS = 10_000;
+
+export type OptionsProps = {
+  maxLockTime?: number;
+  delayTimeBetweenTasks?: number;
+  retryDelay?: number;
+  port?: number;
+  host?: string;
+  stopTimeout?: number;
+};
 
 export class DistributedLoop {
   private lockName: string;
@@ -9,13 +23,9 @@ export class DistributedLoop {
 
   private redlock: Redlock;
 
-  private stopTask: Function | undefined;
-
   private redisClient: Redis.RedisClient;
 
   private maxLockTime: number;
-
-  private delayTimeBetweenTasks: number;
 
   private retryDelay: number;
 
@@ -23,48 +33,44 @@ export class DistributedLoop {
 
   private host: string;
 
+  taskDelayPromise: PromiseManager;
+
+  stopPromise: PromiseManager;
+
   constructor(
     lockName: string,
     task: () => Promise<void>,
-    options: {
-      maxLockTime?: number;
-      delayTimeBetweenTasks?: number;
-      retryDelay?: number;
-      port?: number;
-      host?: string;
-    }
+    {
+      maxLockTime = 2000,
+      delayTimeBetweenTasks = 1000,
+      retryDelay = 200,
+      port = 6379,
+      host = 'localhost',
+      stopTimeout = TEN_SECONDS_IN_MS,
+    }: OptionsProps,
+    private logger: Logger = DefaultLogger()
   ) {
-    const _options = {
-      maxLockTime: 2000,
-      delayTimeBetweenTasks: 1000,
-      retryDelay: 200,
-      port: 6379,
-      host: 'localhost',
-      ...options,
-    };
-    this.maxLockTime = _options.maxLockTime;
-    this.retryDelay = _options.retryDelay;
-    this.delayTimeBetweenTasks = _options.delayTimeBetweenTasks;
+    this.maxLockTime = maxLockTime;
+    this.retryDelay = retryDelay;
     this.lockName = `locks:${lockName}`;
     this.task = task;
-    this.port = _options.port;
-    this.host = _options.host;
+    this.port = port;
+    this.host = host;
     this.redisClient = Redis.createClient(`redis://${this.host}:${this.port}`);
     this.redlock = new Redlock([this.redisClient], {
       retryJitter: 0,
       retryDelay: this.retryDelay,
     });
+    this.taskDelayPromise = new PromiseManager({ timeout: delayTimeBetweenTasks });
+    this.stopPromise = new PromiseManager({
+      timeout: stopTimeout,
+      onTimeout: () => this.logStopTimeoutMessage(),
+    });
   }
 
-  async start() {
+  start() {
     // eslint-disable-next-line no-void
     void this.lockTask();
-  }
-
-  async waitBetweenTasks(delay = this.delayTimeBetweenTasks) {
-    await new Promise(resolve => {
-      setTimeout(resolve, delay);
-    });
   }
 
   async runTask() {
@@ -74,14 +80,18 @@ export class DistributedLoop {
       handleError(error, { useContext: false });
     }
 
-    await this.waitBetweenTasks();
+    await this.taskDelayPromise.init();
+  }
+
+  private logStopTimeoutMessage() {
+    this.logger.info(
+      `The task ${this.lockName} tried to be stopped and reached stop timeout of ${this.stopPromise.timeout} milliseconds`
+    );
   }
 
   async stop() {
-    await new Promise(resolve => {
-      this.stopTask = resolve;
-    });
-
+    this.taskDelayPromise.stop();
+    await this.stopPromise.init();
     await this.redlock.quit();
     this.redisClient.end(true);
   }
@@ -90,11 +100,11 @@ export class DistributedLoop {
     try {
       const lock = await this.redlock.lock(
         this.lockName,
-        this.maxLockTime + this.delayTimeBetweenTasks
+        this.maxLockTime + this.taskDelayPromise.timeout
       );
 
-      if (this.stopTask) {
-        this.stopTask();
+      if (this.stopPromise.isPending) {
+        this.stopPromise.stop();
         return;
       }
 

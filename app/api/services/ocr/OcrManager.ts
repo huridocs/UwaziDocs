@@ -25,6 +25,8 @@ import {
   markError,
   markReady,
 } from './ocrRecords';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { Logger } from 'api/log.v2/contracts/Logger';
 
 interface OcrSettings {
   url: string;
@@ -182,11 +184,14 @@ class OcrManager {
 
   ocrTaskManager: TaskManager;
 
-  constructor() {
-    this.ocrTaskManager = new TaskManager({
-      serviceName: this.SERVICE_NAME,
-      processResults,
-    });
+  constructor(logger: Logger = DefaultLogger()) {
+    this.ocrTaskManager = new TaskManager(
+      {
+        serviceName: this.SERVICE_NAME,
+        processResults,
+      },
+      logger
+    );
   }
 
   start() {
@@ -227,5 +232,4 @@ class OcrManager {
   }
 }
 
-const ocrManager = new OcrManager();
-export { ocrManager, OcrManager, isEnabled as isOcrEnabled, getStatus as getOcrStatus };
+export { OcrManager, isEnabled as isOcrEnabled, getStatus as getOcrStatus };

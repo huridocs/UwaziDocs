@@ -1,29 +1,28 @@
-const timeout = async interval =>
-  new Promise(resolve => {
-    setTimeout(resolve, interval);
-  });
+import { PromiseManager } from 'api/services/tasksmanager/PromiseManager';
+
+const TEN_SECONDS_IN_MS = 10_000;
 
 export class Repeater {
-  constructor(cb, interval) {
+  constructor(cb, interval, stopPromiseOptions) {
     this.cb = cb;
     this.interval = interval;
-    this.stopped = null;
+    this.stopPromise = new PromiseManager({ timeout: TEN_SECONDS_IN_MS, ...stopPromiseOptions });
+    this.delayPromise = new PromiseManager({ timeout: interval });
   }
 
   async start() {
-    while (!this.stopped) {
+    while (!this.stopPromise.isPending) {
       // eslint-disable-next-line no-await-in-loop
       await this.cb();
       // eslint-disable-next-line no-await-in-loop
-      await timeout(this.interval);
+      await this.delayPromise.init();
     }
 
-    this.stopped();
+    this.stopPromise.stop();
   }
 
   async stop() {
-    return new Promise(resolve => {
-      this.stopped = resolve;
-    });
+    this.delayPromise.stop();
+    await this.stopPromise.init();
   }
 }
