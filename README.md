@@ -7,6 +7,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8c98a251ca64daf434f2/test_coverage)](https://codeclimate.com/github/huridocs/uwazi/test_coverage)
 
 Uwazi is a flexible database application to capture and organise collections of information with a particular focus on document management. HURIDOCS started Uwazi and is supporting dozens of human rights organisations globally to use the tool.
+teste
 
 [Uwazi](https://www.uwazi.io/) | [HURIDOCS](https://huridocs.org/)
 
