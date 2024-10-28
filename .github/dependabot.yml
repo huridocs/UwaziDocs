@@ -45,6 +45,10 @@ updates:
         applies-to: version-updates
         patterns:
           - eslint*
+      express:
+        applies-to: version-updates
+        patterns:
+          - express*
       dev-minor-dependencies:
         applies-to: version-updates
         update-types: [minor, patch]
