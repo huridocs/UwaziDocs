@@ -17,13 +17,12 @@ import {
 } from 'shared/types/suggestionType';
 import { serviceMiddleware } from './serviceMiddleware';
 
-const IX = new InformationExtraction();
-
 async function processTrainFunction(
   callback: (extractorId: ObjectIdSchema) => Promise<{ message: string; status: string }>,
   req: Request,
   res: Response
 ) {
+  const IX = new InformationExtraction();
   if (!IX) {
     res.status(500).json({
       error: 'Information Extraction service is not available',
@@ -135,6 +134,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
+      const IX = new InformationExtraction();
       await processTrainFunction(IX.stopModel, req, res);
     }
   );
@@ -145,6 +145,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
+      const IX = new InformationExtraction();
       await processTrainFunction(IX.trainModel, req, res);
     }
   );
@@ -155,6 +156,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
+      const IX = new InformationExtraction();
       await processTrainFunction(IX.status, req, res);
     }
   );
