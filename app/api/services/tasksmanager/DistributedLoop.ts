@@ -4,6 +4,7 @@ import { handleError } from 'api/utils/handleError';
 import { Logger } from 'api/log.v2/contracts/Logger';
 import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { PromiseManager } from './PromiseManager';
+import { RedisSingleton } from '../redis/RedisSingleton';
 
 const TEN_SECONDS_IN_MS = 10_000;
 
@@ -11,8 +12,6 @@ export type OptionsProps = {
   maxLockTime?: number;
   delayTimeBetweenTasks?: number;
   retryDelay?: number;
-  port?: number;
-  host?: string;
   stopTimeout?: number;
 };
 
@@ -29,10 +28,6 @@ export class DistributedLoop {
 
   private retryDelay: number;
 
-  private port: number;
-
-  private host: string;
-
   taskDelayPromise: PromiseManager;
 
   stopPromise: PromiseManager;
@@ -44,8 +39,6 @@ export class DistributedLoop {
       maxLockTime = 2000,
       delayTimeBetweenTasks = 1000,
       retryDelay = 200,
-      port = 6379,
-      host = 'localhost',
       stopTimeout = TEN_SECONDS_IN_MS,
     }: OptionsProps,
     private logger: Logger = DefaultLogger()
@@ -54,9 +47,7 @@ export class DistributedLoop {
     this.retryDelay = retryDelay;
     this.lockName = `locks:${lockName}`;
     this.task = task;
-    this.port = port;
-    this.host = host;
-    this.redisClient = Redis.createClient(`redis://${this.host}:${this.port}`);
+    this.redisClient = RedisSingleton.getInstance().getClient();
     this.redlock = new Redlock([this.redisClient], {
       retryJitter: 0,
       retryDelay: this.retryDelay,
