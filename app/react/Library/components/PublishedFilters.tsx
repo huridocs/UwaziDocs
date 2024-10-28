@@ -58,6 +58,7 @@ const PublishedFilters = ({ onChange, aggregations }: PublishedFiltersProps) => 
           model=".publishedStatus"
           prefix="publishedStatus"
           onChange={onChange}
+          //@ts-ignore from the update typescript from 5.6.2 to 5.6.3
           options={options}
           showBoolSwitch={false}
         />
