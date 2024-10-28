@@ -1,12 +1,11 @@
 /* eslint-disable no-await-in-loop */
 import RedisSMQ, { QueueMessage } from 'rsmq';
-import { RedisClient } from 'redis';
+import Redis, { RedisClient } from 'redis';
 import { Repeater } from 'api/utils/Repeater';
 import { config } from 'api/config';
 import { handleError } from 'api/utils';
 import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { Logger } from 'api/log.v2/contracts/Logger';
-import { RedisSingleton } from '../redis/RedisSingleton';
 
 type DefaultTaskType = string;
 
@@ -57,7 +56,8 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
     this.service = service;
     this.taskQueue = `${config.ENVIRONMENT}_${service.serviceName}_tasks`;
     this.resultsQueue = `${config.ENVIRONMENT}_${service.serviceName}_results`;
-    this.redisClient = RedisSingleton.getInstance().getClient();
+    const redisUrl = `redis://${config.redis.host}:${config.redis.port}`;
+    this.redisClient = Redis.createClient(redisUrl);
     this.redisSMQ = new RedisSMQ({ client: this.redisClient });
 
     this.subscribeToEvents();

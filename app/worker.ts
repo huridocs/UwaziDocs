@@ -56,6 +56,8 @@ DB.connect(config.DBHOST, dbAuth)
 
       servicesList.push(
         new DistributedLoop('segmentation_repeat', segmentationConnector.segmentPdfs, {
+          port: config.redis.port,
+          host: config.redis.host,
           delayTimeBetweenTasks: 5000,
         })
       );
@@ -65,24 +67,32 @@ DB.connect(config.DBHOST, dbAuth)
 
       servicesList.push(
         new DistributedLoop('twitter_repeat', twitterIntegration.addTweetsRequestsToQueue, {
+          port: config.redis.port,
+          host: config.redis.host,
           delayTimeBetweenTasks: 120000,
         })
       );
 
       servicesList.push(
         new DistributedLoop('preserve_integration', async () => preserveSync.syncAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
           delayTimeBetweenTasks: 30000,
         })
       );
 
       servicesList.push(
         new DistributedLoop('toc_service', async () => tocService.processAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
           delayTimeBetweenTasks: 30000,
         })
       );
 
       servicesList.push(
         new DistributedLoop('sync_job', async () => syncWorker.runAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
           delayTimeBetweenTasks: 1000,
         })
       );
