@@ -30,7 +30,6 @@ async function processTrainFunction(
     return;
   }
 
-  await IX.stop();
   const status = await callback(new ObjectId(req.body.extractorId));
   res.json(status);
 }
@@ -137,6 +136,7 @@ export const suggestionsRoutes = (app: Application) => {
     async (req, res, _next) => {
       const IX = new InformationExtraction();
       await processTrainFunction(IX.stopModel, req, res);
+      await IX.stop();
     }
   );
 
