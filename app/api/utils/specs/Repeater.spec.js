@@ -97,17 +97,18 @@ describe('Repeater', () => {
   });
 
   it('should continue stop process if a task takes too long to stop', async () => {
-    jest.resetAllMocks();
+    jest.useRealTimers();
     const { task } = createTaskMock();
-    const sut = new Repeater(task, 0, { timeout: 1 });
+    const sut = new Repeater(task, 1, { timeout: 1 });
 
     sut.start();
     await waitForExpect(() => expect(task).toHaveBeenCalled());
     expect(sut.delayPromise.isPending).toBeFalsy();
     expect(sut.stopPromise.isPending).toBeFalsy();
 
-    sut.stop();
+    const stopPromise = sut.stop();
     expect(sut.delayPromise.isPending).toBeFalsy();
     expect(sut.stopPromise.isPending).toBeTruthy();
+    await waitForExpect(async () => expect(stopPromise).resolves.toBeUndefined());
   });
 });
