@@ -70,7 +70,7 @@ updates:
       eslint:
         applies-to: version-updates
         patterns:
-          - eslint*
+          - eslint-*
       express:
         applies-to: version-updates
         patterns:
