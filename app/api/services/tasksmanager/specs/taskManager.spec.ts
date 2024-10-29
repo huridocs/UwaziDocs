@@ -148,8 +148,9 @@ describe('taskManager', () => {
   describe('when redis server is not available', () => {
     it('taskManager should fail to start task', async () => {
       const task = { task: 'Spagueti', tenant: 'Konz' };
-
-      taskManager!.redisClient.end(true);
+      if (taskManager) {
+        taskManager.redisClient.connected = false;
+      }
 
       try {
         await taskManager?.startTask(task);

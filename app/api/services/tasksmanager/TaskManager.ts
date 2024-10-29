@@ -69,25 +69,30 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
     );
   }
 
-  subscribeToEvents() {
-    this.redisClient.on('error', (error: any | undefined) => {
-      if (error && error.code !== 'ECONNREFUSED') {
-        throw error;
+  // eslint-disable-next-line class-methods-use-this
+  private onError = (error: any | undefined) => {
+    if (error && error.code !== 'ECONNREFUSED') {
+      throw error;
+    }
+  };
+
+  private onConnect = () => {
+    this.redisSMQ.createQueue({ qname: this.taskQueue }, (err: Error | undefined) => {
+      if (err && err.name !== 'queueExists') {
+        throw err;
       }
     });
-
-    this.redisClient.on('connect', () => {
-      this.redisSMQ.createQueue({ qname: this.taskQueue }, (err: Error | undefined) => {
-        if (err && err.name !== 'queueExists') {
-          throw err;
-        }
-      });
-      this.redisSMQ.createQueue({ qname: this.resultsQueue }, (err: Error | undefined) => {
-        if (err && err.name !== 'queueExists') {
-          throw err;
-        }
-      });
+    this.redisSMQ.createQueue({ qname: this.resultsQueue }, (err: Error | undefined) => {
+      if (err && err.name !== 'queueExists') {
+        throw err;
+      }
     });
+  };
+
+  subscribeToEvents() {
+    this.redisClient.on('error', this.onError);
+
+    this.redisClient.on('connect', this.onConnect);
   }
 
   async countPendingTasks(): Promise<number> {
@@ -147,6 +152,13 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
     if (this.repeater) {
       await this.repeater.stop();
     }
-    await this.redisClient.end(true);
+
+    this.redisClient.removeListener('error', this.onError);
+    this.redisClient.removeListener('connect', this.onConnect);
+
+    await this.redisSMQ.deleteQueueAsync({ qname: this.taskQueue });
+    await this.redisSMQ.deleteQueueAsync({ qname: this.resultsQueue });
+
+    this.redisClient.quit();
   }
 }
