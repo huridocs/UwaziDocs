@@ -1,8 +1,6 @@
 import Redis from 'redis';
 import Redlock from 'redlock';
 import { handleError } from 'api/utils/handleError';
-import { Logger } from 'api/log.v2/contracts/Logger';
-import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { PromiseManager } from './PromiseManager';
 
 const TEN_SECONDS_IN_MS = 10_000;
@@ -47,8 +45,7 @@ export class DistributedLoop {
       port = 6379,
       host = 'localhost',
       stopTimeout = TEN_SECONDS_IN_MS,
-    }: OptionsProps,
-    private logger: Logger = DefaultLogger()
+    }: OptionsProps
   ) {
     this.maxLockTime = maxLockTime;
     this.retryDelay = retryDelay;
@@ -84,7 +81,7 @@ export class DistributedLoop {
   }
 
   private logStopTimeoutMessage() {
-    this.logger.info(
+    console.log(
       `The task ${this.lockName} tried to be stopped and reached stop timeout of ${this.stopPromise.timeout} milliseconds`
     );
   }

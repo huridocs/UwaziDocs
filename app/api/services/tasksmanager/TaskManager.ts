@@ -4,8 +4,6 @@ import Redis, { RedisClient } from 'redis';
 import { Repeater } from 'api/utils/Repeater';
 import { config } from 'api/config';
 import { handleError } from 'api/utils';
-import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
-import { Logger } from 'api/log.v2/contracts/Logger';
 
 type DefaultTaskType = string;
 
@@ -49,10 +47,7 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
 
   redisClient: RedisClient;
 
-  constructor(
-    service: Service<R>,
-    private logger: Logger = DefaultLogger()
-  ) {
+  constructor(service: Service<R>) {
     this.service = service;
     this.taskQueue = `${config.ENVIRONMENT}_${service.serviceName}_tasks`;
     this.resultsQueue = `${config.ENVIRONMENT}_${service.serviceName}_results`;
@@ -64,7 +59,7 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
   }
 
   private logStopTimeoutMessage() {
-    this.logger.info(
+    console.log(
       `The task ${this.service.serviceName} tried to be stopped and reached stop timeout of ${this.repeater?.stopPromise.timeout} milliseconds`
     );
   }

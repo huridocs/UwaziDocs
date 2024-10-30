@@ -7,8 +7,8 @@ import Redis from 'redis';
 import RedisSMQ from 'rsmq';
 import { UserSchema } from 'shared/types/userType';
 import waitForExpect from 'wait-for-expect';
+import { mockConsole, restoreMockConsole } from 'api/log.v2/infrastructure/MockLogger';
 import { ATServiceListener } from '../ATServiceListener';
-import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 
 const prepareATFactory = (executeSpy: jest.Mock<any, any, any>) => {
   // @ts-ignore
@@ -30,6 +30,7 @@ describe('ATServiceListener', () => {
   const redisUrl = `redis://${config.redis.host}:${config.redis.port}`;
 
   beforeEach(async () => {
+    mockConsole();
     await testingEnvironment.setUp({
       settings: [{ features: { automaticTranslation: { active: true } } }],
     });
@@ -40,7 +41,7 @@ describe('ATServiceListener', () => {
       userInContext = permissionsContext.getUserInContext();
     });
 
-    listener = new ATServiceListener(prepareATFactory(executeSpy), createMockLogger());
+    listener = new ATServiceListener(prepareATFactory(executeSpy));
     redisClient = Redis.createClient(redisUrl);
     redisSMQ = new RedisSMQ({ client: redisClient });
 
@@ -64,6 +65,10 @@ describe('ATServiceListener', () => {
     });
 
     listener.start(0);
+  });
+
+  afterEach(async () => {
+    restoreMockConsole();
   });
 
   afterAll(async () => {

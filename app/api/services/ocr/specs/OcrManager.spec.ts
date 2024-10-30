@@ -17,7 +17,7 @@ import { ResultsMessage, TaskManager } from '../../tasksmanager/TaskManager';
 import { mockTaskManagerImpl } from '../../tasksmanager/specs/TaskManagerImplementationMocker';
 import { fixtures, fixturesFactory } from './fixtures/fixtures';
 import { cleanupRecordsOfFiles } from '../ocrRecords';
-import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
+import { mockConsole, restoreMockConsole } from 'api/log.v2/infrastructure/MockLogger';
 
 jest.mock('api/services/tasksmanager/TaskManager.ts');
 
@@ -100,11 +100,19 @@ describe('OcrManager', () => {
       success: true,
     };
 
-    ocrManager = new OcrManager(createMockLogger());
+    ocrManager = new OcrManager();
     ocrManager.start();
   });
 
   beforeEach(async () => {
+    mockConsole();
+    mocks.jestMocks['storage.fileContents'] = jest
+      .spyOn(storage, 'fileContents')
+      .mockResolvedValue(Buffer.from('file_content'));
+  });
+
+  afterEach(async () => {
+    restoreMockConsole();
     mocks.jestMocks['storage.fileContents'] = jest
       .spyOn(storage, 'fileContents')
       .mockResolvedValue(Buffer.from('file_content'));

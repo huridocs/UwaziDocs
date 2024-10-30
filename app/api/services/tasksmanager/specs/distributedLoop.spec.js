@@ -1,13 +1,12 @@
 import * as errorHelper from 'api/utils/handleError';
-import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 import waitForExpect from 'wait-for-expect';
+import { mockConsole, restoreMockConsole } from 'api/log.v2/infrastructure/MockLogger';
 import { DistributedLoop } from '../DistributedLoop';
 
 let finishTask;
 let task;
 let rejectTask;
 let pendingTasks;
-let mockLogger;
 
 async function sleepTime(time) {
   await new Promise(resolve => {
@@ -16,21 +15,16 @@ async function sleepTime(time) {
 }
 
 const createSut = ({ lockName, options }) =>
-  new DistributedLoop(
-    lockName,
-    task,
-    {
-      delayTimeBetweenTasks: 0,
-      ...options,
-    },
-    mockLogger
-  );
+  new DistributedLoop(lockName, task, {
+    delayTimeBetweenTasks: 0,
+    ...options,
+  });
 
 /* eslint-disable max-statements */
 describe('DistributedLoopLock', () => {
   beforeEach(() => {
+    mockConsole();
     pendingTasks = [];
-    mockLogger = createMockLogger();
     task = jest.fn().mockImplementation(
       () =>
         new Promise((resolve, reject) => {
@@ -42,6 +36,7 @@ describe('DistributedLoopLock', () => {
   });
 
   afterEach(async () => {
+    restoreMockConsole();
     await pendingTasks.map(pendingTask => pendingTask());
   });
 
@@ -203,7 +198,7 @@ describe('DistributedLoopLock', () => {
     });
 
     await expect(sut.stop()).resolves.toBe(undefined);
-    expect(mockLogger.info).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalled();
   });
 
   it("should skip wait between tasks, if there's no pending tasks", async () => {

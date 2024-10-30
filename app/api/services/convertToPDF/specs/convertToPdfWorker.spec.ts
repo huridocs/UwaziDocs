@@ -10,13 +10,13 @@ import * as handleError from 'api/utils/handleError.js';
 import { ObjectId } from 'mongodb';
 import Redis from 'redis';
 import RedisSMQ from 'rsmq';
-import { createMockLogger } from 'api/log.v2/infrastructure/MockLogger';
 import waitForExpect from 'wait-for-expect';
+import { mockConsole, restoreMockConsole } from 'api/log.v2/infrastructure/MockLogger';
 import { convertToPDFService } from '../convertToPdfService';
 import { ConvertToPdfWorker } from '../ConvertToPdfWorker';
 
 describe('convertToPdfWorker', () => {
-  const worker = new ConvertToPdfWorker(createMockLogger());
+  const worker = new ConvertToPdfWorker();
   const redisUrl = `redis://${config.redis.host}:${config.redis.port}`;
   const redisClient = Redis.createClient(redisUrl);
   const redisSMQ = new RedisSMQ({ client: redisClient });
@@ -31,6 +31,14 @@ describe('convertToPdfWorker', () => {
     }
     await redisSMQ.createQueueAsync({ qname: 'development_convert-to-pdf_results' });
   };
+
+  beforeEach(() => {
+    mockConsole();
+  });
+
+  afterEach(() => {
+    restoreMockConsole();
+  });
 
   beforeAll(async () => {
     await testingDB.connect({ defaultTenant: false });
