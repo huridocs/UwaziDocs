@@ -3,14 +3,14 @@ import { DB } from 'api/odm';
 import { config } from 'api/config';
 import { tenants } from 'api/tenants';
 import { permissionsContext } from 'api/permissions/permissionsContext';
-import { OcrManager } from 'api/services/ocr/OcrManager';
+import { ocrManager } from 'api/services/ocr/OcrManager';
 import { PDFSegmentation } from 'api/services/pdfsegmentation/PDFSegmentation';
 import { DistributedLoop } from 'api/services/tasksmanager/DistributedLoop';
 import { TwitterIntegration } from 'api/services/twitterintegration/TwitterIntegration';
 import { preserveSync } from 'api/services/preserve/preserveSync';
 import { tocService } from 'api/toc_generation/tocService';
 import { syncWorker } from 'api/sync/syncWorker';
-import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
+import { getSingletonInformationExtraction } from 'api/services/informationextraction/SingletonInformationExtraction';
 import { setupWorkerSockets } from 'api/socketio/setupSockets';
 import { ConvertToPdfWorker } from 'api/services/convertToPDF/ConvertToPdfWorker';
 import { ATServiceListener } from 'api/externalIntegrations.v2/automaticTranslation/adapters/driving/ATServiceListener';
@@ -45,9 +45,9 @@ DB.connect(config.DBHOST, dbAuth)
       permissionsContext.setCommandContext();
 
       const servicesList = [
-        new OcrManager(),
+        ocrManager,
         new ATServiceListener(),
-        new InformationExtraction(),
+        getSingletonInformationExtraction(),
         new ConvertToPdfWorker(),
       ] as any[];
 

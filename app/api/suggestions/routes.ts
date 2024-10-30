@@ -3,13 +3,13 @@ import { Application, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 
 import { Suggestions } from 'api/suggestions/suggestions';
-import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
 import { validateAndCoerceRequest } from 'api/utils/validateRequest';
 import { needsAuthorization } from 'api/auth';
 import { parseQuery } from 'api/utils/parseQueryMiddleware';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { SuggestionsQueryFilterSchema } from 'shared/types/suggestionSchema';
 import { objectIdSchema } from 'shared/types/commonSchemas';
+import { getSingletonInformationExtraction } from 'api/services/informationextraction/SingletonInformationExtraction';
 import {
   IXAggregationQuery,
   IXSuggestionAggregation,
@@ -17,13 +17,14 @@ import {
 } from 'shared/types/suggestionType';
 import { serviceMiddleware } from './serviceMiddleware';
 
+const informationExtraction = getSingletonInformationExtraction();
+
 async function processTrainFunction(
   callback: (extractorId: ObjectIdSchema) => Promise<{ message: string; status: string }>,
   req: Request,
   res: Response
 ) {
-  const IX = new InformationExtraction();
-  if (!IX) {
+  if (!informationExtraction) {
     res.status(500).json({
       error: 'Information Extraction service is not available',
     });
@@ -134,9 +135,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
-      const IX = new InformationExtraction();
-      await processTrainFunction(IX.stopModel, req, res);
-      await IX.stop();
+      await processTrainFunction(informationExtraction.stopModel, req, res);
     }
   );
 
@@ -146,9 +145,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
-      const IX = new InformationExtraction();
-      await processTrainFunction(IX.trainModel, req, res);
-      await IX.stop();
+      await processTrainFunction(informationExtraction.trainModel, req, res);
     }
   );
 
@@ -158,9 +155,7 @@ export const suggestionsRoutes = (app: Application) => {
     needsAuthorization(['admin', 'editor']),
     extractorIdRequestValidation('body'),
     async (req, res, _next) => {
-      const IX = new InformationExtraction();
-      await processTrainFunction(IX.status, req, res);
-      await IX.stop();
+      await processTrainFunction(informationExtraction.status, req, res);
     }
   );
 

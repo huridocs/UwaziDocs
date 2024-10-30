@@ -227,4 +227,6 @@ class OcrManager {
   }
 }
 
-export { OcrManager, isEnabled as isOcrEnabled, getStatus as getOcrStatus };
+const ocrManager = new OcrManager();
+
+export { ocrManager, OcrManager, isEnabled as isOcrEnabled, getStatus as getOcrStatus };
