@@ -254,10 +254,10 @@ const getSSRProperties = async (
   };
 };
 
-const resetTranslations = () => {
+/*const resetTranslations = () => {
   t.resetCachedTranslation();
-  // Translate.resetCachedTranslation();
-};
+  Translate.resetCachedTranslation();
+};*/
 
 const EntryServer = async (req: ExpressRequest, res: Response) => {
   RouteHandler.renderedFromServer = true;
@@ -286,7 +286,7 @@ const EntryServer = async (req: ExpressRequest, res: Response) => {
     reduxState,
     matched
   );
-  resetTranslations();
+  //resetTranslations();
 
   const componentHtml = ReactDOMServer.renderToString(
     <ReduxProvider store={initialStore as any}>

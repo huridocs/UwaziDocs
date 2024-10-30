@@ -1,10 +1,11 @@
-import { store } from 'app/store';
+import { atomStore, translationsAtom, localeAtom } from 'V2/atoms';
 import React from 'react';
 import translate, { getLocaleTranslation, getContext } from '../../shared/translate';
 import { Translate } from '.';
 
 const testingEnvironment = process.env.NODE_ENV === 'test';
 
+// eslint-disable-next-line max-statements
 const t = (contextId, key, _text, returnComponent = true) => {
   if (!contextId) {
     // eslint-disable-next-line no-console
@@ -15,21 +16,27 @@ const t = (contextId, key, _text, returnComponent = true) => {
     return <Translate context={contextId}>{key}</Translate>;
   }
 
+  let translations;
+  let locale;
+
+  const updateTranslations = () => {
+    translations = atomStore.get(translationsAtom);
+    locale = atomStore.get(localeAtom);
+    t.translation = getLocaleTranslation(translations, locale);
+    return { translations, locale };
+  };
+
   const text = _text || key;
 
-  if (!t.translation) {
-    const state = store.getState();
-    const translations = state.translations.toJS();
-    t.translation = getLocaleTranslation(translations, state.locale);
-  }
+  updateTranslations();
+
+  atomStore.sub(translationsAtom, () => {
+    updateTranslations();
+  });
 
   const context = getContext(t.translation, contextId);
 
   return translate(context, key, text);
-};
-
-t.resetCachedTranslation = () => {
-  t.translation = null;
 };
 
 export default t;
