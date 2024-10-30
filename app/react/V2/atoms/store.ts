@@ -31,26 +31,19 @@ declare global {
 
 const atomStore = createStore();
 
-if (isClient && window.__atomStoreData__) {
-  const {
-    globalMatomo,
-    locale,
-    settings,
-    thesauri,
-    templates,
-    user,
-    ciMatomoActive,
-    translations,
-  } = window.__atomStoreData__;
+const hydrateAtomStore = (data: AtomStoreData) => {
+  if (data.ciMatomoActive) atomStore.set(ciMatomoActiveAtom, data.ciMatomoActive);
+  if (data.globalMatomo) atomStore.set(globalMatomoAtom, { ...data.globalMatomo });
+  if (data.settings) atomStore.set(settingsAtom, data.settings);
+  if (data.thesauri) atomStore.set(thesauriAtom, data.thesauri);
+  if (data.templates) atomStore.set(templatesAtom, data.templates);
+  atomStore.set(userAtom, data.user);
+  atomStore.set(translationsAtom, data.translations);
+  atomStore.set(localeAtom, data.locale || 'en');
+};
 
-  if (ciMatomoActive) atomStore.set(ciMatomoActiveAtom, ciMatomoActive);
-  if (globalMatomo) atomStore.set(globalMatomoAtom, { ...globalMatomo });
-  if (settings) atomStore.set(settingsAtom, settings);
-  if (thesauri) atomStore.set(thesauriAtom, thesauri);
-  if (templates) atomStore.set(templatesAtom, templates);
-  atomStore.set(userAtom, user);
-  atomStore.set(translationsAtom, translations);
-  atomStore.set(localeAtom, locale || 'en');
+if (isClient && window.__atomStoreData__) {
+  hydrateAtomStore(window.__atomStoreData__);
 
   //sync deprecated redux store
   atomStore.sub(settingsAtom, () => {
@@ -72,4 +65,4 @@ if (isClient && window.__atomStoreData__) {
 }
 
 export type { AtomStoreData };
-export { atomStore };
+export { atomStore, hydrateAtomStore };
