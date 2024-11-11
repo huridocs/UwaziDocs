@@ -77,6 +77,7 @@ const extendedValidHtmlTags = [
   'marquee',
   'object',
   'option',
+  'script',
   'select',
   'spacer',
   'style',
