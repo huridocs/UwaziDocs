@@ -39,5 +39,9 @@
     bottom: 0;
     height: 100%;
     width: 100%;
+    .leaflet-bottom,
+    .leaflet-top {
+      z-index: 4;
+    }
   }
 }
