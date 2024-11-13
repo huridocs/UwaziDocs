@@ -40,6 +40,7 @@ export const FilterTocGeneration = ({ onChange, aggregations }: FilterTocGenerat
           prefix="generatedToc"
           label={t('System', 'Automatic Table of Contents')}
           onChange={onChange}
+          //@ts-ignore from the update typescript from 5.6.2 to 5.6.3
           options={options(aggregations)}
           showBoolSwitch={false}
         />
