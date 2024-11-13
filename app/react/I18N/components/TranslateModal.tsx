@@ -9,6 +9,7 @@ import { Button } from 'V2/Components/UI/Button';
 import { TranslationValue } from 'V2/shared/types';
 import { postV2 } from 'V2/api/translations';
 import { Translate } from './Translate';
+import { t } from '..';
 
 const TranslateModal = () => {
   const [inlineEditState, setInlineEditState] = useAtom(inlineEditAtom);
@@ -48,43 +49,45 @@ const TranslateModal = () => {
   return (
     inlineEditState.context && (
       <div className="tw-content">
-        <Modal size="xxxl">
-          <form onSubmit={handleSubmit(submit)}>
-            <Modal.Header>
-              <Translate>Translate</Translate>
-              <Modal.CloseButton onClick={closeModal}>
-                <Translate>Close</Translate>
-              </Modal.CloseButton>
-            </Modal.Header>
-            <Modal.Body>
-              {fields?.map((field, index) => (
-                <InputField
-                  label={
-                    <span className="font-normal text-gray-300">
-                      {field.language.toUpperCase()}
-                    </span>
-                  }
-                  id={field.id}
-                  key={field.id}
-                  {...register(`data.${index}.value`)}
-                />
-              ))}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                styling="light"
-                onClick={closeModal}
-                className="grow"
-                data-testid="cancel-button"
-              >
-                <Translate>Cancel</Translate>
-              </Button>
-              <Button type="submit" color="primary" className="grow" data-testid="save-button">
-                <Translate>Save</Translate>
-              </Button>
-            </Modal.Footer>
-          </form>
-        </Modal>
+        <div className="z-[100] relative">
+          <Modal size="xxxl">
+            <form onSubmit={handleSubmit(submit)}>
+              <Modal.Header>
+                {t('System', 'Translate', 'Translate', false)}
+                <Modal.CloseButton onClick={closeModal}>
+                  {t('System', 'Close', 'Close', false)}
+                </Modal.CloseButton>
+              </Modal.Header>
+              <Modal.Body>
+                {fields?.map((field, index) => (
+                  <InputField
+                    label={
+                      <span className="font-normal text-gray-300">
+                        {field.language.toUpperCase()}
+                      </span>
+                    }
+                    id={field.id}
+                    key={field.id}
+                    {...register(`data.${index}.value`)}
+                  />
+                ))}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  styling="light"
+                  onClick={closeModal}
+                  className="grow"
+                  data-testid="cancel-button"
+                >
+                  {t('System', 'Cancel', 'Cancel', false)}
+                </Button>
+                <Button type="submit" color="primary" className="grow" data-testid="save-button">
+                  {t('System', 'Save', 'Save', false)}
+                </Button>
+              </Modal.Footer>
+            </form>
+          </Modal>
+        </div>
       </div>
     )
   );
