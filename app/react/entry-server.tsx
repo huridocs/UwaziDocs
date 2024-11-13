@@ -32,9 +32,13 @@ import createReduxStore from './store';
 api.APIURL(`http://localhost:${process.env.PORT || 3000}/api/`);
 
 class ServerRenderingFetchError extends Error {
+  status: number;
+
   constructor(message: string) {
     super(message);
     this.name = 'ServerRenderingFetchError';
+    this.stack = new Error().stack;
+    this.status = 500;
   }
 }
 
@@ -63,10 +67,18 @@ const createFetchHeaders = (requestHeaders: ExpressRequest['headers']): Headers 
   return headers;
 };
 
-const createFetchRequest = (req: ExpressRequest): Request => {
+const createFetchRequest = (
+  req: ExpressRequest
+): { fetchRequest: Request; ssrError: ServerRenderingFetchError | undefined } => {
   const origin = `${req.protocol}://${req.get('host')}`;
-  const url = new URL(req.url, origin);
-
+  let url;
+  let ssrError;
+  try {
+    url = new URL(req.url, origin);
+  } catch (e) {
+    url = new URL(`${origin}/`);
+    ssrError = new ServerRenderingFetchError(e.message);
+  }
   const controller = new AbortController();
 
   req.on('close', () => {
@@ -83,7 +95,7 @@ const createFetchRequest = (req: ExpressRequest): Request => {
     init.body = req.body;
   }
 
-  return new Request(url.href, init);
+  return { fetchRequest: new Request(url.href, init), ssrError };
 };
 
 const getAssets = async () => {
@@ -242,7 +254,8 @@ const getSSRProperties = async (
 ) => {
   const { reduxStore, atomStoreData } = await prepareStores(req, settings, language);
   const { query } = createStaticHandler(routes as AgnosticDataRouteObject[]);
-  const staticHandleContext = await query(createFetchRequest(req));
+  const { fetchRequest, ssrError } = createFetchRequest(req);
+  const staticHandleContext = await query(fetchRequest);
   const router = createStaticRouter(routes, staticHandleContext as any);
   const reduxState = reduxStore.getState();
 
@@ -251,6 +264,7 @@ const getSSRProperties = async (
     atomStoreData,
     staticHandleContext,
     router,
+    ssrError,
   };
 };
 
@@ -280,12 +294,8 @@ const EntryServer = async (req: ExpressRequest, res: Response) => {
     : req.language;
   const isCatchAll = matched ? matched[matched.length - 1].route.path === '*' : true;
 
-  const { reduxState, atomStoreData, staticHandleContext, router } = await getSSRProperties(
-    req,
-    routes,
-    settings,
-    language
-  );
+  const { reduxState, atomStoreData, staticHandleContext, router, ssrError } =
+    await getSSRProperties(req, routes, settings, language);
 
   const { globalMatomo, ciMatomoActive } = tenants.current();
   const { initialStore, initialState, loadingError } = await setReduxState(
@@ -300,7 +310,7 @@ const EntryServer = async (req: ExpressRequest, res: Response) => {
       <CustomProvider initialData={initialState} user={req.user} language={initialState.locale}>
         <Provider store={atomStore}>
           <React.StrictMode>
-            <ErrorBoundary error={loadingError}>
+            <ErrorBoundary error={loadingError || ssrError}>
               <StaticRouterProvider
                 router={router}
                 context={staticHandleContext as any}
@@ -321,12 +331,12 @@ const EntryServer = async (req: ExpressRequest, res: Response) => {
       user={req.user}
       reduxData={initialState}
       assets={assets}
-      loadingError={loadingError}
+      loadingError={loadingError || ssrError}
       atomStoreData={{ ...atomStoreData, ...(globalMatomo && { globalMatomo }), ciMatomoActive }}
     />
   );
 
-  const responseCode = loadingError?.status || 200;
+  const responseCode = loadingError?.status || (ssrError ? 500 : 200);
   const resStatus = isCatchAll ? 404 : responseCode;
   res.status(resStatus).send(`<!DOCTYPE html>${html}`);
 };
