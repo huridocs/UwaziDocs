@@ -2157,9 +2157,9 @@
   integrity sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==
 
 "@huridocs/react-text-selection-handler@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@huridocs/react-text-selection-handler/-/react-text-selection-handler-0.3.0.tgz#297c535fd96af6b16bcc70e37542de934083710c"
-  integrity sha512-kIhGlGT6oOos1nsVpK5RAPeJ3n6Vo7R6L9cqzACTqphfNb3/Jvwc5i77LtEk9mpWNoxmVHiO0M3mtHiz+Yv9vw==
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@huridocs/react-text-selection-handler/-/react-text-selection-handler-0.3.1.tgz#f201eac484d6bc75dd8aed0c24c6465e6a122134"
+  integrity sha512-Un16Qv1kpFglRB/Hg0T/QOM91/rmLgWks6X3FWg7nXpw6NJkQi/R7IHwRMHwH282m78MP9iDB41uZ/WIEaAxfQ==
 
 "@icons/material@^0.2.4":
   version "0.2.4"
