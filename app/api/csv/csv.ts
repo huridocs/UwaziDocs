@@ -11,11 +11,11 @@ const peekHeaders = async (readSource: Readable | string): Promise<string[]> => 
   const readStream =
     typeof readSource === 'string' ? await importFile(readSource).readStream() : readSource;
   let headers: string[] = [];
-  const stream = csvtojson().fromStream(readStream);
-  await stream.on('header', async h => {
-    headers = h;
-    await stream.end();
-  });
+  await csvtojson()
+    .fromStream(readStream)
+    .on('header', async h => {
+      headers = h;
+    });
 
   return headers;
 };
