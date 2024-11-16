@@ -11,6 +11,8 @@ import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { MultiTenantMongooseModel } from './MultiTenantMongooseModel';
 import { UpdateLogger, createUpdateLogHelper } from './logHelper';
 import { ModelBulkWriteStream } from './modelBulkWriteStream';
+import { legacyLogger } from 'api/log';
+import { inspect } from 'util';
 
 /** Ideas!
  *  T is the actual model-specific document Schema!
@@ -31,6 +33,8 @@ export type UwaziQueryOptions = QueryOptions;
 export type UwaziUpdateOptions<T> = (UpdateOptions & Omit<MongooseQueryOptions<T>, 'lean'>) | null;
 
 export class OdmModel<T> implements SyncDBDataSource<T, T> {
+  private collectionName: string;
+
   db: MultiTenantMongooseModel<T>;
 
   logHelper: UpdateLogger<T>;
@@ -39,26 +43,71 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     return this.db.findById(data._id, '_id');
   }
 
+  private async documentExistsByQuery(query: any = undefined) {
+    const existsByQuery = await this.db.findOne(query, '_id');
+    if (query && !existsByQuery) {
+      throw Error('The document was not updated!');
+    }
+    return true;
+  }
+
+  private async checkVersion(query: any, version: number, data: Partial<DataType<T>>) {
+    if (version === undefined) {
+      legacyLogger.debug(
+        inspect(
+          new Error(
+            `[Optimistic lock] __v not sent for ${this.collectionName} collection with _id ${data._id}`
+          )
+        )
+      );
+      return;
+    }
+    const docMatches = await this.db.findOne({ ...query, __v: version }, '_id');
+    if (!docMatches) {
+      legacyLogger.debug(
+        inspect(
+          new Error(
+            `[Optimistic lock] version conflict '${version}' for ${this.collectionName} collection with _id ${data._id}`
+          )
+        )
+      );
+    }
+  }
+
   constructor(logHelper: UpdateLogger<T>, collectionName: string, schema: Schema) {
+    this.collectionName = collectionName;
     this.db = new MultiTenantMongooseModel<T>(collectionName, schema);
     this.logHelper = logHelper;
   }
 
-  async save(data: Partial<DataType<T>>, query?: any) {
+  async save(
+    data: Partial<DataType<T>>,
+    _query?: any
+    //options: { checkVersion: boolean } = { checkVersion: false }
+  ) {
     if (await this.documentExists(data)) {
+      // @ts-ignore
+      const { __v: version, ...toSaveData } = data;
+      const query =
+        _query && (await this.documentExistsByQuery(_query)) ? _query : { _id: data._id };
+      await this.checkVersion(query, version, data);
       const saved = await this.db.findOneAndUpdate(
-        query || { _id: data._id },
-        data as UwaziUpdateQuery<DataType<T>>,
-        {
-          new: true,
-        }
+        query,
+        { $set: toSaveData as UwaziUpdateQuery<DataType<T>>, $inc: { __v: 1 } },
+        { new: true }
       );
+
       if (saved === null) {
         throw Error('The document was not updated!');
       }
+
       await this.logHelper.upsertLogOne(saved);
       return saved.toObject<WithId<T>>();
     }
+    return this.create(data);
+  }
+
+  async create(data: Partial<DataType<T>>) {
     const saved = await this.db.create(data);
     await this.logHelper.upsertLogOne(saved);
     return saved.toObject<WithId<T>>();
