@@ -50,4 +50,21 @@ describe('Repeater', () => {
 
     await expect(repeaterOne.stop()).resolves.toBeUndefined();
   });
+
+  it('should skip interval between executions if stop method is executed', async () => {
+    let promise;
+    let resolvePromise;
+    const sut = new Repeater(() => {
+      promise = new Promise(resolve => {
+        resolvePromise = resolve;
+      });
+
+      return promise;
+    }, 10_000);
+
+    sut.start();
+    resolvePromise();
+    await expect(promise).resolves.toBeUndefined();
+    await expect(sut.stop()).resolves.toBeUndefined();
+  }, 5_000);
 });
