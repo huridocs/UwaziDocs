@@ -65,18 +65,6 @@ DB.connect(config.DBHOST, dbAuth)
           host: config.redis.host,
           delayTimeBetweenTasks: 1000,
         }),
-        new DistributedLoop(
-          'mocktest',
-          async () => {
-            console.log('called');
-            return sleep(20000);
-          },
-          {
-            port: config.redis.port,
-            host: config.redis.host,
-            delayTimeBetweenTasks: 0,
-          }
-        ),
       ];
 
       const segmentationConnector = new PDFSegmentation();
