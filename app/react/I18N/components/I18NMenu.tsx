@@ -1,9 +1,10 @@
+/* eslint-disable react/no-multi-comp */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Location, useLocation } from 'react-router-dom';
 import { useAtom, useAtomValue } from 'jotai';
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { LanguagesListSchema } from 'shared/types/commonTypes';
-import { Icon } from 'UI';
 import { NeedAuthorization } from 'app/Auth';
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
 import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
@@ -29,6 +30,12 @@ const prepareValues = (languages: LanguagesListSchema, locale: string, location:
 
   return { languages, selectedLanguage, urlLocation, path };
 };
+
+const SVGCircle = ({ fill }: { fill: string }) => (
+  <svg height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+    <circle r="7" cx="10" cy="10" fill={fill} />
+  </svg>
+);
 
 // eslint-disable-next-line max-statements
 const I18NMenu = () => {
@@ -83,10 +90,11 @@ const I18NMenu = () => {
               aria-label={t('System', 'Turn off inline translation', null, false)}
             >
               <div className="live-translate">
-                <Icon
-                  icon="circle"
-                  className={inlineEditState.inlineEdit ? 'live-on' : 'live-off'}
-                />
+                {inlineEditState.inlineEdit ? (
+                  <SVGCircle fill="#88eacd" />
+                ) : (
+                  <SVGCircle fill="#ffe66b" />
+                )}
               </div>
             </button>
             <span className="singleItem">
@@ -105,7 +113,7 @@ const I18NMenu = () => {
           >
             <span>{selectedLanguage?.localized_label}</span>
             &nbsp;
-            <Icon icon={dropdownOpen ? 'caret-up' : 'caret-down'} />
+            {dropdownOpen ? <ChevronUpIcon width={22} /> : <ChevronDownIcon width={22} />}
           </button>
 
           <ul className={dropdownOpen ? 'dropdown-menu expanded' : 'dropdown-menu'}>
@@ -138,10 +146,11 @@ const I18NMenu = () => {
                     setDropdownOpen(false);
                   }}
                 >
-                  <Icon
-                    icon="circle"
-                    className={inlineEditState.inlineEdit ? 'live-on' : 'live-off'}
-                  />
+                  {inlineEditState.inlineEdit ? (
+                    <SVGCircle fill="#88eacd" />
+                  ) : (
+                    <SVGCircle fill="#ffe66b" />
+                  )}
                   <Translate>Live translate</Translate>
                 </button>
               </li>
