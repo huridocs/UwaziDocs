@@ -11,6 +11,7 @@ describe('DistributedLoopLock', () => {
 
   beforeEach(async () => {
     pendingTasks = [];
+    // Help me create an expect that can check this promise will resolve
     task = jest.fn().mockImplementation(
       () =>
         new Promise((resolve, reject) => {
@@ -162,4 +163,29 @@ describe('DistributedLoopLock', () => {
     finishTask();
     await nodeTwo.stop();
   });
+
+  it('should skip delay time between tasks when stop method is executed', async () => {
+    const delayTimeBetweenTasks = 10_000;
+    let taskPromise;
+    const sut = new DistributedLoop(
+      'skip_delay_time',
+      () => {
+        taskPromise = task();
+        return task;
+      },
+      {
+        delayTimeBetweenTasks,
+      }
+    );
+
+    await sut.start();
+    await waitForExpect(async () => {
+      expect(task).toHaveBeenCalledTimes(1);
+    });
+    finishTask();
+
+    await expect(taskPromise).resolves.toBeUndefined();
+
+    await expect(sut.stop()).resolves.toBeUndefined();
+  }, 3_000);
 });

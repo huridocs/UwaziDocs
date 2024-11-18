@@ -23,6 +23,8 @@ export class DistributedLoop {
 
   private host: string;
 
+  private stopDelayTimeBetweenTasks?: Function;
+
   constructor(
     lockName: string,
     task: () => Promise<void>,
@@ -63,7 +65,11 @@ export class DistributedLoop {
 
   async waitBetweenTasks(delay = this.delayTimeBetweenTasks) {
     await new Promise(resolve => {
-      setTimeout(resolve, delay);
+      const timeout = setTimeout(resolve, delay);
+      this.stopDelayTimeBetweenTasks = () => {
+        resolve(undefined);
+        clearTimeout(timeout);
+      };
     });
   }
 
@@ -78,6 +84,7 @@ export class DistributedLoop {
   }
 
   async stop() {
+    if (this.stopDelayTimeBetweenTasks) this.stopDelayTimeBetweenTasks();
     await new Promise(resolve => {
       this.stopTask = resolve;
     });
