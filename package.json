@@ -81,7 +81,8 @@
     "node-fetch": "2.6.7",
     "ws": "8.18.0",
     "path-to-regexp": "0.1.11",
-    "body-parser": "^1.20.3"
+    "body-parser": "^1.20.3",
+    "cross-spawn": "^7.0.5"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.679.0",
