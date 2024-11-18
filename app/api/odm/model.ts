@@ -1,4 +1,5 @@
 import { SyncDBDataSource } from 'api/common.v2/database/SyncDBDataSource';
+import { legacyLogger } from 'api/log';
 import { ObjectId, UpdateOptions } from 'mongodb';
 import mongoose, {
   FilterQuery,
@@ -8,11 +9,10 @@ import mongoose, {
   UpdateQuery,
 } from 'mongoose';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
+import { inspect } from 'util';
 import { MultiTenantMongooseModel } from './MultiTenantMongooseModel';
 import { UpdateLogger, createUpdateLogHelper } from './logHelper';
 import { ModelBulkWriteStream } from './modelBulkWriteStream';
-import { legacyLogger } from 'api/log';
-import { inspect } from 'util';
 
 /** Ideas!
  *  T is the actual model-specific document Schema!
@@ -39,6 +39,20 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
 
   logHelper: UpdateLogger<T>;
 
+  options: { optimisticLock: boolean };
+
+  constructor(
+    logHelper: UpdateLogger<T>,
+    collectionName: string,
+    schema: Schema,
+    options: { optimisticLock: boolean } = { optimisticLock: false }
+  ) {
+    this.collectionName = collectionName;
+    this.db = new MultiTenantMongooseModel<T>(collectionName, schema);
+    this.logHelper = logHelper;
+    this.options = options;
+  }
+
   private documentExists(data: Partial<DataType<T>>) {
     return this.db.findById(data._id, '_id');
   }
@@ -52,6 +66,9 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
   }
 
   private async checkVersion(query: any, version: number, data: Partial<DataType<T>>) {
+    if (!this.options.optimisticLock) {
+      return;
+    }
     if (version === undefined) {
       legacyLogger.debug(
         inspect(
@@ -74,22 +91,13 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     }
   }
 
-  constructor(logHelper: UpdateLogger<T>, collectionName: string, schema: Schema) {
-    this.collectionName = collectionName;
-    this.db = new MultiTenantMongooseModel<T>(collectionName, schema);
-    this.logHelper = logHelper;
-  }
-
-  async save(
-    data: Partial<DataType<T>>,
-    _query?: any
-    //options: { checkVersion: boolean } = { checkVersion: false }
-  ) {
+  async save(data: Partial<DataType<T>>, _query?: any) {
     if (await this.documentExists(data)) {
       // @ts-ignore
       const { __v: version, ...toSaveData } = data;
       const query =
         _query && (await this.documentExistsByQuery(_query)) ? _query : { _id: data._id };
+
       await this.checkVersion(query, version, data);
       const saved = await this.db.findOneAndUpdate(
         query,
@@ -230,9 +238,13 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
 // export const models: { [index: string]: OdmModel<any> } = {};
 export const models: { [index: string]: () => SyncDBDataSource<any, any> } = {};
 
-export function instanceModel<T = any>(collectionName: string, schema: Schema) {
+export function instanceModel<T = any>(
+  collectionName: string,
+  schema: Schema,
+  options: { optimisticLock: boolean } = { optimisticLock: false }
+) {
   const logHelper = createUpdateLogHelper<T>(collectionName);
-  const model = new OdmModel<T>(logHelper, collectionName, schema);
+  const model = new OdmModel<T>(logHelper, collectionName, schema, options);
   models[collectionName] = () => model;
   return model;
 }

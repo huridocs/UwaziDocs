@@ -32,7 +32,7 @@ describe('ODM Model', () => {
   });
 
   const instanceTestingModel = (collectionName: string, schema: Schema) => {
-    const model = instanceModel<TestDoc>(collectionName, schema);
+    const model = instanceModel<TestDoc>(collectionName, schema, { optimisticLock: true });
     tenants.add(
       testingTenants.createTenant({
         name: testingDB.dbName,
