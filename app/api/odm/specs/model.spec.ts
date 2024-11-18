@@ -1,17 +1,19 @@
+import { legacyLogger } from 'api/log';
 import { UpdateLogHelper } from 'api/odm/logHelper';
+import { tenants } from 'api/tenants';
 import { model as updatelogsModel } from 'api/updatelogs';
 import { UpdateLog } from 'api/updatelogs/updatelogsModel';
 import { testingTenants } from 'api/utils/testingTenants';
 import testingDB from 'api/utils/testing_db';
 import mongoose, { Schema } from 'mongoose';
 import { ensure } from 'shared/tsUtils';
-import { tenants } from 'api/tenants';
-import { instanceModel, OdmModel, models, WithId } from '../model';
+import { instanceModel, models, OdmModel, WithId } from '../model';
 
 const testSchema = new Schema({
   name: String,
   value: String,
 });
+
 interface TestDoc {
   name: string;
   value?: string;
@@ -21,7 +23,7 @@ describe('ODM Model', () => {
   const originalDatenow = Date.now;
 
   beforeEach(async () => {
-    await testingDB.clearAllAndLoad({});
+    await testingDB.setupFixturesAndContext({});
   });
 
   afterAll(async () => {
@@ -30,7 +32,7 @@ describe('ODM Model', () => {
   });
 
   const instanceTestingModel = (collectionName: string, schema: Schema) => {
-    const model = instanceModel<TestDoc>(collectionName, schema);
+    const model = instanceModel<TestDoc>(collectionName, schema, { optimisticLock: true });
     tenants.add(
       testingTenants.createTenant({
         name: testingDB.dbName,
@@ -65,11 +67,41 @@ describe('ODM Model', () => {
       expect(createdDocument).toBeDefined();
       expect(createdDocument.name).toEqual('document 1');
 
-      await extendedModel.save({ _id: id, value: 'abc' });
+      await extendedModel.save(Object.assign(createdDocument, { value: 'abc' }));
       const [updatedDoc] = await extendedModel.get({ _id: savedDoc._id });
       expect(updatedDoc).toBeDefined();
       expect(updatedDoc.name).toEqual('document 1');
       expect(updatedDoc.value).toEqual('abc');
+    });
+
+    describe('when updating (_id is provided and it already exists)', () => {
+      it('should log a conflict error when trying to update a document with a different version', async () => {
+        const debugSpy = jest.spyOn(legacyLogger, 'debug');
+        const extendedModel = instanceTestingModel('tempSchema', testSchema);
+        const id = testingDB.id();
+
+        const savedDoc = await extendedModel.save({
+          _id: id,
+          name: 'document 1',
+        });
+        await extendedModel.save(savedDoc);
+        await extendedModel.save(savedDoc);
+        expect(debugSpy.mock.calls[0][0]).toContain('version conflict');
+      });
+
+      it('should log when "__v" is not sent as part of the data', async () => {
+        const debugSpy = jest.spyOn(legacyLogger, 'debug');
+        debugSpy.mockClear();
+        const extendedModel = instanceTestingModel('tempSchema', testSchema);
+        const id = testingDB.id();
+
+        await extendedModel.save({
+          _id: id,
+          name: 'document 1',
+        });
+        await extendedModel.save({ _id: id, name: 'document 1' });
+        expect(debugSpy.mock.calls[0][0]).toContain('__v not sent');
+      });
     });
   });
 

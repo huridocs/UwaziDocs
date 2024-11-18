@@ -2,6 +2,7 @@ export default {
   filterBaseProperties: data => {
     const properties = [
       '_id',
+      '__v',
       'language',
       'metadata',
       'suggestedMetadata',

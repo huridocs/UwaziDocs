@@ -2,6 +2,7 @@
 
 exports[`auth2fa userUtils reset2fa should set "using2fa" to false, and delete secret for sent user 1`] = `
 Object {
+  "__v": 2,
   "email": "another@email.com",
   "role": "admin",
   "username": "otheruser",

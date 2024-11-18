@@ -202,10 +202,11 @@ export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
 
 export function instanceModelWithPermissions<T = any>(
   collectionName: string,
-  schema: mongoose.Schema
+  schema: mongoose.Schema,
+  options: { optimisticLock: boolean } = { optimisticLock: false }
 ) {
   const logHelper = createUpdateLogHelper<T>(collectionName);
-  const model = new ModelWithPermissions<T>(logHelper, collectionName, schema);
+  const model = new ModelWithPermissions<T>(logHelper, collectionName, schema, options);
   models[collectionName] = () => model;
   return model;
 }

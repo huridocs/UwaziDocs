@@ -37,7 +37,9 @@ const mongoSchema = new mongoose.Schema(
 mongoSchema.index({ title: 'text' }, { language_override: 'mongoLanguage' });
 mongoSchema.index({ template: 1, language: 1, published: 1 });
 
-const Model = instanceModelWithPermissions<EntitySchema>('entities', mongoSchema);
+const Model = instanceModelWithPermissions<EntitySchema>('entities', mongoSchema, {
+  optimisticLock: true,
+});
 
 const supportedLanguages = [
   'da',
