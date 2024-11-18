@@ -1,30 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Location, useLocation } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect, ConnectedProps } from 'react-redux';
-import { IImmutable } from 'shared/types/Immutable';
+import { useAtom, useAtomValue } from 'jotai';
 import { LanguagesListSchema } from 'shared/types/commonTypes';
 import { Icon } from 'UI';
-import { actions, Translate, t } from 'app/I18N';
-import { IStore } from 'app/istore';
 import { NeedAuthorization } from 'app/Auth';
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
-import { inlineEditAtom } from 'V2/atoms';
+import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
+import { Translate } from './Translate';
+import t from '../t';
 
 const locationSearch = (location: Location) => {
   const cleanSearch = location.search.split(/page=\d+|&page=\d+/).join('');
   return cleanSearch === '?' ? '' : cleanSearch;
 };
 
-const prepareValues = (
-  languageMap: IImmutable<LanguagesListSchema>,
-  locale: string,
-  location: Location
-) => {
-  const languages: LanguagesListSchema = languageMap.toJS();
-
+const prepareValues = (languages: LanguagesListSchema, locale: string, location: Location) => {
   const selectedLanguage =
     languages.find(lang => lang.key === locale) || languages.find(lang => lang.default);
 
@@ -39,24 +30,14 @@ const prepareValues = (
   return { languages, selectedLanguage, urlLocation, path };
 };
 
-const mapStateToProps = (state: IStore) => ({
-  languages: state.settings.collection.get('languages'),
-  i18nmode: state.inlineEdit.get('inlineEdit'),
-  locale: state.locale,
-  user: state.user,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<{}>) =>
-  bindActionCreators({ toggleInlineEdit: actions.toggleInlineEdit }, dispatch);
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type mappedProps = ConnectedProps<typeof connector>;
-
-const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: mappedProps) => {
+// eslint-disable-next-line max-statements
+const I18NMenu = () => {
   const [inlineEditState, setInlineEditState] = useAtom(inlineEditAtom);
+  const locale = useAtomValue(localeAtom);
+  const user = useAtomValue(userAtom);
+  const { languages: languageList } = useAtomValue(settingsAtom);
 
-  if (!languageMap || languageMap.size < 1 || (languageMap!.size <= 1 && !user.get('_id'))) {
+  if (!languageList || languageList.length < 1 || (languageList.length <= 1 && !user?._id)) {
     return <div className="no-i18nmenu" />;
   }
 
@@ -66,7 +47,7 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { languages, selectedLanguage, path, urlLocation } = prepareValues(
-    languageMap!,
+    languageList,
     locale,
     location
   );
@@ -86,11 +67,11 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
 
   return (
     <li
-      className={languageMap!.size === 1 ? 'menuNav-I18NMenu one-language' : 'menuNav-I18NMenu'}
+      className={languageList.length === 1 ? 'menuNav-I18NMenu one-language' : 'menuNav-I18NMenu'}
       aria-label="Languages"
       ref={menuRef}
     >
-      {i18nmode && (
+      {inlineEditState.inlineEdit && (
         <NeedAuthorization roles={['admin', 'editor']}>
           <div className="menuNav-language">
             <button
@@ -102,7 +83,10 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
               aria-label={t('System', 'Turn off inline translation', null, false)}
             >
               <div className="live-translate">
-                <Icon icon="circle" className={i18nmode ? 'live-on' : 'live-off'} />
+                <Icon
+                  icon="circle"
+                  className={inlineEditState.inlineEdit ? 'live-on' : 'live-off'}
+                />
               </div>
             </button>
             <span className="singleItem">
@@ -112,7 +96,7 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
         </NeedAuthorization>
       )}
 
-      {!i18nmode && (
+      {!inlineEditState.inlineEdit && (
         <div className="menuNav-language">
           <button
             className="singleItem dropdown"
@@ -154,7 +138,10 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
                     setDropdownOpen(false);
                   }}
                 >
-                  <Icon icon="circle" className={i18nmode ? 'live-on' : 'live-off'} />
+                  <Icon
+                    icon="circle"
+                    className={inlineEditState.inlineEdit ? 'live-on' : 'live-off'}
+                  />
                   <Translate>Live translate</Translate>
                 </button>
               </li>
@@ -166,6 +153,4 @@ const i18NMenuComponent = ({ languages: languageMap, i18nmode, user, locale }: m
   );
 };
 
-const container = connector(i18NMenuComponent);
-
-export { container as i18NMenuComponent };
+export { I18NMenu };
