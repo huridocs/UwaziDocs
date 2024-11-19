@@ -14,8 +14,11 @@ import { InformationExtraction } from 'api/services/informationextraction/Inform
 import { setupWorkerSockets } from 'api/socketio/setupSockets';
 import { ConvertToPdfWorker } from 'api/services/convertToPDF/ConvertToPdfWorker';
 import { ATServiceListener } from 'api/externalIntegrations.v2/automaticTranslation/adapters/driving/ATServiceListener';
+import { SystemLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { sleep } from 'shared/tsUtils';
 import { handleError } from './api/utils/handleError.js';
+
+const systemLogger = SystemLogger();
 
 let dbAuth = {};
 
@@ -43,7 +46,7 @@ DB.connect(config.DBHOST, dbAuth)
     await tenants.run(async () => {
       permissionsContext.setCommandContext();
 
-      console.info('==> 📡 starting external services...');
+      systemLogger.info('==> 📡 starting external services...');
 
       const services: any[] = [
         ocrManager,
@@ -87,12 +90,15 @@ DB.connect(config.DBHOST, dbAuth)
       services.forEach(service => service.start());
 
       process.on('SIGINT', async () => {
-        console.log('Received SIGINT, waiting for graceful stop...');
+        systemLogger.info('Received SIGINT, waiting for graceful stop...');
 
         const stopPromises = Promise.all(services.map(async service => service.stop()));
-        await Promise.race([stopPromises, sleep(10_000)]);
-
-        console.log('Graceful stop process has finished, now exiting...');
+        const firstToFinish = await Promise.race([stopPromises, sleep(2000)]);
+        if (Array.isArray(firstToFinish)) {
+          systemLogger.info('Services stopped successfully!');
+        } else {
+          systemLogger.info('Some services did not stop in time, initiating forceful shutdown...');
+        }
 
         process.exit(0);
       });
