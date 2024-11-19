@@ -1,4 +1,5 @@
 import * as errorHelper from 'api/utils/handleError';
+import Redis from 'redis';
 import waitForExpect from 'wait-for-expect';
 import { DistributedLoop } from '../DistributedLoop';
 
@@ -198,5 +199,37 @@ describe('DistributedLoopLock', () => {
 
     expect(waitBetweenTasksSpy).not.toHaveBeenCalled();
     await expect(stopPromise).resolves.toBeUndefined();
+  });
+
+  test('when stop method is executed, it should unlock the Distributed Loop', async () => {
+    const connectionConfig = { port: 6379, host: 'localhost' };
+    const connection = Redis.createClient(
+      `redis://${connectionConfig.host}:${connectionConfig.port}`
+    );
+    const get = key =>
+      new Promise((resolve, reject) => {
+        connection.keys(key, (error, data) => {
+          if (error) reject(error);
+          resolve(data);
+        });
+      });
+
+    const lockName = 'skip_delay_time_3';
+    const sut = new DistributedLoop(lockName, task, {
+      delayTimeBetweenTasks: 100_000,
+    });
+
+    sut.start();
+    await waitForExpect(() => expect(task).toHaveBeenCalledTimes(1));
+
+    const stopPromise = sut.stop();
+
+    finishTask();
+    await sleepTime(25);
+    await expect(stopPromise).resolves.toBeUndefined();
+
+    const [result] = await get('*');
+    expect(result).toBeFalsy();
+    connection.quit();
   });
 });
