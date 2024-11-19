@@ -208,7 +208,7 @@ describe('DistributedLoopLock', () => {
     );
     const get = key =>
       new Promise((resolve, reject) => {
-        connection.keys(key, (error, data) => {
+        connection.get(key, (error, data) => {
           if (error) reject(error);
           resolve(data);
         });
@@ -228,7 +228,7 @@ describe('DistributedLoopLock', () => {
     await sleepTime(25);
     await expect(stopPromise).resolves.toBeUndefined();
 
-    const [result] = await get('*');
+    const result = await get(`locks:${lockName}`);
     expect(result).toBeFalsy();
     connection.quit();
   });
