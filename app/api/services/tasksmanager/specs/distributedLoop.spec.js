@@ -163,30 +163,23 @@ describe('DistributedLoopLock', () => {
     await nodeTwo.stop();
   });
 
-  it('should skip delay time between tasks when stop method is executed', async () => {
-    const delayTimeBetweenTasks = 10_000;
-    let taskPromise;
-    const sut = new DistributedLoop(
-      'skip_delay_time',
-      () => {
-        taskPromise = task();
-        return task;
-      },
-      {
-        delayTimeBetweenTasks,
-      }
-    );
-
-    await sut.start();
-    await waitForExpect(async () => {
-      expect(task).toHaveBeenCalledTimes(1);
+  it('when stop method is executed after task finish, it should skip delay time between tasks', async () => {
+    const sut = new DistributedLoop('skip_delay_time_2', task, {
+      delayTimeBetweenTasks: 100_000,
     });
+
+    const waitBetweenTasksSpy = jest.spyOn(sut, 'waitBetweenTasks');
+
+    sut.start();
+    await waitForExpect(() => expect(task).toHaveBeenCalledTimes(1));
+
     finishTask();
+    await sleepTime(25);
+    const stopPromise = sut.stop();
 
-    await expect(taskPromise).resolves.toBeUndefined();
-
-    await expect(sut.stop()).resolves.toBeUndefined();
-  }, 3_000);
+    expect(waitBetweenTasksSpy).toHaveBeenCalled();
+    await expect(stopPromise).resolves.toBeUndefined();
+  });
 
   test('when stop method is executed before a task finish, it should skip delay time between tasks', async () => {
     const sut = new DistributedLoop('skip_delay_time_2', task, {
