@@ -93,7 +93,8 @@ DB.connect(config.DBHOST, dbAuth)
         systemLogger.info('Received SIGINT, waiting for graceful stop...');
 
         const stopPromises = Promise.all(services.map(async service => service.stop()));
-        const firstToFinish = await Promise.race([stopPromises, sleep(2000)]);
+        const firstToFinish = await Promise.race([stopPromises, sleep(10_000)]);
+
         if (Array.isArray(firstToFinish)) {
           systemLogger.info('Services stopped successfully!');
         } else {
