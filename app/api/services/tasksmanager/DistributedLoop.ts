@@ -80,7 +80,9 @@ export class DistributedLoop {
       handleError(error, { useContext: false });
     }
 
-    await this.waitBetweenTasks();
+    if (!this.stopTask) {
+      await this.waitBetweenTasks();
+    }
   }
 
   async stop() {
