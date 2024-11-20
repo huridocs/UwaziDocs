@@ -268,11 +268,6 @@ const getSSRProperties = async (
   };
 };
 
-/*const resetTranslations = () => {
-  t.resetCachedTranslation();
-  Translate.resetCachedTranslation();
-};*/
-
 const EntryServer = async (req: ExpressRequest, res: Response) => {
   RouteHandler.renderedFromServer = true;
   const [settings, assets] = await Promise.all([
