@@ -54,13 +54,13 @@ export const formatters: {
   multidaterange: (field, options) =>
     field.map(item => formatters.daterange([item], options)).join(csvConstants.multiValueSeparator),
   numeric: field =>
-    field[0] && (field[0].value || field[0].value === 0) ? <string>field[0].value : '',
+    field[0] && (field[0].value || field[0].value === 0) ? <string>field[0].value.toString() : '',
   relationship: (field: MetadataObjectSchema[]) =>
     field
       .map(relationship => {
         if (
           relationship.inheritedValue &&
-          relationship.inheritedValue.length &&
+          relationship.inheritedValue.length > -1 &&
           relationship.inheritedType
         ) {
           const inheritedFormatter = formatters[relationship.inheritedType] || formatters.default;
@@ -68,6 +68,7 @@ export const formatters: {
         }
         return relationship.label;
       })
+      .filter(r => !!r)
       .join(csvConstants.multiValueSeparator),
   text: field => (field[0] && field[0].value ? <string>field[0].value : ''),
   default: field => formatters.text(field, {}),
