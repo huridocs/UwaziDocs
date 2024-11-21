@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { LanguageSchema } from 'shared/types/commonTypes';
+import { LanguageISO6391, LanguageSchema } from 'shared/types/commonTypes';
 
 const elasticLanguages: {
   [index: string]: { franc: string; elastic: string; ISO639_1: string | null };
@@ -1361,4 +1361,19 @@ const language = (key: string, purpose: keyof (typeof elasticLanguages)[number] 
 
 const availableLanguagesISO6391 = availableLanguages.map(l => l.key);
 
-export { elasticLanguages, availableLanguages, language, availableLanguagesISO6391 };
+class LanguageCodeMapper {
+  static fromISO639_3ToISO639_1(code: string): 'other' | LanguageISO6391 {
+    const languageSchema = availableLanguages.find(item => item.ISO639_3 === code);
+    if (!languageSchema) return 'other';
+
+    return languageSchema.key; // The key here stands for ISO6391 code
+  }
+}
+
+export {
+  elasticLanguages,
+  availableLanguages,
+  language,
+  availableLanguagesISO6391,
+  LanguageCodeMapper,
+};

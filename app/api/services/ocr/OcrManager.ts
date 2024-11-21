@@ -11,7 +11,7 @@ import { handleError } from 'api/utils/handleError';
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream, createWriteStream } from 'fs';
 import request from 'shared/JSONRequest';
-import { language as getLanguage } from 'shared/languagesList';
+import { LanguageCodeMapper } from 'shared/languagesList';
 import { FileType } from 'shared/types/fileType';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -146,7 +146,7 @@ const processResults = async (message: ResultsMessage): Promise<void> => {
 const validateLanguage = async (language: string, ocrSettings?: { url: string }) => {
   const _ocrSettings = ocrSettings || (await getSettings());
   const supportedLanguages = await fetchSupportedLanguages(_ocrSettings);
-  return supportedLanguages.includes(getLanguage(language, 'ISO639_1')!);
+  return supportedLanguages.includes(LanguageCodeMapper.fromISO639_3ToISO639_1(language));
 };
 
 const getStatus = async (file: EnforcedWithId<FileType>) => {
@@ -219,7 +219,7 @@ class OcrManager {
       tenant: tenant.name,
       params: {
         filename: file.filename,
-        language: getLanguage(file.language!, 'ISO639_1'),
+        language: LanguageCodeMapper.fromISO639_3ToISO639_1(file.language!),
       },
     });
 
