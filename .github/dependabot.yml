@@ -21,32 +21,6 @@ updates:
       - dependencies
     rebase-strategy: disabled
     groups:
-      dev-minor-dependencies:
-        applies-to: version-updates
-        update-types: [minor, patch]
-        patterns:
-          - "*"
-        exclude-patterns:
-          - "@babel*"
-          - "@storybook*"
-          - "@sentry*"
-          - "@dnd-kit"
-          - socket.io
-          - recharts
-          - eslint
-          - flowbite*
-          - Mongoose
-          - react-datepicker
-          - "@headlessui/react"
-          - react-player
-          - express*
-      dev-major-dependencies:
-        applies-to: version-updates
-        update-types: [major]
-        patterns:
-          - "*"
-        exclude-patterns:
-          - cookie
       babel:
         applies-to: version-updates
         patterns:
@@ -75,3 +49,41 @@ updates:
         applies-to: version-updates
         patterns:
           - express*
+      dev-minor-dependencies:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@babel*"
+          - "@storybook*"
+          - "@sentry*"
+          - "@dnd-kit"
+          - socket.io
+          - recharts
+          - eslint
+          - flowbite*
+          - Mongoose
+          - react-datepicker
+          - "@headlessui/react"
+          - react-player
+          - express*
+      dev-major-dependencies:
+        applies-to: version-updates
+        update-types: [major]
+        patterns:
+          - "*"
+        exclude-patterns:
+        # Excluding libraries with breaking changes
+          - cookie
+          - "@socket.io*"
+          - bootstrap
+          - express-prom-bundle
+          - immutable
+          - otplib
+          - redux
+          - redux-thunk
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"
+          - eslint
+          - fetch-mock
