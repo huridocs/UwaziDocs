@@ -16,6 +16,18 @@ updates:
         versions: [">= 0.10.1"]
       - dependency-name: Mongoose #Mongoose upgrade #7017
         versions: [">= 8.4.3"]
+      - dependency-name: cookie
+      - dependency-name: "@socket.io*"
+      - dependency-name: bootstrap
+      - dependency-name: express-prom-bundle
+      - dependency-name: immutable
+      - dependency-name: otplib
+      - dependency-name: redux
+      - dependency-name: redux-thunk
+      - dependency-name: "@typescript-eslint/eslint-plugin"
+      - dependency-name: "@typescript-eslint/parser"
+      - dependency-name: eslint #6784
+      - dependency-name: fetch-mock
     open-pull-requests-limit: 5
     labels:
       - dependencies
