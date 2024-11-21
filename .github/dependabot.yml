@@ -6,7 +6,7 @@ updates:
       interval: daily
     ignore:
       - dependency-name: "@types/*"
-      - dependency-name: "@sentry/node"
+      - dependency-name: "@sentry/node" #6880
         versions: [">= 7.114.0"]
       - dependency-name: flowbite #Flowbite & flowbite-datepicker upgrade #6993
         versions: [">= 2.3.1"]
@@ -16,37 +16,23 @@ updates:
         versions: [">= 0.10.1"]
       - dependency-name: Mongoose #Mongoose upgrade #7017
         versions: [">= 8.4.3"]
+      - dependency-name: cookie
+      - dependency-name: "@socket.io*"
+      - dependency-name: bootstrap
+      - dependency-name: express-prom-bundle
+      - dependency-name: immutable
+      - dependency-name: otplib
+      - dependency-name: redux
+      - dependency-name: redux-thunk
+      - dependency-name: "@typescript-eslint/eslint-plugin"
+      - dependency-name: "@typescript-eslint/parser"
+      - dependency-name: eslint #6784
+      - dependency-name: fetch-mock
     open-pull-requests-limit: 5
     labels:
       - dependencies
     rebase-strategy: disabled
     groups:
-      dev-minor-dependencies:
-        applies-to: version-updates
-        update-types: [minor, patch]
-        patterns:
-          - "*"
-        exclude-patterns:
-          - "@babel*"
-          - "@storybook*"
-          - "@sentry*"
-          - "@dnd-kit"
-          - socket.io
-          - recharts
-          - eslint
-          - flowbite*
-          - Mongoose
-          - react-datepicker
-          - "@headlessui/react"
-          - react-player
-          - express*
-      dev-major-dependencies:
-        applies-to: version-updates
-        update-types: [major]
-        patterns:
-          - "*"
-        exclude-patterns:
-          - cookie
       babel:
         applies-to: version-updates
         patterns:
@@ -75,3 +61,41 @@ updates:
         applies-to: version-updates
         patterns:
           - express*
+      dev-minor-dependencies:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@babel*"
+          - "@storybook*"
+          - "@sentry*"
+          - "@dnd-kit"
+          - socket.io
+          - recharts
+          - eslint
+          - flowbite*
+          - Mongoose
+          - react-datepicker
+          - "@headlessui/react"
+          - react-player
+          - express*
+      dev-major-dependencies:
+        applies-to: version-updates
+        update-types: [major]
+        patterns:
+          - "*"
+        exclude-patterns:
+        # Excluding libraries with breaking changes
+          - cookie
+          - "@socket.io*"
+          - bootstrap
+          - express-prom-bundle
+          - immutable
+          - otplib
+          - redux
+          - redux-thunk
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"
+          - eslint #6784
+          - fetch-mock
