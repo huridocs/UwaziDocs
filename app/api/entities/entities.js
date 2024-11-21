@@ -2,8 +2,8 @@
 /* eslint-disable no-param-reassign,max-statements */
 
 import { applicationEventsBus } from 'api/eventsbus';
-import { PDF, files } from 'api/files';
 import * as filesystem from 'api/files';
+import { PDF, files } from 'api/files';
 import { permissionsContext } from 'api/permissions/permissionsContext';
 import relationships from 'api/relationships/relationships';
 import { search } from 'api/search';
@@ -11,25 +11,26 @@ import templates from 'api/templates/templates';
 import { generateNames } from 'api/templates/utils';
 import date from 'api/utils/date';
 import { unique } from 'api/utils/filters';
-import { AccessLevels } from 'shared/types/permissionSchema';
 import { propertyTypes } from 'shared/propertyTypes';
+import { AccessLevels } from 'shared/types/permissionSchema';
 import ID from 'shared/uniqueID';
 
+import { ATSolveVersionConflict } from 'api/externalIntegrations.v2/automaticTranslation/utils/ATSolveVersionConflict';
+import settings from '../settings';
 import { denormalizeMetadata, denormalizeRelated } from './denormalize';
 import model from './entitiesModel';
 import { EntityCreatedEvent } from './events/EntityCreatedEvent';
-import { EntityUpdatedEvent } from './events/EntityUpdatedEvent';
 import { EntityDeletedEvent } from './events/EntityDeletedEvent';
+import { EntityUpdatedEvent } from './events/EntityUpdatedEvent';
 import { saveSelections } from './metadataExtraction/saveSelections';
 import {
   deleteRelatedNewRelationships,
+  denormalizeAfterEntityCreation,
   denormalizeAfterEntityUpdate,
   ignoreNewRelationshipsMetadata,
-  denormalizeAfterEntityCreation,
   updateNewRelationships,
 } from './v2_support';
 import { validateEntity } from './validateEntity';
-import settings from '../settings';
 
 const FIELD_TYPES_TO_SYNC = [
   propertyTypes.select,
@@ -63,7 +64,7 @@ async function updateEntity(entity, _template, unrestricted = false) {
     .map(p => p.name);
   const currentDoc = docLanguages.find(d => d._id.toString() === entity._id.toString());
   const saveFunc = !unrestricted ? model.save : model.saveUnrestricted;
-
+  entity = await ATSolveVersionConflict(currentDoc, entity);
   const thesauriByKey = await templates.getRelatedThesauri(template);
 
   const result = await Promise.all(
