@@ -52,15 +52,13 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   useEffect(() => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
+      const defaultViewport = pdfPage.getViewport({ scale: 1 });
 
       const handlePlaceHolder = () => {
-        const defaultViewport = pdfPage.getViewport({ scale: 1 });
         currentContainer.style.height = `${defaultViewport.height}px`;
       };
 
       if (isVisible) {
-        const defaultViewport = pdfPage.getViewport({ scale: 1 });
-
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
