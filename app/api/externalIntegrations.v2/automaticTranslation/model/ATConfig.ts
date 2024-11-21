@@ -25,6 +25,10 @@ class ATConfig {
     this.languages = languages;
     this.templates = templates.filter(t => t.properties.length);
   }
+
+  propertiesByTemplate(templateId: string) {
+    return this.templates.find(t => t.template === templateId)?.properties || [];
+  }
 }
 
 export { ATConfig, ATTemplateConfig };
