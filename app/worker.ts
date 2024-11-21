@@ -46,7 +46,7 @@ DB.connect(config.DBHOST, dbAuth)
     await tenants.run(async () => {
       permissionsContext.setCommandContext();
 
-      systemLogger.info('==> 📡 starting external services...');
+      systemLogger.info('[Worker] - ==> 📡 starting external services...');
 
       const services: any[] = [
         ocrManager,
@@ -90,15 +90,19 @@ DB.connect(config.DBHOST, dbAuth)
       services.forEach(service => service.start());
 
       process.on('SIGINT', async () => {
-        systemLogger.info('Received SIGINT, waiting for graceful stop...');
+        systemLogger.info(
+          '[Worker Graceful shutdown] - Received SIGINT, waiting for graceful stop...'
+        );
 
         const stopPromises = Promise.all(services.map(async service => service.stop()));
         const firstToFinish = await Promise.race([stopPromises, sleep(10_000)]);
 
         if (Array.isArray(firstToFinish)) {
-          systemLogger.info('Services stopped successfully!');
+          systemLogger.info('[Worker Graceful shutdown] - Services stopped successfully!');
         } else {
-          systemLogger.info('Some services did not stop in time, initiating forceful shutdown...');
+          systemLogger.info(
+            '[Worker Graceful shutdown] - Some services did not stop in time, initiating forceful shutdown...'
+          );
         }
 
         process.exit(0);
