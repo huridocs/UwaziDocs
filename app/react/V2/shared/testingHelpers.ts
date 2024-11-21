@@ -27,17 +27,6 @@ const middlewares = [thunk];
 const LEGACY_createStore = (state?: Partial<IStore>) =>
   configureStore<object>(middlewares)(() => ({ ...defaultState, ...state }));
 
-const defaultAtomsState: { settings: ClientSettings } = {
-  settings: { dateFormat: 'dd-mm-yyyy' },
-};
-
-const atomsGlobalState = (initialState: { settings?: ClientSettings } = {}) => {
-  const myStore = createStore();
-  const values = merge(defaultAtomsState, initialState);
-  myStore.set(settingsAtom, values.settings);
-  return myStore;
-};
-
 const reduxStore = createMockStore([thunk])(() => ({
   locale: 'en',
   inlineEdit: fromJS({ inlineEdit: true }),
@@ -49,4 +38,4 @@ const reduxStore = createMockStore([thunk])(() => ({
   ]),
 }));
 
-export { LEGACY_createStore, atomsGlobalState, reduxStore };
+export { LEGACY_createStore, reduxStore };

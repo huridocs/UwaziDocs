@@ -14,11 +14,10 @@ import {
   cleanup,
 } from '@testing-library/react/pure';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { Provider as JotaiProvider } from 'jotai';
 import { Provider } from 'react-redux';
 import { has } from 'lodash';
-import { templatesAtom } from 'app/V2/atoms';
-import { atomsGlobalState, reduxStore } from 'V2/shared/testingHelpers';
+import { templatesAtom, TestAtomStoreProvider } from 'app/V2/atoms';
+import { reduxStore } from 'V2/shared/testingHelpers';
 import { ThesauriList, thesauriLoader } from '../ThesauriList';
 import { EditThesaurus } from '../EditThesaurus';
 import { editThesaurusLoader } from '../helpers';
@@ -53,8 +52,7 @@ describe('Settings Thesauri', () => {
 
   describe('ThesauriList', () => {
     let renderResult: RenderResult;
-    const store = atomsGlobalState();
-    store.set(templatesAtom, [
+    const templateAtomValue = [
       {
         _id: 'template1',
         name: 'Document',
@@ -75,7 +73,7 @@ describe('Settings Thesauri', () => {
           },
         ],
       },
-    ]);
+    ];
     const router = createMemoryRouter(
       [
         {
@@ -104,9 +102,9 @@ describe('Settings Thesauri', () => {
     const renderComponent = () =>
       render(
         <Provider store={reduxStore}>
-          <JotaiProvider store={store}>
+          <TestAtomStoreProvider initialValues={[[templatesAtom, templateAtomValue]]}>
             <RouterProvider router={router} />
-          </JotaiProvider>
+          </TestAtomStoreProvider>
         </Provider>
       );
 
