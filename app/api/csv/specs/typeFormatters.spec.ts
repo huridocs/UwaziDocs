@@ -161,8 +161,8 @@ describe('csvExporter typeFormatters', () => {
 
   describe('SIMPLE', () => {
     it('should return the correct NUMERIC value', () => {
-      testSimple(1234, typeFormatters.numeric, 1234);
-      testSimple(0, typeFormatters.numeric, 0);
+      testSimple(1234, typeFormatters.numeric, '1234');
+      testSimple(0, typeFormatters.numeric, '0');
     });
   });
 
@@ -224,12 +224,11 @@ describe('csvExporter typeFormatters', () => {
       testEmptyField(typeFormatters.relationship);
     });
 
-    it('should return the entity label when inherited value is not defined', () => {
+    it('should return the entity label when inherited value is not defined and empty for empty arrays', () => {
       const singleField = [
         {
           label: 'Entity 1',
           value: null,
-          inheritedValue: [],
           inheritedType: 'text',
         },
       ];
@@ -247,12 +246,34 @@ describe('csvExporter typeFormatters', () => {
           inheritedType: 'text',
         },
       ];
+      const multipleNumberield = [
+        {
+          label: 'Entity 1',
+          value: null,
+          inheritedValue: [{ value: 1 }],
+          inheritedType: 'numeric',
+        },
+        {
+          label: 'Entity 2',
+          value: null,
+          inheritedValue: [],
+          inheritedType: 'numeric',
+        },
+        {
+          label: 'Entity 1',
+          value: null,
+          inheritedValue: [{ value: 0 }],
+          inheritedType: 'numeric',
+        },
+      ];
 
       const singleValue = typeFormatters.relationship(singleField, {});
       const multipleValue = typeFormatters.relationship(multipleField, {});
+      const multipleNumberValue = typeFormatters.relationship(multipleNumberield, {});
 
       expect(singleValue).toBe('Entity 1');
-      expect(multipleValue).toBe('E1|Entity 2');
+      expect(multipleValue).toBe('E1');
+      expect(multipleNumberValue).toBe('1|0');
       testEmptyField(typeFormatters.relationship);
     });
   });
