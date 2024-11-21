@@ -8,6 +8,5 @@ export { globalMatomoAtom } from './globalMatomoAtom';
 export { ciMatomoActiveAtom } from './ciMatomoActiveAtom';
 export { userAtom } from './userAtom';
 export { relationshipTypesAtom } from './relationshipTypes';
-export { TestAtomStoreProvider } from './TestAtomStoreProvider';
 export type { AtomStoreData } from './store';
 export type { notificationAtomType } from './notificationAtom';

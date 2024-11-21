@@ -4,8 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { fn } from '@storybook/test';
 import { DatePicker } from 'app/V2/Components/Forms';
-import { LEGACY_createStore as createStore } from 'V2/testing';
-import { settingsAtom, TestAtomStoreProvider } from 'V2/atoms';
+import { LEGACY_createStore as createStore, TestAtomStoreProvider } from 'V2/testing';
+import { settingsAtom } from 'V2/atoms';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Forms/DatePicker',

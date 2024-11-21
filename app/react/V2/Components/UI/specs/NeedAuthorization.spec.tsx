@@ -3,11 +3,12 @@
  */
 import React, { ReactNode } from 'react';
 import { render } from '@testing-library/react';
-import { userAtom, TestAtomStoreProvider } from 'V2/atoms';
+import { userAtom } from 'V2/atoms';
 import { ClientUserSchema } from 'app/apiResponseTypes';
 import { UserRole } from 'shared/types/userSchema';
 import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
 import { NeedAuthorization } from 'V2/Components/UI';
+import { TestAtomStoreProvider } from 'V2/testing';
 import { ClientEntitySchema } from 'app/istore';
 
 describe('NeedAuthorization', () => {

@@ -5,7 +5,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { globalMatomoAtom, settingsAtom, TestAtomStoreProvider } from 'V2/atoms';
+import { globalMatomoAtom, settingsAtom } from 'V2/atoms';
+import { TestAtomStoreProvider } from 'V2/testing';
 import { Matomo } from '../Matomo';
 
 describe('Matomo', () => {
