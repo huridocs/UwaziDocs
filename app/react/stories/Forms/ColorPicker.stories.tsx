@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { action } from '@storybook/addon-actions';
 import { ColorPicker } from 'app/V2/Components/Forms';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 
 const meta: Meta<typeof ColorPicker> = {
   title: 'Forms/ColorPicker',

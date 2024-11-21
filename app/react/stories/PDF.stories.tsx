@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { Provider } from 'react-redux';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { PDF } from 'V2/Components/PDFViewer';
 import { highlights } from './fixtures/PDFStoryFixtures';
 

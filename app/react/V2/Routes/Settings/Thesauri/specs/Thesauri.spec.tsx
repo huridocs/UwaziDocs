@@ -16,8 +16,9 @@ import {
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { has } from 'lodash';
-import { templatesAtom, TestAtomStoreProvider } from 'app/V2/atoms';
-import { reduxStore } from 'V2/shared/testingHelpers';
+import { fromJS } from 'immutable';
+import { templatesAtom, TestAtomStoreProvider } from 'V2/atoms';
+import { LEGACY_createStore as reduxStoreCreator } from 'V2/testing';
 import { ThesauriList, thesauriLoader } from '../ThesauriList';
 import { EditThesaurus } from '../EditThesaurus';
 import { editThesaurusLoader } from '../helpers';
@@ -98,6 +99,17 @@ describe('Settings Thesauri', () => {
         initialEntries: ['/'],
       }
     );
+
+    const reduxStore = reduxStoreCreator({
+      locale: 'en',
+      inlineEdit: fromJS({ inlineEdit: true }),
+      translations: fromJS([
+        {
+          locale: 'en',
+          contexts: [],
+        },
+      ]),
+    });
 
     const renderComponent = () =>
       render(
