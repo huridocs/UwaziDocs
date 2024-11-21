@@ -2,13 +2,13 @@ import { DefaultTransactionManager } from 'api/common.v2/database/data_source_de
 import { Entity } from 'api/entities.v2/model/Entity';
 import { entityInputDataSchema } from 'api/entities.v2/types/EntityInputDataSchema';
 import { EntityInputModel } from 'api/entities.v2/types/EntityInputDataType';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { EntitySchema } from 'api/migrations/migrations/143-parse-numeric-fields/types';
+import { inspect } from 'util';
 import { AutomaticTranslationFactory } from '../AutomaticTranslationFactory';
 import { Validator } from '../infrastructure/Validator';
 import { RequestEntityTranslation } from '../RequestEntityTranslation';
 import { SaveEntityTranslations } from '../SaveEntityTranslations';
-import { DefaultLogger, StandardLogger } from 'api/log.v2/infrastructure/StandardLogger';
-import { inspect } from 'util';
 
 const entityV1ToEntityModel = (entity: EntitySchema) => {
   const inputModelValidator = new Validator<EntityInputModel>(entityInputDataSchema);

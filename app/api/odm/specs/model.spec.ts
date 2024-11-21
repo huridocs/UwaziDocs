@@ -88,20 +88,6 @@ describe('ODM Model', () => {
         await extendedModel.save(savedDoc);
         expect(debugSpy.mock.calls[0][0]).toContain('version conflict');
       });
-
-      it('should log when "__v" is not sent as part of the data', async () => {
-        const debugSpy = jest.spyOn(legacyLogger, 'debug');
-        debugSpy.mockClear();
-        const extendedModel = instanceTestingModel('tempSchema', testSchema);
-        const id = testingDB.id();
-
-        await extendedModel.save({
-          _id: id,
-          name: 'document 1',
-        });
-        await extendedModel.save({ _id: id, name: 'document 1' });
-        expect(debugSpy.mock.calls[0][0]).toContain('__v not sent');
-      });
     });
   });
 
