@@ -100,5 +100,18 @@ describe('ATSolveVersionConflict', () => {
         },
       });
     });
+
+    it('should not fail if the props have no value', async () => {
+      const currentEntity = factory.entity('current entity', 'template', { prop1: [] });
+      const newEntity = factory.entity('new entity', 'template', {
+        prop1: [],
+        prop2: [{ value: 'prop2' }],
+      });
+
+      await expect(ATSolveVersionConflict(currentEntity, newEntity)).resolves.toMatchObject({
+        title: 'new entity',
+        metadata: { prop1: [], prop2: [{ value: 'prop2' }] },
+      });
+    });
   });
 });
