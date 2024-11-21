@@ -3,6 +3,7 @@ import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSou
 import { Logger } from 'api/log.v2/contracts/Logger';
 import { TranslationResult } from './types/TranslationResult';
 import { Validator } from './infrastructure/Validator';
+import { Entity } from 'api/entities.v2/model/Entity';
 
 export class SaveEntityTranslations {
   static AITranslatedText = '(AI translated)';
@@ -33,6 +34,9 @@ export class SaveEntityTranslations {
     const [, entitySharedId, propertyId] = translationResult.key;
 
     const property = await this.getProperty(entitySharedId, propertyId);
+    if (!property) {
+      return;
+    }
 
     const entities = this.entitiesDS.getByIds([entitySharedId]);
 
@@ -60,20 +64,27 @@ export class SaveEntityTranslations {
   private async getProperty(entitySharedId: string, propertyId: string) {
     const entity = await this.entitiesDS.getByIds([entitySharedId]).first();
     if (!entity) {
-      throw new Error('Entity does not exist');
+      this.logger.info(
+        `[AT] - Entity with sharedId ${entitySharedId} does not exist (trying to save a translation comming from AT service)`
+      );
+      return null;
     }
 
-    const template = await this.templatesDS.getById(entity.template);
-    if (!template) {
-      throw new Error('Template does not exist');
-    }
+    const template = await this.getTemplate(entity);
 
     const property = template.getPropertyById(propertyId);
-
     if (!property) {
       throw new Error('Property does not exist');
     }
 
     return property;
+  }
+
+  private async getTemplate(entity: Entity) {
+    const template = await this.templatesDS.getById(entity.template);
+    if (!template) {
+      throw new Error('Template does not exist');
+    }
+    return template;
   }
 }

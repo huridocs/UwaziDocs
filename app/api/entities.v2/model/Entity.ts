@@ -27,9 +27,9 @@ export class Entity {
 
   readonly template: string;
 
-  readonly title: string;
+  title: string;
 
-  readonly metadata: Metadata;
+  metadata: Metadata;
 
   readonly obsoleteMetadata: string[];
 
@@ -65,19 +65,14 @@ export class Entity {
   setPropertyValue(property: Property, value: string) {
     if (property.type === 'text' || property.type === 'markdown') {
       const isTitleProperty = property instanceof CommonProperty && property.name === 'title';
-      const { metadata } = this;
       if (!(property instanceof CommonProperty)) {
-        metadata[property.name] = this.metadata[property.name] || [{ value: '' }];
-        metadata[property.name][0].value = value;
+        this.metadata[property.name] = this.metadata[property.name] || [{ value: '' }];
+        this.metadata[property.name][0].value = value;
       }
-      return new Entity(
-        this._id,
-        this.sharedId,
-        this.language,
-        isTitleProperty ? value : this.title,
-        this.template,
-        metadata
-      );
+      if (isTitleProperty) {
+        this.title = value || this.title;
+      }
+      return this;
     }
 
     throw new Error('types other than string/markdown are not implemented yet');
