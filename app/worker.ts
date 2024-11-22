@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { DB } from 'api/odm';
 import { config } from 'api/config';
 import { tenants } from 'api/tenants';
@@ -12,8 +13,12 @@ import { syncWorker } from 'api/sync/syncWorker';
 import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
 import { setupWorkerSockets } from 'api/socketio/setupSockets';
 import { ConvertToPdfWorker } from 'api/services/convertToPDF/ConvertToPdfWorker';
-import { handleError } from './api/utils/handleError.js';
 import { ATServiceListener } from 'api/externalIntegrations.v2/automaticTranslation/adapters/driving/ATServiceListener';
+import { SystemLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { sleep } from 'shared/tsUtils';
+import { handleError } from './api/utils/handleError.js';
+
+const systemLogger = SystemLogger();
 
 let dbAuth = {};
 
@@ -41,55 +46,67 @@ DB.connect(config.DBHOST, dbAuth)
     await tenants.run(async () => {
       permissionsContext.setCommandContext();
 
-      console.info('==> 📡 starting external services...');
-      ocrManager.start();
-      new ATServiceListener().start();
-      new InformationExtraction().start();
+      systemLogger.info('[Worker] - ==> 📡 starting external services...');
 
-      new ConvertToPdfWorker().start();
+      const services: any[] = [
+        ocrManager,
+        new ATServiceListener(),
+        new InformationExtraction(),
+        new ConvertToPdfWorker(),
+        new DistributedLoop('preserve_integration', async () => preserveSync.syncAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
+          delayTimeBetweenTasks: 30000,
+        }),
+        new DistributedLoop('toc_service', async () => tocService.processAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
+          delayTimeBetweenTasks: 30000,
+        }),
+        new DistributedLoop('sync_job', async () => syncWorker.runAllTenants(), {
+          port: config.redis.port,
+          host: config.redis.host,
+          delayTimeBetweenTasks: 1000,
+        }),
+      ];
 
       const segmentationConnector = new PDFSegmentation();
-      segmentationConnector.start();
+
       const segmentationRepeater = new DistributedLoop(
         'segmentation_repeat',
         segmentationConnector.segmentPdfs,
         { port: config.redis.port, host: config.redis.host, delayTimeBetweenTasks: 5000 }
       );
-
-      // eslint-disable-next-line no-void
-      void segmentationRepeater.start();
+      services.push(segmentationConnector, segmentationRepeater);
 
       const twitterIntegration = new TwitterIntegration();
-      twitterIntegration.start();
       const twitterRepeater = new DistributedLoop(
         'twitter_repeat',
         twitterIntegration.addTweetsRequestsToQueue,
         { port: config.redis.port, host: config.redis.host, delayTimeBetweenTasks: 120000 }
       );
+      services.push(twitterIntegration, twitterRepeater);
 
-      // eslint-disable-next-line no-void
-      void twitterRepeater.start();
+      services.forEach(service => service.start());
 
-      // eslint-disable-next-line no-void
-      void new DistributedLoop('preserve_integration', async () => preserveSync.syncAllTenants(), {
-        port: config.redis.port,
-        host: config.redis.host,
-        delayTimeBetweenTasks: 30000,
-      }).start();
+      process.on('SIGINT', async () => {
+        systemLogger.info(
+          '[Worker Graceful shutdown] - Received SIGINT, waiting for graceful stop...'
+        );
 
-      // eslint-disable-next-line no-void
-      void new DistributedLoop('toc_service', async () => tocService.processAllTenants(), {
-        port: config.redis.port,
-        host: config.redis.host,
-        delayTimeBetweenTasks: 30000,
-      }).start();
+        const stopPromises = Promise.all(services.map(async service => service.stop()));
+        const firstToFinish = await Promise.race([stopPromises, sleep(10_000)]);
 
-      // eslint-disable-next-line no-void
-      void new DistributedLoop('sync_job', async () => syncWorker.runAllTenants(), {
-        port: config.redis.port,
-        host: config.redis.host,
-        delayTimeBetweenTasks: 1000,
-      }).start();
+        if (Array.isArray(firstToFinish)) {
+          systemLogger.info('[Worker Graceful shutdown] - Services stopped successfully!');
+        } else {
+          systemLogger.info(
+            '[Worker Graceful shutdown] - Some services did not stop in time, initiating forceful shutdown...'
+          );
+        }
+
+        process.exit(0);
+      });
     });
   })
   .catch(error => {
