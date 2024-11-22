@@ -70,13 +70,6 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       return;
     }
     if (version === undefined) {
-      legacyLogger.debug(
-        inspect(
-          new Error(
-            `[Optimistic lock] __v not sent for ${this.collectionName} collection with _id ${data._id}`
-          )
-        )
-      );
       return;
     }
     const docMatches = await this.db.findOne({ ...query, __v: version }, '_id');
