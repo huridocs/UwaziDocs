@@ -15,6 +15,7 @@ export { Paginator } from './Paginator';
 export { PaginationState } from './PaginationState';
 export { MediaPlayer } from './MediaPlayer';
 export { FileIcon } from './FileIcon';
+export { NeedAuthorization } from './NeedAuthorization';
 
 export type { PillColor } from './Pill';
 export type { TableProps, TableRow } from './Table';
