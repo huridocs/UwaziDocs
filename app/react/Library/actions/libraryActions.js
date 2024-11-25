@@ -348,7 +348,7 @@ function saveEntity(entity, formModel) {
       }
     } catch (ex) {
       submitFailed = true;
-      message = 'Unable to save, failed response';
+      message = t('System', 'Unable to save, failed response', null, false);
       errors.push(ex.message);
     }
 
