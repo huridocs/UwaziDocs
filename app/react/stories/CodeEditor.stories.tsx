@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { CodeEditor, CodeEditorProps, CodeEditorInstance } from 'V2/Components/CodeEditor';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 
 const sampleJS = `const myButton = document.getElementById('myButton');
 myButton.addEventListener('click', function () {

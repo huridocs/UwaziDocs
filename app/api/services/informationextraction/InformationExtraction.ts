@@ -143,6 +143,10 @@ class InformationExtraction {
     this.taskManager.subscribeToResults();
   }
 
+  async stop() {
+    await this.taskManager.stop();
+  }
+
   requestResults = async (message: InternalIXResultsMessage) => {
     const response = await request.get(message.data_url);
 

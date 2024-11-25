@@ -1,4 +1,5 @@
 import * as errorHelper from 'api/utils/handleError';
+import Redis from 'redis';
 import waitForExpect from 'wait-for-expect';
 import { DistributedLoop } from '../DistributedLoop';
 
@@ -161,5 +162,74 @@ describe('DistributedLoopLock', () => {
 
     finishTask();
     await nodeTwo.stop();
+  });
+
+  it('when stop method is executed after task finish, it should skip delay time between tasks', async () => {
+    const sut = new DistributedLoop('skip_delay_time_2', task, {
+      delayTimeBetweenTasks: 100_000,
+    });
+
+    const waitBetweenTasksSpy = jest.spyOn(sut, 'waitBetweenTasks');
+
+    sut.start();
+    await waitForExpect(() => expect(task).toHaveBeenCalledTimes(1));
+
+    finishTask();
+    await sleepTime(25);
+    const stopPromise = sut.stop();
+
+    expect(waitBetweenTasksSpy).toHaveBeenCalled();
+    await expect(stopPromise).resolves.toBeUndefined();
+  });
+
+  test('when stop method is executed before a task finish, it should skip delay time between tasks', async () => {
+    const sut = new DistributedLoop('skip_delay_time_2', task, {
+      delayTimeBetweenTasks: 100_000,
+    });
+
+    const waitBetweenTasksSpy = jest.spyOn(sut, 'waitBetweenTasks');
+
+    sut.start();
+
+    await waitForExpect(() => expect(task).toHaveBeenCalledTimes(1));
+
+    const stopPromise = sut.stop();
+    finishTask();
+    await sleepTime(25);
+
+    expect(waitBetweenTasksSpy).not.toHaveBeenCalled();
+    await expect(stopPromise).resolves.toBeUndefined();
+  });
+
+  test('when stop method is executed, it should unlock the Distributed Loop', async () => {
+    const connectionConfig = { port: 6379, host: 'localhost' };
+    const connection = Redis.createClient(
+      `redis://${connectionConfig.host}:${connectionConfig.port}`
+    );
+    const get = key =>
+      new Promise((resolve, reject) => {
+        connection.get(key, (error, data) => {
+          if (error) reject(error);
+          resolve(data);
+        });
+      });
+
+    const lockName = 'skip_delay_time_3';
+    const sut = new DistributedLoop(lockName, task, {
+      delayTimeBetweenTasks: 100_000,
+    });
+
+    sut.start();
+    await waitForExpect(() => expect(task).toHaveBeenCalledTimes(1));
+
+    const stopPromise = sut.stop();
+
+    finishTask();
+    await sleepTime(25);
+    await expect(stopPromise).resolves.toBeUndefined();
+
+    const result = await get(`locks:${lockName}`);
+    expect(result).toBeFalsy();
+    connection.quit();
   });
 });
