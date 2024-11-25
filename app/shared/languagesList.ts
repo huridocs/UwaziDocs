@@ -1,5 +1,44 @@
 /* eslint-disable max-lines */
-import { LanguageISO6391, LanguageSchema } from 'shared/types/commonTypes';
+import { LanguageSchema } from 'shared/types/commonTypes';
+
+const fullTextSearchFullySupported = [
+  'arabic',
+  'bulgarian',
+  'catalan',
+  'cjk',
+  'sorani',
+  'czech',
+  'danish',
+  'german',
+  'greek',
+  'english',
+  'basque',
+  'persian',
+  'finnish',
+  'french',
+  'irish',
+  'galician',
+  'hindi',
+  'hungarian',
+  'armenian',
+  'indonesian',
+  'italian',
+  'latvian',
+  'lithuanian',
+  'dutch',
+  'norwegian',
+  'norwegian',
+  'portuguese',
+  'romanian',
+  'russian',
+  'spanish',
+  'swedish',
+  'thai',
+  'turkish',
+];
+
+const isFullTextSearchFullySupported = (language: string): boolean =>
+  fullTextSearchFullySupported.includes(language);
 
 const elasticLanguages: {
   [index: string]: { franc: string; elastic: string; ISO639_1: string | null };
@@ -37,6 +76,7 @@ const elasticLanguages: {
   swe: { franc: 'swe', elastic: 'swedish', ISO639_1: 'sv' },
   tha: { franc: 'tha', elastic: 'thai', ISO639_1: 'th' },
   tur: { franc: 'tur', elastic: 'turkish', ISO639_1: 'tr' },
+  ukr: { franc: 'ukr', elastic: 'ukrainian', ISO639_1: 'uk' },
 };
 
 const availableLanguages: LanguageSchema[] = [
@@ -1361,19 +1401,10 @@ const language = (key: string, purpose: keyof (typeof elasticLanguages)[number] 
 
 const availableLanguagesISO6391 = availableLanguages.map(l => l.key);
 
-class LanguageCodeMapper {
-  static fromISO639_3ToISO639_1(code: string): 'other' | LanguageISO6391 {
-    const languageSchema = availableLanguages.find(item => item.ISO639_3 === code);
-    if (!languageSchema) return 'other';
-
-    return languageSchema.key; // The key here stands for ISO6391 code
-  }
-}
-
 export {
   elasticLanguages,
   availableLanguages,
   language,
+  isFullTextSearchFullySupported,
   availableLanguagesISO6391,
-  LanguageCodeMapper,
 };

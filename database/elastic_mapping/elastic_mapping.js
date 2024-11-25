@@ -12,25 +12,34 @@ const config = {
 };
 
 languages.getAll().forEach(language => {
-  config.settings.analysis.filter[`${language}_stop`] = {
-    type: 'stop',
-    stopwords: `_${language}_`,
-  };
-
   const filters = [];
-  if (language === 'arabic') {
-    filters.push('arabic_normalization');
-  }
-  if (language === 'persian') {
-    filters.push('arabic_normalization');
-    filters.push('persian_normalization');
-  }
-  if (language !== 'persian' && language !== 'thai' && language !== 'cjk') {
-    config.settings.analysis.filter[`${language}_stemmer`] = {
-      type: 'stemmer',
-      language,
+  const mapping = {};
+
+  if (languages.isFullTextSearchFullySupported(language)) {
+    config.settings.analysis.filter[`${language}_stop`] = {
+      type: 'stop',
+      stopwords: `_${language}_`,
     };
-    filters.push(`${language}_stemmer`);
+
+    if (language === 'arabic') {
+      filters.push('arabic_normalization');
+    }
+    if (language === 'persian') {
+      filters.push('arabic_normalization');
+      filters.push('persian_normalization');
+    }
+    if (language !== 'persian' && language !== 'thai' && language !== 'cjk') {
+      config.settings.analysis.filter[`${language}_stemmer`] = {
+        type: 'stemmer',
+        language,
+      };
+      filters.push(`${language}_stemmer`);
+    }
+  } else {
+    config.settings.analysis.filter[`${language}_stop`] = {
+      type: 'stop',
+      stopwords: '_none_',
+    };
   }
 
   config.settings.analysis.analyzer[`stop_${language}`] = {
@@ -47,7 +56,6 @@ languages.getAll().forEach(language => {
     char_filter: ['remove_annotation'],
   };
 
-  const mapping = {};
   mapping[`fullText_${language}`] = {
     match: `fullText_${language}`,
     match_mapping_type: 'string',

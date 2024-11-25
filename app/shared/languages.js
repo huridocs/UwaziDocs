@@ -1,4 +1,4 @@
-import { language, elasticLanguages } from 'shared/languagesList';
+import { language, elasticLanguages, isFullTextSearchFullySupported } from 'shared/languagesList';
 
 export default {
   get: language,
@@ -11,4 +11,5 @@ export default {
       .filter(unique)
       .filter(notNull);
   },
+  isFullTextSearchFullySupported,
 };
