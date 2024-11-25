@@ -17,6 +17,8 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
 
+  const scale = 0.8;
+
   useEffect(() => {
     pdf
       .getPage(page)
@@ -52,7 +54,7 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   useEffect(() => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
-      const defaultViewport = pdfPage.getViewport({ scale: 1 });
+      const defaultViewport = pdfPage.getViewport({ scale });
 
       const handlePlaceHolder = () => {
         currentContainer.style.height = `${defaultViewport.height}px`;
@@ -62,7 +64,7 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale: 1,
+          scale,
           defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
@@ -86,13 +88,28 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   return (
     <div ref={pageContainerRef}>
       {isVisible &&
-        highlights?.map(highlight => (
-          <Highlight
-            key={highlight.key}
-            textSelection={highlight.textSelection}
-            color={highlight.color}
-          />
-        ))}
+        highlights?.map(highlight => {
+          const scaledHightlight = {
+            ...highlight,
+            textSelection: {
+              ...highlight.textSelection,
+              selectionRectangles: highlight.textSelection.selectionRectangles.map(rectangle => ({
+                ...rectangle,
+                left: rectangle.left * scale,
+                top: rectangle.top * scale,
+                width: rectangle.width * scale,
+                height: rectangle.height * scale,
+              })),
+            },
+          };
+          return (
+            <Highlight
+              key={scaledHightlight.key}
+              textSelection={scaledHightlight.textSelection}
+              color={scaledHightlight.color}
+            />
+          );
+        })}
     </div>
   );
 };
