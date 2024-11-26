@@ -492,7 +492,9 @@ class _NewRelMigrationDashboard extends React.Component<ComponentPropTypes> {
                             {displayEntityTitleAndNameFromTransformed(t.from.entity)}&emsp;
                             <Icon icon="arrow-right" />
                             &emsp;
-                            {oneHubRelTypeNamesById[t.type]}&emsp;
+                            {
+                              oneHubRelTypeNamesById[t.type]
+                            }&emsp;
                             <Icon icon="arrow-right" />
                             &emsp;
                             {displayEntityTitleAndNameFromTransformed(t.to.entity)}
