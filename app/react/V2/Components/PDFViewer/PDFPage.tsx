@@ -16,8 +16,7 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
-
-  const scale = 0.8;
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     pdf
@@ -54,17 +53,34 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
   useEffect(() => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
-      const defaultViewport = pdfPage.getViewport({ scale });
+      const defaultViewport = pdfPage.getViewport({ scale: 1 });
 
       const handlePlaceHolder = () => {
         currentContainer.style.height = `${defaultViewport.height}px`;
       };
 
+      const containerWidth = currentContainer.clientWidth;
+      const containerHeight = currentContainer.clientHeight;
+
+      const pageWidth = defaultViewport.width;
+      const pageHeight = defaultViewport.height;
+
+      const widthScale = containerWidth / pageWidth;
+      const heightScale = containerHeight / pageHeight;
+
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const adjustedWidthScale = widthScale / devicePixelRatio;
+      const adjustedHeightScale = heightScale / devicePixelRatio;
+
+      const newScale = Math.min(adjustedWidthScale, adjustedHeightScale);
+
+      setScale(newScale);
+
       if (isVisible) {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale,
+          scale: newScale,
           defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
@@ -72,7 +88,16 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
 
         pageViewer.setPdfPage(pdfPage);
         currentContainer.style.height = 'auto';
-        pageViewer.draw().catch((e: Error) => setError(e.message));
+        pageViewer
+          .draw()
+          .then(() => {
+            const { canvas } = pageViewer;
+            if (canvas) {
+              canvas.style.display = 'block';
+              canvas.style.width = '100%';
+            }
+          })
+          .catch((e: Error) => setError(e.message));
       }
 
       if (!isVisible) {
