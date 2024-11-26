@@ -28,6 +28,11 @@ updates:
       - dependency-name: "@typescript-eslint/parser"
       - dependency-name: eslint #6784
       - dependency-name: fetch-mock
+      - dependency-name: react-router-dom
+      - dependency-name: react-datepicker
+      - dependency-name: recharts
+      - dependency-name: "@headlessui/react"
+      - dependency-name: react-player
     open-pull-requests-limit: 5
     labels:
       - dependencies
@@ -66,36 +71,8 @@ updates:
         update-types: [minor, patch]
         patterns:
           - "*"
-        exclude-patterns:
-          - "@babel*"
-          - "@storybook*"
-          - "@sentry*"
-          - "@dnd-kit"
-          - socket.io
-          - recharts
-          - eslint
-          - flowbite*
-          - Mongoose
-          - react-datepicker
-          - "@headlessui/react"
-          - react-player
-          - express*
       dev-major-dependencies:
         applies-to: version-updates
         update-types: [major]
         patterns:
           - "*"
-        exclude-patterns:
-        # Excluding libraries with breaking changes
-          - cookie
-          - "@socket.io*"
-          - bootstrap
-          - express-prom-bundle
-          - immutable
-          - otplib
-          - redux
-          - redux-thunk
-          - "@typescript-eslint/eslint-plugin"
-          - "@typescript-eslint/parser"
-          - eslint #6784
-          - fetch-mock

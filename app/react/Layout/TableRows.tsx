@@ -29,17 +29,20 @@ const TableRowsComponent = ({
   const [multipleSelection, setMultipleSelection] = useState(selectionLength > 1);
   return (
     <>
-      {documents.get('rows').map((entity: any) => (
-        <TableRow
-          entity={entity}
-          columns={columns}
-          clickOnDocument={clickOnDocument}
-          storeKey={storeKey}
-          key={entity.get('_id')}
-          setMultipleSelection={setMultipleSelection}
-          multipleSelection={multipleSelection}
-        />
-      ))}
+      {documents
+        .get('rows')
+        .map((entity: any) => (
+          <TableRow
+            entity={entity}
+            columns={columns}
+            clickOnDocument={clickOnDocument}
+            storeKey={storeKey}
+            key={entity.get('_id')}
+            setMultipleSelection={setMultipleSelection}
+            multipleSelection={multipleSelection}
+          />
+        ))
+        .toArray()}
     </>
   );
 };
