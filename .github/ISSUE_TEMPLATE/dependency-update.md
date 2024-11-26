@@ -2,7 +2,7 @@
 name: "Dependency update"
 about: 'Update a dependency to a newer version that requires code changes'
 title: ''
-labels: 'dependencies'
+labels: ['dependencies', 'Tech Debt :hammer_and_wrench:']
 assignees: ''
 
 --- 
@@ -11,6 +11,11 @@ assignees: ''
 
 `dependency-name` from `current-version` to `newer-version`
 
-Update checklist:
+**Additional context**
+
+Steps broken in the pipeline or any identified issues.
+
+
+**Update checklist:**
 - [ ] Dependency removed in all ignore lists of `.github/dependabot.yml`.
-- [ ] Direct commit into development branch.
+- [ ] Check any reference to the dependency in the resolutions section of `package.json`. 
