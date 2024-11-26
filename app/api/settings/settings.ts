@@ -23,8 +23,6 @@ const isLink = (item: any): item is SettingsLinkSchema => item.type && item.titl
 
 type SubLinkKeyType = keyof SettingsSublinkSchema;
 
-const subLinkProperties: SubLinkKeyType[] = ['title' as 'title', 'url' as 'url'];
-
 const getUpdatesAndDeletes = <T extends FilterOrLink>(
   matchProperty: keyof T,
   propertyName: keyof T,
