@@ -419,12 +419,12 @@ Label your collection note,"Nota: Haz el conjunto de muestra de documentos para 
 Labeled,Labeled
 Landing page,Página de inicio
 Landing page description,"La página de inicio es la primera página que los visitantes ven cuando entran a tu colección. La página de inicio predeterminada es la librería de tu colección. Puedes configurar una página de inicio diferente añadiendo su URL relativa aquí. Por ejemplo:
-      
+
 Una página: */page/dicxg0oagy3xgr7ixef80k9*
 Una vista filtrada en Uwazi: */library/?searchTerm=test*
 Una entidad: */entity/9htbkgpkyy7j5rk9*
 Un documento: */document/4y9i99fadjp833di*
-      
+
 Importante: Debes usar URLs relativos. Estos empiezan con / y no incluyen el nombre del dominio. Por ejemplo: En la dirección *https://yoursite.com/landingpage*, el URL relativo es /landingpage"
 Language,Idioma
 Language Code,Código de Idioma
@@ -891,6 +891,7 @@ Two-factor verification failed,Fallo en la verificación del doble factor de aut
 Two-step verification,Verificación de dos pasos.
 Two-step verification token required,El token de verificación es obligatorio
 Type,Tipo
+"Unable to save, failed response","No se pudo guardar, respuesta fallida"
 Unexpected error,Error inesperado
 Uninstall,Desinstalar
 Uninstall language,Desinstalar idioma
