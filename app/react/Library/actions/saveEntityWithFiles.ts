@@ -95,7 +95,17 @@ const saveEntityWithFiles = async (entity: ClientEntitySchema, dispatch?: Dispat
     });
 
     request.end((err, res) => {
-      if (err) return reject(err);
+      if (!res.ok && (res.body.prettyMessage !== undefined || res.body.error !== undefined)) {
+        if (err) {
+          reject(
+            new Error(
+              `${res.body.prettyMessage || res.body.error}. Request Id: ${res.body.requestId}`
+            )
+          );
+        }
+      } else if (err) {
+        reject(err);
+      }
 
       if (dispatch && addedDocuments.length) {
         dispatch({

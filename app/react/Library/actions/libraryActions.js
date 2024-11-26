@@ -329,27 +329,41 @@ function multipleUpdate(entities, values) {
 function saveEntity(entity, formModel) {
   // eslint-disable-next-line max-statements
   return async dispatch => {
-    const { entity: updatedDoc, errors } = await saveEntityWithFiles(entity, dispatch);
+    let updatedDoc;
+    let errors = [];
     let message = '';
+    let submitFailed = false;
+    try {
+      ({ entity: updatedDoc, errors } = await saveEntityWithFiles(entity, dispatch));
 
-    dispatch(formActions.reset(formModel));
-    await dispatch(unselectAllDocuments());
-    if (entity._id) {
-      message = 'Entity updated';
-      dispatch(updateEntity(updatedDoc));
-      dispatch(actions.updateIn('library.markers', ['rows'], updatedDoc));
-    } else {
-      message = 'Entity created';
-      dispatch(elementCreated(updatedDoc));
+      dispatch(formActions.reset(formModel));
+      await dispatch(unselectAllDocuments());
+      if (entity._id) {
+        message = 'Entity updated';
+        dispatch(updateEntity(updatedDoc));
+        dispatch(actions.updateIn('library.markers', ['rows'], updatedDoc));
+      } else {
+        message = 'Entity created';
+        dispatch(elementCreated(updatedDoc));
+      }
+    } catch (ex) {
+      submitFailed = true;
+      message = t('System', 'Unable to save, failed response', null, false);
+      errors.push(ex.message);
     }
+
     if (errors.length) {
       message = `${message} with the following errors: ${JSON.stringify(errors, null, 2)}`;
+      dispatch(formActions.setSubmitFailed(formModel));
     }
     const notificationMessage = t('System', message, null, false);
+    const notificationType = errors.length ? 'warning' : 'success';
     await dispatch(
-      notificationActions.notify(notificationMessage, errors.length ? 'warning' : 'success')
+      notificationActions.notify(notificationMessage, !submitFailed ? notificationType : 'danger')
     );
-    await dispatch(selectSingleDocument(updatedDoc));
+    if (!errors.length) {
+      await dispatch(selectSingleDocument(updatedDoc));
+    }
   };
 }
 
