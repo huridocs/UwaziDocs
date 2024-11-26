@@ -1,10 +1,9 @@
 import { WithId } from 'api/odm';
 import db from 'api/utils/testing_db';
 import translations from 'api/i18n/translations';
-import { Settings, SettingsSublinkSchema } from 'shared/types/settingsType';
+import { Settings } from 'shared/types/settingsType';
 import settings from '../settings';
 import fixtures, { linkFixtures, newLinks } from './fixtures';
-import { _ } from 'ajv';
 
 describe('settings', () => {
   beforeEach(async () => {
