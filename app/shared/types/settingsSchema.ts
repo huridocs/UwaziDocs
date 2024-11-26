@@ -268,6 +268,7 @@ const settingsSublinkSchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
+    _id: objectIdSchema,
     title: { type: 'string' },
     type: { type: 'string', enum: ['link'] },
     url: { type: 'string' },
