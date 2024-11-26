@@ -25,9 +25,6 @@ type SubLinkKeyType = keyof SettingsSublinkSchema;
 
 const subLinkProperties: SubLinkKeyType[] = ['title' as 'title', 'url' as 'url'];
 
-const isSubLinkKey = (key: string | number | symbol): key is SubLinkKeyType =>
-  subLinkProperties.includes(key as any);
-
 const getUpdatesAndDeletes = <T extends FilterOrLink>(
   matchProperty: keyof T,
   propertyName: keyof T,
