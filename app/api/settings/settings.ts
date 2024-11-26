@@ -21,8 +21,6 @@ type FilterOrLink = SettingsFilterSchema | SettingsLinkSchema | SettingsSublinkS
 
 const isLink = (item: any): item is SettingsLinkSchema => item.type && item.title;
 
-type SubLinkKeyType = keyof SettingsSublinkSchema;
-
 const getUpdatesAndDeletes = <T extends FilterOrLink>(
   matchProperty: keyof T,
   propertyName: keyof T,
