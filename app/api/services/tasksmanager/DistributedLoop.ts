@@ -23,6 +23,8 @@ export class DistributedLoop {
 
   private host: string;
 
+  private stopDelayTimeBetweenTasks?: Function;
+
   constructor(
     lockName: string,
     task: () => Promise<void>,
@@ -63,7 +65,11 @@ export class DistributedLoop {
 
   async waitBetweenTasks(delay = this.delayTimeBetweenTasks) {
     await new Promise(resolve => {
-      setTimeout(resolve, delay);
+      const timeout = setTimeout(resolve, delay);
+      this.stopDelayTimeBetweenTasks = () => {
+        resolve(undefined);
+        clearTimeout(timeout);
+      };
     });
   }
 
@@ -74,10 +80,13 @@ export class DistributedLoop {
       handleError(error, { useContext: false });
     }
 
-    await this.waitBetweenTasks();
+    if (!this.stopTask) {
+      await this.waitBetweenTasks();
+    }
   }
 
   async stop() {
+    if (this.stopDelayTimeBetweenTasks) this.stopDelayTimeBetweenTasks();
     await new Promise(resolve => {
       this.stopTask = resolve;
     });
@@ -94,6 +103,7 @@ export class DistributedLoop {
       );
 
       if (this.stopTask) {
+        await lock.unlock();
         this.stopTask();
         return;
       }
@@ -101,9 +111,7 @@ export class DistributedLoop {
       await this.runTask();
       await lock.unlock();
     } catch (error) {
-      if (error instanceof Error && error.name !== 'LockError') {
-        throw error;
-      }
+      if (error instanceof Error && error.name !== 'LockError') throw error;
     }
 
     // eslint-disable-next-line no-void

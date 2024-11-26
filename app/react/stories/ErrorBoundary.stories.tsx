@@ -1,7 +1,7 @@
 import React, { ComponentClass } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { ErrorBoundary } from 'app/V2/Components/ErrorHandling';
 import type { ErrorBoundaryProps } from 'app/V2/Components/ErrorHandling';
 
