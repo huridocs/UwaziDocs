@@ -85,7 +85,7 @@
     "cross-spawn": "^7.0.5"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.700.0",
+    "@aws-sdk/client-s3": "3.701.0",
     "@dnd-kit/core": "^6.1.0",
     "@dnd-kit/modifiers": "^7.0.0",
     "@dnd-kit/sortable": "^8.0.0",
@@ -370,7 +370,7 @@
     "nodemon": "^3.1.7",
     "plop": "^4.0.1",
     "postcss": "8.4.49",
-    "prettier": "3.4.0",
+    "prettier": "3.4.1",
     "puppeteer": "^13.5.2",
     "react-dnd-test-backend": "16.0.1",
     "redux-mock-store": "^1.5.5",
