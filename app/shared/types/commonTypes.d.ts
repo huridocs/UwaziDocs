@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**AUTO-GENERATED. RUN yarn emit-types to update.*/
 import { ObjectId } from 'mongodb';
-import { TraverseInputType } from 'shared/types/relationshipsQueryTypes';
+import { TraverseInputType } from 'shared/types/relationshipsQueryTypes'
 
 export type LanguageISO6391 =
   | 'ab'
@@ -243,12 +243,12 @@ export interface LanguageSchema {
   key: LanguageISO6391;
   rtl?: boolean;
   default?: boolean;
+  ISO639_3?: string;
+  franc?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
-  ISO639_3?: string;
-  ISO639_1?: LanguageISO6391;
-  elastic?: string | null;
-  franc?: string | null;
 }
 
 export type LanguagesListSchema = {
@@ -258,6 +258,9 @@ export type LanguagesListSchema = {
   rtl?: boolean;
   default?: boolean;
   ISO639_3?: string;
+  franc?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
 }[];
