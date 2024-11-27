@@ -45,5 +45,15 @@ class StandardLogger implements Logger {
 }
 
 const DefaultLogger = (writer = UwaziJSONWriter) => new StandardLogger(writer, getTenant());
+const SystemLogger = (writer = UwaziJSONWriter) =>
+  new StandardLogger(writer, {
+    name: 'System Logger',
+    dbName: 'N/a',
+    activityLogs: 'N/a',
+    attachments: 'N/a',
+    customUploads: 'N/a',
+    indexName: 'N/a',
+    uploadedDocuments: 'N/a',
+  });
 
-export { StandardLogger, DefaultLogger };
+export { StandardLogger, DefaultLogger, SystemLogger };
