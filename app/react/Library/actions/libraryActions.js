@@ -354,6 +354,8 @@ function saveEntity(entity, formModel) {
 
     if (errors.length) {
       message = `${message} with the following errors: ${JSON.stringify(errors, null, 2)}`;
+    }
+    if (submitFailed) {
       dispatch(formActions.setSubmitFailed(formModel));
     }
     const notificationMessage = t('System', message, null, false);
