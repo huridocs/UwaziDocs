@@ -78,8 +78,7 @@ export default (app: Application) => {
         res.json(savedFile);
         req.emitToSessionSocket('documentProcessed', req.body.entity);
       } catch (err) {
-        legacyLogger.error(`[Files upload document] - ${JSON.stringify(err)}`);
-        legacyLogger.debug(`[Files upload document] - ${JSON.stringify(err)}`);
+        handleError(err);
         const [file] = await files.get({ filename: req.file.filename });
         res.json(file);
         req.emitToSessionSocket('conversionFailed', req.body.entity);
