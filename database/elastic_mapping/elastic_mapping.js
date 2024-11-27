@@ -1,4 +1,4 @@
-import { elasticLanguages } from 'shared/languagesList';
+import languages from '../../app/shared/languages';
 import baseProperties from './base_properties';
 import settings from './settings';
 import dynamicTemplates from './dynamic_templates';
@@ -11,56 +11,52 @@ const config = {
   },
 };
 
-elasticLanguages.forEach(({ value }) => {
-  const filters = [];
-  const mapping = {};
-
-  config.settings.analysis.filter[`${value}_stop`] = {
+languages.getAll().forEach(language => {
+  config.settings.analysis.filter[`${language}_stop`] = {
     type: 'stop',
-    stopwords: `_${value}_`,
+    stopwords: `_${language}_`,
   };
 
-  if (value === 'arabic') {
+  const filters = [];
+  if (language === 'arabic') {
     filters.push('arabic_normalization');
   }
-
-  if (value === 'persian') {
+  if (language === 'persian') {
     filters.push('arabic_normalization');
     filters.push('persian_normalization');
   }
-
-  if (value !== 'persian' && value !== 'thai' && value !== 'cjk') {
-    config.settings.analysis.filter[`${value}_stemmer`] = {
+  if (language !== 'persian' && language !== 'thai' && language !== 'cjk') {
+    config.settings.analysis.filter[`${language}_stemmer`] = {
       type: 'stemmer',
-      value,
+      language,
     };
-
-    filters.push(`${value}_stemmer`);
+    filters.push(`${language}_stemmer`);
   }
 
-  config.settings.analysis.analyzer[`stop_${value}`] = {
+  config.settings.analysis.analyzer[`stop_${language}`] = {
     type: 'custom',
     tokenizer: 'standard',
-    filter: ['lowercase', 'asciifolding', `${value}_stop`].concat(filters),
+    filter: ['lowercase', 'asciifolding', `${language}_stop`].concat(filters),
     char_filter: ['remove_annotation'],
   };
 
-  config.settings.analysis.analyzer[`fulltext_${value}`] = {
+  config.settings.analysis.analyzer[`fulltext_${language}`] = {
     type: 'custom',
     tokenizer: 'standard',
     filter: ['lowercase', 'asciifolding'].concat(filters),
     char_filter: ['remove_annotation'],
   };
 
-  mapping[`fullText_${value}`] = {
-    match: `fullText_${value}`,
+  const mapping = {};
+  mapping[`fullText_${language}`] = {
+    match: `fullText_${language}`,
     match_mapping_type: 'string',
     mapping: {
       type: 'text',
       index: true,
-      analyzer: `fulltext_${value}`,
-      search_analyzer: `stop_${value}`,
-      search_quote_analyzer: `fulltext_${value}`,
+      analyzer: `fulltext_${language}`,
+      search_analyzer: `stop_${language}`,
+      search_quote_analyzer: `fulltext_${language}`,
       term_vector: 'with_positions_offsets',
     },
   };
