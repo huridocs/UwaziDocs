@@ -1,4 +1,4 @@
-import languages from '../../app/shared/languages';
+import { elasticLanguages } from 'shared/languagesList';
 import baseProperties from './base_properties';
 import settings from './settings';
 import dynamicTemplates from './dynamic_templates';
@@ -11,60 +11,56 @@ const config = {
   },
 };
 
-languages.getAll().forEach(language => {
+elasticLanguages.forEach(({ value }) => {
   const filters = [];
   const mapping = {};
 
-  if (languages.isFullTextSearchFullySupported(language)) {
-    config.settings.analysis.filter[`${language}_stop`] = {
-      type: 'stop',
-      stopwords: `_${language}_`,
-    };
+  config.settings.analysis.filter[`${value}_stop`] = {
+    type: 'stop',
+    stopwords: `_${value}_`,
+  };
 
-    if (language === 'arabic') {
-      filters.push('arabic_normalization');
-    }
-    if (language === 'persian') {
-      filters.push('arabic_normalization');
-      filters.push('persian_normalization');
-    }
-    if (language !== 'persian' && language !== 'thai' && language !== 'cjk') {
-      config.settings.analysis.filter[`${language}_stemmer`] = {
-        type: 'stemmer',
-        language,
-      };
-      filters.push(`${language}_stemmer`);
-    }
-  } else {
-    config.settings.analysis.filter[`${language}_stop`] = {
-      type: 'stop',
-      stopwords: '_none_',
-    };
+  if (value === 'arabic') {
+    filters.push('arabic_normalization');
   }
 
-  config.settings.analysis.analyzer[`stop_${language}`] = {
+  if (value === 'persian') {
+    filters.push('arabic_normalization');
+    filters.push('persian_normalization');
+  }
+
+  if (value !== 'persian' && value !== 'thai' && value !== 'cjk') {
+    config.settings.analysis.filter[`${value}_stemmer`] = {
+      type: 'stemmer',
+      value,
+    };
+
+    filters.push(`${value}_stemmer`);
+  }
+
+  config.settings.analysis.analyzer[`stop_${value}`] = {
     type: 'custom',
     tokenizer: 'standard',
-    filter: ['lowercase', 'asciifolding', `${language}_stop`].concat(filters),
+    filter: ['lowercase', 'asciifolding', `${value}_stop`].concat(filters),
     char_filter: ['remove_annotation'],
   };
 
-  config.settings.analysis.analyzer[`fulltext_${language}`] = {
+  config.settings.analysis.analyzer[`fulltext_${value}`] = {
     type: 'custom',
     tokenizer: 'standard',
     filter: ['lowercase', 'asciifolding'].concat(filters),
     char_filter: ['remove_annotation'],
   };
 
-  mapping[`fullText_${language}`] = {
-    match: `fullText_${language}`,
+  mapping[`fullText_${value}`] = {
+    match: `fullText_${value}`,
     match_mapping_type: 'string',
     mapping: {
       type: 'text',
       index: true,
-      analyzer: `fulltext_${language}`,
-      search_analyzer: `stop_${language}`,
-      search_quote_analyzer: `fulltext_${language}`,
+      analyzer: `fulltext_${value}`,
+      search_analyzer: `stop_${value}`,
+      search_quote_analyzer: `fulltext_${value}`,
       term_vector: 'with_positions_offsets',
     },
   };
