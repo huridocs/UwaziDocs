@@ -66,7 +66,7 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Arabic',
     key: 'ar',
     rtl: true,
-    ISO639_3: 'ara',
+    ISO639_3: 'arb',
     franc: 'arb',
     elastic: 'arabic',
     ISO639_1: 'ar',
@@ -1590,10 +1590,9 @@ const availableLanguages: LanguageSchema[] = [
 
 const languageMapper = (ISO639_3: string, to: LanguageCode = 'elastic') => {
   const language = availableLanguages.find(item => item.ISO639_3 === ISO639_3);
+  const defaultValue = to !== 'ISO639_1' ? 'other' : null;
 
-  if (to !== 'ISO639_1') return language?.[to] || 'other';
-
-  return language?.[to] || null;
+  return language?.[to] || defaultValue;
 };
 
 const getLanguagesByCode = (code: LanguageCode = 'elastic'): Language[] =>
