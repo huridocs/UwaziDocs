@@ -6,7 +6,6 @@ import { CSVLoader } from 'api/csv';
 import entities from 'api/entities';
 import { processDocument } from 'api/files/processDocument';
 import { uploadMiddleware } from 'api/files/uploadMiddleware';
-import { legacyLogger } from 'api/log';
 import { permissionsContext } from 'api/permissions/permissionsContext';
 import { validateAndCoerceRequest } from 'api/utils/validateRequest';
 import { EntitySchema } from 'shared/types/entityType';
