@@ -5,7 +5,7 @@ import { Location, useLocation } from 'react-router-dom';
 import { useAtom, useAtomValue } from 'jotai';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { LanguagesListSchema } from 'shared/types/commonTypes';
-import { NeedAuthorization } from 'app/Auth';
+import { NeedAuthorization } from 'V2/Components/UI';
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
 import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
 import { Translate } from './Translate';

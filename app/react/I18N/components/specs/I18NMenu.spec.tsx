@@ -5,25 +5,15 @@ import React, { ReactNode } from 'react';
 import { act, fireEvent, RenderResult, screen, render } from '@testing-library/react';
 import { Location, MemoryRouter } from 'react-router-dom';
 import { Provider } from 'jotai';
-import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
 import { useHydrateAtoms } from 'jotai/utils';
+import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
+import { TestAtomStoreProvider } from 'V2/testing';
 import { I18NMenu } from '../I18NMenu';
 
 type TestProviderProps = {
   initialValues: any[];
   children: ReactNode;
 };
-
-const HydrateAtoms = ({ initialValues, children }: TestProviderProps) => {
-  useHydrateAtoms(initialValues);
-  return children;
-};
-
-const TestAtomStoreProvider = ({ initialValues, children }: TestProviderProps) => (
-  <Provider>
-    <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
-  </Provider>
-);
 
 describe('I18NMenu', () => {
   const settingsAtomValue = {
@@ -32,6 +22,14 @@ describe('I18NMenu', () => {
       { _id: '2', label: 'Spanish', key: 'es', default: false },
     ],
   };
+
+  Reflect.deleteProperty(global.window, 'location');
+  window.location = { ...window.location, assign: jest.fn() };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render', () => {
     render(
       <MemoryRouter initialEntries={['/en/library/']}>
