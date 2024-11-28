@@ -35,6 +35,7 @@ const PDF = ({
   size,
 }: PDFProps) => {
   const scrollToRef = useRef<HTMLDivElement>(null);
+  const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [pdf, setPDF] = useState<PDFDocumentProxy>();
   const [error, setError] = useState<string>();
 
@@ -84,6 +85,7 @@ const PDF = ({
     <HandleTextSelection onSelect={onSelect} onDeselect={onDeselect}>
       <div
         id="pdf-container"
+        ref={pdfContainerRef}
         style={{
           height: size?.height || '100%',
           width: size?.width || '100%',
@@ -104,7 +106,12 @@ const PDF = ({
                 ref={shouldScrollToPage ? scrollToRef : undefined}
               >
                 <SelectionRegion regionId={regionId}>
-                  <PDFPage pdf={pdf} page={number} highlights={pageHighlights} />
+                  <PDFPage
+                    pdf={pdf}
+                    page={number}
+                    highlights={pageHighlights}
+                    initialWidth={pdfContainerRef.current?.clientWidth}
+                  />
                 </SelectionRegion>
               </div>
             );

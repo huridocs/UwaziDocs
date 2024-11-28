@@ -9,14 +9,17 @@ interface PDFPageProps {
   pdf: PDFDocumentProxy;
   page: number;
   highlights?: TextHighlight[];
+  initialWidth?: number;
 }
 
-const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
+const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
   const [scale, setScale] = useState(1);
+
+  console.log(initialWidth);
 
   useEffect(() => {
     pdf
@@ -59,18 +62,17 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
         currentContainer.style.height = `${defaultViewport.height}px`;
       };
 
-      const containerWidth = currentContainer.clientWidth;
       const pageWidth = defaultViewport.width;
-      const widthRatio = containerWidth / pageWidth;
+      const widthRatio = initialWidth ? initialWidth / pageWidth : pageWidth;
       const devicePixelRatio = window.devicePixelRatio || 1;
       const adjustedScale = widthRatio / devicePixelRatio;
-      // setScale(adjustedScale);
+      setScale(adjustedScale);
 
       if (isVisible) {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale,
+          scale: adjustedScale,
           defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
@@ -94,7 +96,7 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, scale, page, pdfPage]);
+  }, [isVisible, scale, page, pdfPage, initialWidth]);
 
   if (error) {
     return <div>{error}</div>;
