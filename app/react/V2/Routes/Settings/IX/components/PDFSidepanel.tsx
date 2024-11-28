@@ -457,7 +457,7 @@ const PDFSidepanel = ({
           className="flex flex-col h-full gap-4 p-0"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="w-full md:m-auto grow">
+          <div className="grow">
             {pdf && (
               <PDF
                 fileUrl={`/api/files/${pdf.filename}`}
@@ -474,9 +474,6 @@ const PDFSidepanel = ({
                 onDeselect={() => {
                   setSelectionError(undefined);
                   setSelectedText(undefined);
-                }}
-                size={{
-                  width: '100%',
                 }}
                 scrollToPage={!selectedText ? Object.keys(highlights || {})[0] : undefined}
               />

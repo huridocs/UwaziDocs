@@ -60,27 +60,17 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
       };
 
       const containerWidth = currentContainer.clientWidth;
-      const containerHeight = currentContainer.clientHeight;
-
       const pageWidth = defaultViewport.width;
-      const pageHeight = defaultViewport.height;
-
-      const widthScale = containerWidth / pageWidth;
-      const heightScale = containerHeight / pageHeight;
-
+      const widthRatio = containerWidth / pageWidth;
       const devicePixelRatio = window.devicePixelRatio || 1;
-      const adjustedWidthScale = widthScale / devicePixelRatio;
-      const adjustedHeightScale = heightScale / devicePixelRatio;
-
-      const newScale = Math.min(adjustedWidthScale, adjustedHeightScale);
-
-      setScale(newScale);
+      const adjustedScale = widthRatio / devicePixelRatio;
+      // setScale(adjustedScale);
 
       if (isVisible) {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale: newScale,
+          scale,
           defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
@@ -104,14 +94,14 @@ const PDFPage = ({ pdf, page, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, page, pdfPage]);
+  }, [isVisible, scale, page, pdfPage]);
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    <div ref={pageContainerRef}>
+    <div ref={pageContainerRef} style={{ width: '100%' }}>
       {isVisible &&
         highlights?.map(highlight => {
           const scaledHightlight = {

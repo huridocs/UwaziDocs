@@ -85,8 +85,8 @@ const PDF = ({
       <div
         id="pdf-container"
         style={{
-          height: size?.height || 'auto',
-          width: size?.width || 'auto',
+          height: size?.height || '100%',
+          width: size?.width || '100%',
           overflow: size?.overflow || 'auto',
           padding: '10px',
         }}
@@ -99,7 +99,7 @@ const PDF = ({
             return (
               <div
                 key={`page-${regionId}`}
-                className="relative"
+                className="w-fit m-auto relative"
                 id={`page-${regionId}-container`}
                 ref={shouldScrollToPage ? scrollToRef : undefined}
               >
