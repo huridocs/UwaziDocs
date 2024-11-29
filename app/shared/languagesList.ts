@@ -1586,6 +1586,14 @@ const availableLanguages: LanguageSchema[] = [
     localized_label: 'IsiZulu',
     translationAvailable: false,
   },
+  {
+    label: 'Other',
+    key: 'other' as any,
+    ISO639_3: 'other',
+    ISO639_1: 'other',
+    localized_label: 'Other',
+    translationAvailable: false,
+  },
 ];
 
 const languageMapper = (ISO639_3: string, to: LanguageCode = 'elastic') => {
@@ -1601,6 +1609,9 @@ const getLanguagesByCode = (code: LanguageCode = 'elastic'): Language[] =>
     .map(item => ({ value: item[code] as string, label: item.label }));
 
 const getLanguageCodes = (languages: Language[]): string[] => languages.map(item => item.value);
+
+const getLanguageSchema = (ISO639_3: string) =>
+  availableLanguages.find(item => item.ISO639_3 === ISO639_3);
 
 const ISO6391Languages = getLanguagesByCode('ISO639_1');
 const ISO6391Codes = getLanguageCodes(ISO6391Languages);
@@ -1621,4 +1632,10 @@ const elasticLanguages: LegacyElasticObject = availableLanguages
 
 export type { LanguageCode };
 
-export { elasticLanguages, availableLanguages, ISO6391Codes, languageMapper as language };
+export {
+  elasticLanguages,
+  availableLanguages,
+  ISO6391Codes,
+  languageMapper as language,
+  getLanguageSchema,
+};
