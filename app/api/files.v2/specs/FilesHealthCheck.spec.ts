@@ -184,12 +184,12 @@ describe('FilesHealthCheck', () => {
 
     it('should emit the count of duplicated checksums for each file emited', async () => {
       testStorageFiles = [
-        new StoredFile('document/file1', 'checksum1'),
-        new StoredFile('document/file2', 'checksum2'),
+        new StoredFile('document/file1', new Date(), 'checksum1'),
+        new StoredFile('document/file2', new Date(), 'checksum2'),
         new StoredFile('document/file3'),
-        new StoredFile('document/file4', 'checksum1'),
-        new StoredFile('document/file5', 'checksum1'),
-        new StoredFile('document/file6', 'checksum2'),
+        new StoredFile('document/file4', new Date(), 'checksum1'),
+        new StoredFile('document/file5', new Date(), 'checksum1'),
+        new StoredFile('document/file6', new Date(), 'checksum2'),
       ];
       await testingEnvironment.setUp({ files: [] });
 
@@ -211,12 +211,12 @@ describe('FilesHealthCheck', () => {
 
     it('should emit in the summary the number of files which have a checksum match count > 1', async () => {
       testStorageFiles = [
-        new StoredFile('document/file1', 'checksum1'),
-        new StoredFile('document/file2', 'checksum2'),
+        new StoredFile('document/file1', new Date(), 'checksum1'),
+        new StoredFile('document/file2', new Date(), 'checksum2'),
         new StoredFile('document/file3'),
-        new StoredFile('document/file4', 'checksum1'),
-        new StoredFile('document/file5', 'checksum1'),
-        new StoredFile('document/file6', 'checksum2'),
+        new StoredFile('document/file4', new Date(), 'checksum1'),
+        new StoredFile('document/file5', new Date(), 'checksum1'),
+        new StoredFile('document/file6', new Date(), 'checksum2'),
       ];
       await testingEnvironment.setUp({ files: [] });
 
