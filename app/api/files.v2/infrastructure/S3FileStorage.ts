@@ -53,6 +53,6 @@ export class S3FileStorage implements FileStorage {
       continuationToken = await requestNext(continuationToken);
     }
 
-    return objects.map(c => new StoredFile(c.Key!, c.ETag!));
+    return objects.map(c => new StoredFile(c.Key!, c.LastModified, c.ETag!));
   }
 }
