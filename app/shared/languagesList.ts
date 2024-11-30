@@ -13,6 +13,17 @@ type Language = {
   value: string;
 };
 
+const undefinedLanguage: LanguageSchema = {
+  label: 'Other',
+  key: 'other' as any,
+  ISO639_1: 'other',
+  ISO639_3: 'other',
+  elastic: 'other',
+  franc: 'other',
+  localized_label: 'Other',
+  translationAvailable: false,
+};
+
 const availableLanguages: LanguageSchema[] = [
   {
     label: 'Abkhazian',
@@ -1586,19 +1597,11 @@ const availableLanguages: LanguageSchema[] = [
     localized_label: 'IsiZulu',
     translationAvailable: false,
   },
-  {
-    label: 'Other',
-    key: 'other' as any,
-    ISO639_3: 'other',
-    ISO639_1: 'other',
-    localized_label: 'Other',
-    translationAvailable: false,
-  },
 ];
 
 const languageMapper = (ISO639_3: string, to: LanguageCode = 'elastic') => {
   const language = availableLanguages.find(item => item.ISO639_3 === ISO639_3);
-  const defaultValue = to !== 'ISO639_1' ? 'other' : null;
+  const defaultValue = to !== 'ISO639_1' ? undefinedLanguage.ISO639_3 : null;
 
   return language?.[to] || defaultValue;
 };
@@ -1611,7 +1614,7 @@ const getLanguagesByCode = (code: LanguageCode = 'elastic'): Language[] =>
 const getLanguageCodes = (languages: Language[]): string[] => languages.map(item => item.value);
 
 const getLanguageSchema = (ISO639_3: string) =>
-  availableLanguages.find(item => item.ISO639_3 === ISO639_3);
+  availableLanguages.find(item => item.ISO639_3 === ISO639_3) || undefinedLanguage;
 
 const ISO6391Languages = getLanguagesByCode('ISO639_1');
 const ISO6391Codes = getLanguageCodes(ISO6391Languages);
