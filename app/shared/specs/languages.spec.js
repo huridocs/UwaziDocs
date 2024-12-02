@@ -54,6 +54,8 @@ describe('languages', () => {
       expect(detectLanguage('what is the colour of the white horse of santiago', 'franc')).toBe(
         'eng'
       );
+
+      expect(detectLanguage('Це перевірка', 'ISO639_3')).toBe('ukr');
     });
 
     it('should return other when the language is not supported', () => {
