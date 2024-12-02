@@ -92,12 +92,12 @@ describe('MetadataFormButtons', () => {
       }
     );
 
-    it('should disable the buttons while the form submits', () => {
+    it('should enable the buttons when the submit has failed', () => {
       props.entityBeingEdited = true;
-      props.formState.$form.pending = true;
+      props.formState.$form.submitFailed = true;
       render();
       const buttons = component.find('button');
-      buttons.forEach(button => expect(button.props().disabled).toBe(true));
+      buttons.forEach(button => expect(button.props().disabled).toBe(false));
     });
   });
 

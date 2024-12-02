@@ -22,7 +22,9 @@ class MetadataFormButtons extends Component {
       formState,
     } = this.props;
     const data = this.props.data.toJS();
-    const shouldDisable = formState.$form.pending || uploadFileprogress !== undefined;
+    const { submitFailed } = formState.$form;
+    const shouldDisable =
+      !submitFailed && (formState.$form.pending || uploadFileprogress !== undefined);
 
     const ViewButton = (
       <I18NLink
