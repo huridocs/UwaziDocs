@@ -85,7 +85,7 @@ class PDF extends EventEmitter {
       ...conversion,
       ...this.file,
       language:
-        detectLanguage(Object.values(conversion.fullTextWithoutPages).join(''), 'ISO639_3') ||
+        detectLanguage(Object.values(conversion.fullTextWithoutPages).join(''), 'franc') ||
         undefined,
       processed: true,
       toc: [],
