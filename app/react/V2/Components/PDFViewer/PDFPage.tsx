@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { Highlight } from '@huridocs/react-text-selection-handler';
+import { useAtom } from 'jotai';
+import { pdfScaleAtom } from 'V2/atoms';
 import { EventBus, PDFJSViewer } from './pdfjs';
 import { TextHighlight } from './types';
 
@@ -17,7 +19,7 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useAtom(pdfScaleAtom);
 
   useEffect(() => {
     pdf
@@ -62,11 +64,11 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
 
       const pageWidth = defaultViewport.width;
       const widthRatio = initialWidth ? initialWidth / pageWidth : pageWidth;
-      const devicePixelRatio = window.devicePixelRatio || 1;
+      const { devicePixelRatio } = window;
       const adjustedScale =
         devicePixelRatio >= 1
           ? Math.min(1, widthRatio / devicePixelRatio)
-          : widthRatio * devicePixelRatio;
+          : widthRatio * Math.max(devicePixelRatio, 0.5);
 
       setScale(adjustedScale);
 
@@ -97,7 +99,7 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, scale, page, pdfPage, initialWidth]);
+  }, [isVisible, scale, page, pdfPage, initialWidth, setScale]);
 
   if (error) {
     return <div>{error}</div>;
