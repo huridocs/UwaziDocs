@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { LanguageSchema } from 'shared/types/commonTypes';
 
-type LanguageCode = 'elastic' | 'ISO639_3' | 'ISO639_1' | 'franc';
+type LanguageCode = 'elastic' | 'ISO639_3' | 'ISO639_1';
 
 type LegacyElasticObject = Record<
   string,
