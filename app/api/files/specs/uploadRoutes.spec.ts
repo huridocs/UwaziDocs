@@ -96,9 +96,11 @@ describe('upload routes', () => {
           entity: 'sharedId1',
           type: 'document',
           status: 'ready',
-          fullText: { 1: 'Test[[1]] file[[1]]\n\n' },
+          fullText: {
+            1: 'This[[1]] is[[1]] a[[1]] dumb[[1]] text[[1]] file[[1]] used[[1]] to[[1]] text[[1]] language[[1]] detecting,[[1]] it[[1]] should[[1]] be[[1]] detected[[1]] as[[1]] english[[1]]\n\n',
+          },
           totalPages: 1,
-          language: 'other',
+          language: 'eng',
           filename: expect.stringMatching(/.*\.pdf/),
           originalname: 'f2082bf51b6ef839690485d7153e847a.pdf',
           creationDate: 1000,
@@ -114,7 +116,7 @@ describe('upload routes', () => {
         type: 'thumbnail',
       });
 
-      expect(language).toBe('other');
+      expect(language).toBe('eng');
       expect(mimetype).toEqual('image/jpeg');
       expect(await fs.readFile(uploadsPath(filename))).toBeDefined();
     });
