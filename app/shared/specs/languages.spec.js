@@ -50,10 +50,14 @@ describe('languages', () => {
       expect(detectLanguage('what is the colour of the white horse of santiago', 'ISO639_1')).toBe(
         'en'
       );
-      expect(detectLanguage('de que color es el caballo blanco de santiago', 'franc')).toBe('spa');
-      expect(detectLanguage('what is the colour of the white horse of santiago', 'franc')).toBe(
+      expect(detectLanguage('de que color es el caballo blanco de santiago', 'ISO639_3')).toBe(
+        'spa'
+      );
+      expect(detectLanguage('what is the colour of the white horse of santiago', 'ISO639_3')).toBe(
         'eng'
       );
+
+      expect(detectLanguage('Це перевірка', 'ISO639_3')).toBe('ukr');
     });
 
     it('should return other when the language is not supported', () => {
