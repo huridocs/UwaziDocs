@@ -19,8 +19,6 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
   const [error, setError] = useState<string>();
   const [scale, setScale] = useState(1);
 
-  console.log(initialWidth);
-
   useEffect(() => {
     pdf
       .getPage(page)
@@ -65,7 +63,11 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
       const pageWidth = defaultViewport.width;
       const widthRatio = initialWidth ? initialWidth / pageWidth : pageWidth;
       const devicePixelRatio = window.devicePixelRatio || 1;
-      const adjustedScale = widthRatio / devicePixelRatio;
+      const adjustedScale =
+        devicePixelRatio >= 1
+          ? Math.min(1, widthRatio / devicePixelRatio)
+          : widthRatio * devicePixelRatio;
+
       setScale(adjustedScale);
 
       if (isVisible) {
@@ -77,7 +79,6 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
           annotationMode: 0,
           eventBus: new EventBus(),
         });
-
         pageViewer.setPdfPage(pdfPage);
         currentContainer.style.height = 'auto';
         pageViewer
