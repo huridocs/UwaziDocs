@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { isClient } from 'app/utils';
 import { PageReferences } from 'app/Viewer/components/PageReferences';
 import { PageSelections } from 'app/Viewer/components/PageSelections';
+import { calculateScaling } from 'V2/Components/PDFViewer/functions/calculateScaling';
 import PDFJS, { EventBus } from '../PDFJS';
 
 class PDFPage extends Component {
@@ -112,13 +113,19 @@ class PDFPage extends Component {
       this.props.onLoading(this.props.page);
       this.setState({ rendered: true });
       this.props.pdf.getPage(this.props.page).then(page => {
-        const scale = 1;
+        const defaultViewport = page.getViewport({ scale: 1 });
+        const { devicePixelRatio } = window;
+        const adjustedScale = calculateScaling(
+          devicePixelRatio,
+          defaultViewport.width,
+          this.props.containerWidth
+        );
 
         this.pdfPageView = new PDFJS.PDFPageView({
           container: this.pageContainer,
           id: this.props.page,
-          scale,
-          defaultViewport: page.getViewport({ scale }),
+          scale: adjustedScale,
+          defaultViewport,
           textLayerMode: 1,
           eventBus: new EventBus(),
         });
@@ -127,6 +134,11 @@ class PDFPage extends Component {
         this.pdfPageView
           .draw()
           .then(() => {
+            const { canvas } = this.pdfPageView;
+            if (canvas) {
+              canvas.style.display = 'block';
+              canvas.style.width = '100%';
+            }
             if (this._mounted) {
               this.setState({ height: this.pdfPageView.viewport.height });
             }
@@ -172,6 +184,7 @@ PDFPage.propTypes = {
   onUnload: PropTypes.func.isRequired,
   pdf: PropTypes.object.isRequired,
   highlightReference: PropTypes.func,
+  containerWidth: PropTypes.number.isRequired,
 };
 
 export default PDFPage;

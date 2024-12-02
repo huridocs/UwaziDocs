@@ -172,6 +172,7 @@ class PDF extends Component {
                       page={page}
                       pdf={this.state.pdf}
                       highlightReference={this.props.highlightReference}
+                      containerWidth={this.pdfContainer.clientWidth}
                     />
                   </SelectionRegion>
                 </div>
