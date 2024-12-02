@@ -6,9 +6,9 @@ import { FileType } from 'shared/types/fileType';
 import { EntitySchema } from 'shared/types/entityType';
 import UploadButton from 'app/Metadata/components/UploadButton';
 import { NeedAuthorization } from 'app/Auth';
-import languageLib from 'shared/languages';
 import { ConnectedFile as File } from './File';
 import './scss/filelist.scss';
+import { LanguageMapper } from 'shared/languagesList';
 
 const defaultProps = {
   files: [],
@@ -28,7 +28,7 @@ export type FileListProps = {
 const orderFilesByLanguage = (files: FileType[], systemLanguage: string) => {
   const orderedFiles = [...files];
   const fileIndex = orderedFiles.findIndex(file => {
-    const language = languageLib.get(file.language as string, 'ISO639_1');
+    const language = LanguageMapper.fromTo(file.language as string, 'ISO639_3', 'ISO639_1');
     return language === systemLanguage;
   });
   if (fileIndex > -1) {

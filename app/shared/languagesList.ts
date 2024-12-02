@@ -3,17 +3,7 @@ import { LanguageSchema } from 'shared/types/commonTypes';
 
 type LanguageCode = 'elastic' | 'ISO639_3' | 'ISO639_1';
 
-type LegacyElasticObject = Record<
-  string,
-  { franc: string; elastic: string; ISO639_1: string | null }
->;
-
-type Language = {
-  label: string;
-  value: string;
-};
-
-const undefinedLanguage: LanguageSchema = {
+const OTHER_LANGUAGE_SCHEMA: LanguageSchema = {
   label: 'Other',
   key: 'other' as any,
   ISO639_1: 'other',
@@ -1599,46 +1589,42 @@ const availableLanguages: LanguageSchema[] = [
   },
 ];
 
-const languageMapper = (ISO639_3: string, to: LanguageCode = 'elastic') => {
-  const language = availableLanguages.find(item => item.ISO639_3 === ISO639_3);
-  const defaultValue = to !== 'ISO639_1' ? undefinedLanguage.ISO639_3 : null;
+const getLanguagesByCode = (code: LanguageCode = 'elastic'): LanguageSchema[] =>
+  availableLanguages.filter(item => Boolean(item[code]));
 
-  return language?.[to] || defaultValue;
-};
-
-const getLanguagesByCode = (code: LanguageCode = 'elastic'): Language[] =>
-  availableLanguages
-    .filter(item => Boolean(item[code]))
-    .map(item => ({ value: item[code] as string, label: item.label }));
-
-const getLanguageCodes = (languages: Language[]): string[] => languages.map(item => item.value);
+const uniqueValues = (array: string[]) => Array.from(new Set(array));
+const getLanguageCodes = (languages: LanguageSchema[], languageCode: LanguageCode): string[] =>
+  uniqueValues(languages.map(item => item[languageCode]) as string[]);
 
 const getLanguageSchema = (ISO639_3: string) =>
-  availableLanguages.find(item => item.ISO639_3 === ISO639_3) || undefinedLanguage;
+  availableLanguages.find(item => item.ISO639_3 === ISO639_3) || OTHER_LANGUAGE_SCHEMA;
+
+class LanguageMapper {
+  private static getLanguageByCode(code: string, languageCode: LanguageCode) {
+    return availableLanguages.find(item => code === item[languageCode]);
+  }
+
+  static fromTo(code: string, from: LanguageCode, to: LanguageCode) {
+    const schema = this.getLanguageByCode(code, from);
+    const defaultValue = to !== 'ISO639_1' ? OTHER_LANGUAGE_SCHEMA[to] : null;
+
+    return schema?.[to] || defaultValue;
+  }
+}
 
 const ISO6391Languages = getLanguagesByCode('ISO639_1');
-const ISO6391Codes = getLanguageCodes(ISO6391Languages);
+const ISO6391Codes = getLanguageCodes(ISO6391Languages, 'ISO639_1');
 
-const elasticLanguages: LegacyElasticObject = availableLanguages
-  .filter(item => Boolean(item?.elastic && item?.franc))
-  .reduce(
-    (prev, next) => ({
-      ...prev,
-      [next.franc!]: {
-        franc: next.franc!,
-        elastic: next.elastic!,
-        ISO639_1: ['cjk', 'ckb'].includes(next.franc!) ? null : next?.ISO639_1 || null,
-      },
-    }),
-    {} as LegacyElasticObject
-  );
+const elasticLanguages = getLanguagesByCode('elastic');
+const elasticLanguageCodes = getLanguageCodes(elasticLanguages, 'elastic');
 
 export type { LanguageCode };
 
 export {
   elasticLanguages,
+  elasticLanguageCodes,
   availableLanguages,
   ISO6391Codes,
-  languageMapper as language,
+  LanguageMapper,
   getLanguageSchema,
 };

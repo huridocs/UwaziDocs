@@ -1,11 +1,11 @@
 /* eslint-disable no-await-in-loop */
-import languages from 'shared/languages';
+import { elasticLanguages } from 'shared/languagesList';
 
 const getDefaultLanguage = async db => {
   const settings = await db.collection('settings').find().toArray();
 
   const languageKey = settings[0].languages.filter(x => x.default)[0].key;
-  const language = languages.data.filter(x => x.ISO639_1 === languageKey)[0];
+  const language = elasticLanguages.filter(x => x.ISO639_1 === languageKey)[0];
   return language ? language.franc : 'other';
 };
 

@@ -19,7 +19,6 @@ import settings from 'api/settings/settings';
 import templatesModel from 'api/templates/templates';
 import dictionatiesModel from 'api/thesauri/dictionariesModel';
 import request from 'shared/JSONRequest';
-import languages from 'shared/languages';
 import { EntitySchema } from 'shared/types/entityType';
 import { ExtractedMetadataSchema, ObjectIdSchema, PropertySchema } from 'shared/types/commonTypes';
 import { ModelStatus } from 'shared/types/IXModelSchema';
@@ -34,6 +33,7 @@ import {
 } from 'api/services/informationextraction/getFiles';
 import { Suggestions } from 'api/suggestions/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
+import { LanguageMapper } from 'shared/languagesList';
 import { IXModelType } from 'shared/types/IXModelType';
 import { ParagraphSchema } from 'shared/types/segmentationType';
 import ixmodels from './ixmodels';
@@ -172,7 +172,8 @@ class InformationExtraction {
     file: FileWithAggregation,
     _data: CommonMaterialsData
   ): MaterialsData => {
-    const languageIso = languages.get(file.language!, 'ISO639_1') || defaultTrainingLanguage;
+    const languageIso =
+      LanguageMapper.fromTo(file.language!, 'ISO639_3', 'ISO639_1') || defaultTrainingLanguage;
 
     let data: MaterialsData = { ..._data, language_iso: languageIso };
 
@@ -255,7 +256,7 @@ class InformationExtraction {
   _getEntityFromFile = async (file: EnforcedWithId<FileType> | FileWithAggregation) => {
     let [entity] = await entities.getUnrestricted({
       sharedId: file.entity,
-      language: languages.get(file.language!, 'ISO639_1'),
+      language: LanguageMapper.fromTo(file.language!, 'ISO639_3', 'ISO639_1'),
     });
 
     if (!entity) {
@@ -344,7 +345,7 @@ class InformationExtraction {
       ...existingSuggestions,
       entityId: entity.sharedId!,
       fileId: file._id,
-      language: languages.get(file.language, 'ISO639_1') || 'other',
+      language: LanguageMapper.fromTo(file.language, 'ISO639_3', 'ISO639_1') || 'other',
       extractorId: extractor._id,
       propertyName: extractor.property,
       status: 'processing',

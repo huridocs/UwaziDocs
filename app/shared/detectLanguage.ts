@@ -1,6 +1,7 @@
 import franc from 'franc';
-import { language, LanguageCode } from 'shared/languagesList';
+import { LanguageCode, LanguageMapper } from 'shared/languagesList';
 
 const detectLanguage = (text: string, purpose: LanguageCode = 'elastic') =>
-  language(franc(text), purpose);
+  LanguageMapper.fromTo(franc(text), 'ISO639_3', purpose);
+
 export { detectLanguage };

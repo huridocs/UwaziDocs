@@ -1,4 +1,4 @@
-import languages from '../../app/shared/languages';
+import { elasticLanguageCodes } from 'shared/languagesList';
 import baseProperties from './base_properties';
 import settings from './settings';
 import dynamicTemplates from './dynamic_templates';
@@ -11,7 +11,7 @@ const config = {
   },
 };
 
-languages.getAll().forEach(language => {
+elasticLanguageCodes.forEach(language => {
   config.settings.analysis.filter[`${language}_stop`] = {
     type: 'stop',
     stopwords: `_${language}_`,

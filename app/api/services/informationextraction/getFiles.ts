@@ -17,8 +17,8 @@ import { objectIndex } from 'shared/data_utils/objectIndex';
 import settings from 'api/settings/settings';
 import templatesModel from 'api/templates/templates';
 import { propertyTypes } from 'shared/propertyTypes';
-import languages from 'shared/languages';
 import { ensure } from 'shared/tsUtils';
+import { LanguageMapper } from 'shared/languagesList';
 
 const BATCH_SIZE = 50;
 const MAX_TRAINING_FILES_NUMBER = 2000;
@@ -169,7 +169,7 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
   const defaultLang = (await settings.getDefaultLanguage())?.key;
 
   const filesWithEntityValue = files.map(file => {
-    const fileLang = languages.get(file.language, 'ISO639_1') || defaultLang;
+    const fileLang = LanguageMapper.fromTo(file.language, 'ISO639_3', 'ISO639_1') || defaultLang;
     const entity = indexedEntities[file.entity + fileLang];
     if (!entity?.metadata || !entity?.metadata[property]?.length) {
       return { ...file, propertyType };

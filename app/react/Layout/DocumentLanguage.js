@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { language as getLanguage } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/languagesList';
 import t from '../I18N/t';
 
 export class DocumentLanguage extends Component {
@@ -16,13 +16,15 @@ export class DocumentLanguage extends Component {
     if (doc.get('file')) {
       const fileLanguage = doc.getIn(['file', 'language']);
       if (fileLanguage && fileLanguage !== 'other') {
-        if (this.props.locale === getLanguage(fileLanguage, 'ISO639_1')) {
+        if (this.props.locale === LanguageMapper.fromTo(fileLanguage, 'ISO639_3', 'ISO639_1')) {
           return null;
         }
 
         return (
           <span className="item-type__documentLanguage">
-            <span>{getLanguage(fileLanguage, 'ISO639_1') || fileLanguage}</span>
+            <span>
+              {LanguageMapper.fromTo(fileLanguage, 'ISO639_3', 'ISO639_1') || fileLanguage}
+            </span>
           </span>
         );
       }
