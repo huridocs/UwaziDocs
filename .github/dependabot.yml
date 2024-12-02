@@ -21,6 +21,32 @@ updates:
       - dependencies
     rebase-strategy: disabled
     groups:
+      dev-minor-dependencies:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@babel*"
+          - "@storybook*"
+          - "@sentry*"
+          - "@dnd-kit"
+          - socket.io
+          - recharts
+          - eslint
+          - flowbite*
+          - Mongoose
+          - react-datepicker
+          - "@headlessui/react"
+          - react-player
+          - express*
+      dev-major-dependencies:
+        applies-to: version-updates
+        update-types: [major]
+        patterns:
+          - "*"
+        exclude-patterns:
+          - cookie
       babel:
         applies-to: version-updates
         patterns:
@@ -44,31 +70,8 @@ updates:
       eslint:
         applies-to: version-updates
         patterns:
-          - eslint*
-      dev-minor-dependencies:
+          - eslint-*
+      express:
         applies-to: version-updates
-        update-types: [minor, patch]
         patterns:
-          - "*"
-        exclude-patterns:
-          - "@babel*"
-          - "@storybook*"
-          - "@sentry*"
-          - "@dnd-kit"
-          - socket.io
-          - recharts
-          - eslint
-          - flowbite
-          - flowbite-react
-          - flowbite-datepicker
-          - flowbite-typography
-          - Mongoose
-          - react-datepicker
-          - "@headlessui/react"
-      dev-major-dependencies:
-        applies-to: version-updates
-        update-types: [major]
-        patterns:
-          - "*"
-        exclude-patterns:
-          - cookie
+          - express*

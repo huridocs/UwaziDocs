@@ -2,6 +2,7 @@ import { FilesDataSource } from './contracts/FilesDataSource';
 import { FileStorage } from './contracts/FileStorage';
 import { StoredFile } from './model/StoredFile';
 import { URLAttachment } from './model/URLAttachment';
+
 function filterFilesInStorage(files: StoredFile[]) {
   return files.filter(
     file =>
@@ -14,6 +15,7 @@ function filterFilesInStorage(files: StoredFile[]) {
 type missingInDBFileDTO = {
   filename: string;
   checksumMatchCount: number;
+  lastModified?: Date;
 };
 
 export class FilesHealthCheck {
@@ -69,7 +71,11 @@ export class FilesHealthCheck {
       if (checksumMatchCount > 1) {
         counters.missingInDbWithChecksumMatches += 1;
       }
-      this.onMissingInDBCB({ filename: storedFile.fullPath, checksumMatchCount });
+      this.onMissingInDBCB({
+        filename: storedFile.fullPath,
+        checksumMatchCount,
+        lastModified: storedFile.lastModified,
+      });
     });
 
     return {
