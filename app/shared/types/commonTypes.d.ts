@@ -244,6 +244,9 @@ export interface LanguageSchema {
   rtl?: boolean;
   default?: boolean;
   ISO639_3?: string;
+  franc?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
 }
@@ -255,6 +258,9 @@ export type LanguagesListSchema = {
   rtl?: boolean;
   default?: boolean;
   ISO639_3?: string;
+  franc?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
 }[];

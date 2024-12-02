@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Control } from 'react-redux-form';
 import { withContext } from 'app/componentWrappers';
-import { Translate, t } from 'app/I18N';
+import { t, Translate } from 'app/I18N';
 import { Icon } from 'UI';
 import { APIURL } from 'app/config.js';
 import { ClientBlobFile } from 'app/istore';
@@ -12,7 +12,7 @@ import { wrapDispatch } from 'app/Multireducer';
 import { TocGeneratedLabel } from 'app/ToggledFeatures/tocGeneration';
 import { NeedAuthorization } from 'app/Auth';
 import { LocalForm } from 'app/Forms/Form';
-import { language as transformLanguage, availableLanguages } from 'shared/languagesList';
+import { availableLanguages, getLanguageSchema } from 'shared/languagesList';
 import { isBlobFile } from 'shared/tsUtils';
 import { EntitySchema } from 'shared/types/entityType';
 import { FileType } from 'shared/types/fileType';
@@ -100,11 +100,12 @@ class File extends Component<FileOwnProps, FileState> {
   renderReady() {
     const { language, filename = '' } = this.props.file;
     const { readonly } = this.props;
+
     return (
       <div>
         <div>
           <span className="badge">
-            <Translate>{language ? transformLanguage(language) || '' : ''}</Translate>
+            <Translate>{language ? getLanguageSchema(language)?.label || '' : ''}</Translate>
           </span>
           <TocGeneratedLabel file={this.props.file}>
             <Translate>ML TOC</Translate>
@@ -196,6 +197,7 @@ class File extends Component<FileOwnProps, FileState> {
                   {language.localized_label} ({language.label})
                 </option>
               ))}
+
               <option value="other">{t('System', 'other', 'other', false)}</option>
             </Control.select>
           </div>

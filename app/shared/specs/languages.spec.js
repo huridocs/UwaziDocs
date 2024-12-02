@@ -10,8 +10,9 @@ describe('languages', () => {
 
     it('should return a list of all languages for the passed purpose', () => {
       expect(languages.getAll('ISO639_1').length).toBe(31);
-      expect(languages.getAll('ISO639_1')[5]).toBe(languages.data[7].ISO639_1);
       expect(languages.getAll('franc').length).toBe(33);
+
+      expect(languages.getAll('ISO639_1')[5]).toBe(languages.data[6].ISO639_1);
       expect(languages.getAll('franc')[5]).toBe(languages.data[5].franc);
     });
   });
@@ -53,6 +54,8 @@ describe('languages', () => {
       expect(detectLanguage('what is the colour of the white horse of santiago', 'franc')).toBe(
         'eng'
       );
+
+      expect(detectLanguage('Це перевірка', 'ISO639_3')).toBe('ukr');
     });
 
     it('should return other when the language is not supported', () => {
