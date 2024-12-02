@@ -6,6 +6,7 @@ import { useAtom } from 'jotai';
 import { pdfScaleAtom } from 'V2/atoms';
 import { EventBus, PDFJSViewer } from './pdfjs';
 import { TextHighlight } from './types';
+import { calculateScaling } from './functions/calculateScaling';
 
 interface PDFPageProps {
   pdf: PDFDocumentProxy;
@@ -62,13 +63,8 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
         currentContainer.style.height = `${defaultViewport.height}px`;
       };
 
-      const pageWidth = defaultViewport.width;
-      const widthRatio = initialWidth ? initialWidth / pageWidth : pageWidth;
       const { devicePixelRatio } = window;
-      const adjustedScale =
-        devicePixelRatio >= 1
-          ? Math.min(1, widthRatio / devicePixelRatio)
-          : widthRatio * Math.max(devicePixelRatio, 0.5);
+      const adjustedScale = calculateScaling(devicePixelRatio, defaultViewport.width, initialWidth);
 
       setScale(adjustedScale);
 
