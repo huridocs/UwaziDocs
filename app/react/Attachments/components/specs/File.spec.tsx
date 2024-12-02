@@ -39,7 +39,7 @@ describe('file', () => {
     expect(title).toBe('Human_name_1.pdf');
 
     const language = component.find('.badge').find(Translate).props().children;
-    expect(language).toBe('english');
+    expect(language).toBe('English');
   });
 
   describe('read only', () => {
