@@ -13,7 +13,7 @@ export class AttachmentForm extends Component {
     const { model } = this.props;
     const validators = { originalname: { required: val => !!val && val.trim() !== '' } };
     const languageOptions = elasticLanguages.map(item => ({
-      value: item.franc,
+      value: item.ISO639_3,
       label: item.elastic,
     }));
     languageOptions.push({ value: 'other', label: 'other' });

@@ -6,7 +6,7 @@ const getDefaultLanguage = async db => {
 
   const languageKey = settings[0].languages.filter(x => x.default)[0].key;
   const language = elasticLanguages.filter(x => x.ISO639_1 === languageKey)[0];
-  return language ? language.franc : 'other';
+  return language ? language.ISO639_3 : 'other';
 };
 
 export default {
