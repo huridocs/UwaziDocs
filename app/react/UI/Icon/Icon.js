@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { availableLanguages as languagesList } from 'shared/languagesList';
+import { availableLanguages as languagesList } from 'shared/language';
 import { loadIcons } from './library';
 
 loadIcons();

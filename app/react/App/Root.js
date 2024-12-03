@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import serialize from 'serialize-javascript';
 
-import { availableLanguages as languagesList } from 'shared/languagesList';
+import { availableLanguages as languagesList } from 'shared/language';
 
 const determineHotAssets = query => ({
   JS: [

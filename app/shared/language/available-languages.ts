@@ -1551,42 +1551,6 @@ const availableLanguages: LanguageSchema[] = [
   },
 ];
 
-const getLanguagesByCode = (code: LanguageCode = 'elastic'): LanguageSchema[] =>
-  availableLanguages.filter(item => Boolean(item[code]));
-
-const uniqueValues = (array: string[]) => Array.from(new Set(array));
-const getLanguageCodes = (languages: LanguageSchema[], languageCode: LanguageCode): string[] =>
-  uniqueValues(languages.map(item => item[languageCode]) as string[]);
-
-const getLanguageSchema = (ISO639_3: string) =>
-  availableLanguages.find(item => item.ISO639_3 === ISO639_3) || OTHER_LANGUAGE_SCHEMA;
-
-class LanguageMapper {
-  private static getLanguageByCode(code: string, languageCode: LanguageCode) {
-    return availableLanguages.find(item => code === item[languageCode]);
-  }
-
-  static fromTo(code: string, from: LanguageCode, to: LanguageCode) {
-    const schema = this.getLanguageByCode(code, from);
-    const defaultValue = to !== 'ISO639_1' ? OTHER_LANGUAGE_SCHEMA[to] : null;
-
-    return schema?.[to] || defaultValue;
-  }
-}
-
-const ISO6391Languages = getLanguagesByCode('ISO639_1');
-const ISO6391Codes = getLanguageCodes(ISO6391Languages, 'ISO639_1');
-
-const elasticLanguages = getLanguagesByCode('elastic');
-const elasticLanguageCodes = getLanguageCodes(elasticLanguages, 'elastic');
-
 export type { LanguageCode };
 
-export {
-  elasticLanguages,
-  elasticLanguageCodes,
-  availableLanguages,
-  ISO6391Codes,
-  LanguageMapper,
-  getLanguageSchema,
-};
+export { OTHER_LANGUAGE_SCHEMA, availableLanguages };

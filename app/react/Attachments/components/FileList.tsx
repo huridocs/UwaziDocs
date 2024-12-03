@@ -5,10 +5,10 @@ import { Translate } from 'app/I18N';
 import { FileType } from 'shared/types/fileType';
 import { EntitySchema } from 'shared/types/entityType';
 import UploadButton from 'app/Metadata/components/UploadButton';
+import { LanguageMapper } from 'shared/language';
 import { NeedAuthorization } from 'app/Auth';
 import { ConnectedFile as File } from './File';
 import './scss/filelist.scss';
-import { LanguageMapper } from 'shared/languagesList';
 
 const defaultProps = {
   files: [],

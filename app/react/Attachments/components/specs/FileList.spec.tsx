@@ -2,10 +2,10 @@ import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { FileType } from 'shared/types/fileType';
 import UploadButton from 'app/Metadata/components/UploadButton';
+import { LanguageMapper } from 'shared/language';
 import { EntitySchema } from 'shared/types/entityType';
 import { ConnectedFile as File } from '../File';
 import { FileList, FileListProps } from '../FileList';
-import { LanguageMapper } from 'shared/languagesList';
 
 describe('FileList', () => {
   let component: ShallowWrapper<FileList>;

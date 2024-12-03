@@ -7,7 +7,7 @@ import settings from 'api/settings/settings';
 import { emitToTenant } from 'api/socketio/setupSockets';
 import { tenants } from 'api/tenants/tenantContext';
 import createError from 'api/utils/Error';
-import { LanguageMapper } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/language';
 import { handleError } from 'api/utils/handleError';
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream, createWriteStream } from 'fs';

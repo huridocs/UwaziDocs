@@ -1,5 +1,5 @@
 import { detectLanguage } from 'shared/detectLanguage';
-import { availableLanguages, LanguageMapper } from 'shared/languagesList';
+import { availableLanguages, LanguageMapper } from 'shared/language';
 
 describe('languages', () => {
   describe('detectLanguage', () => {

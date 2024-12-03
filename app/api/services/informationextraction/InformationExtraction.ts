@@ -33,7 +33,7 @@ import {
 } from 'api/services/informationextraction/getFiles';
 import { Suggestions } from 'api/suggestions/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
-import { LanguageMapper } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/language';
 import { IXModelType } from 'shared/types/IXModelType';
 import { ParagraphSchema } from 'shared/types/segmentationType';
 import ixmodels from './ixmodels';

@@ -18,7 +18,7 @@ import settings from 'api/settings/settings';
 import templatesModel from 'api/templates/templates';
 import { propertyTypes } from 'shared/propertyTypes';
 import { ensure } from 'shared/tsUtils';
-import { LanguageMapper } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/language';
 
 const BATCH_SIZE = 50;
 const MAX_TRAINING_FILES_NUMBER = 2000;

@@ -1,5 +1,5 @@
 import { FileType } from 'shared/types/fileType';
-import { LanguageMapper } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/language';
 
 export const entityDefaultDocument = (
   entityDocuments: Array<FileType>,

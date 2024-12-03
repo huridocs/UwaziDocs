@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Field } from 'react-redux-form';
 
 import { FormGroup, Select } from 'app/ReactReduxForms';
-import { elasticLanguages } from 'shared/languagesList';
+import { elasticLanguages } from 'shared/language';
 import t from 'app/I18N/t';
 import ShowIf from 'app/App/ShowIf';
 

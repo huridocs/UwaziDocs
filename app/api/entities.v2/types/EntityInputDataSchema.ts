@@ -1,4 +1,4 @@
-import { ISO6391Codes } from 'shared/languagesList';
+import { ISO6391Codes } from 'shared/language';
 
 const linkSchema = {
   type: 'object',

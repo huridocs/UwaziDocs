@@ -9,7 +9,7 @@ import { FileType } from 'shared/types/fileType';
 import { IXSuggestionType } from 'shared/types/suggestionType';
 import { Suggestions } from './suggestions';
 import templates from 'api/templates';
-import { LanguageMapper } from 'shared/languagesList';
+import { LanguageMapper } from 'shared/language';
 
 const fetchEntitiesBatch = async (query: any, limit: number = 100) =>
   entitiesModel.db.find(query).select('sharedId').limit(limit).sort({ _id: 1 }).lean();

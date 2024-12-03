@@ -1,4 +1,4 @@
-import { elasticLanguageCodes } from 'shared/languagesList';
+import { elasticLanguageCodes } from 'shared/language';
 import baseProperties from './base_properties';
 import settings from './settings';
 import dynamicTemplates from './dynamic_templates';

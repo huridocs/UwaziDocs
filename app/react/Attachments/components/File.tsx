@@ -12,7 +12,7 @@ import { wrapDispatch } from 'app/Multireducer';
 import { TocGeneratedLabel } from 'app/ToggledFeatures/tocGeneration';
 import { NeedAuthorization } from 'app/Auth';
 import { LocalForm } from 'app/Forms/Form';
-import { availableLanguages, getLanguageSchema } from 'shared/languagesList';
+import { availableLanguages, LanguageUtils } from 'shared/language';
 import { isBlobFile } from 'shared/tsUtils';
 import { EntitySchema } from 'shared/types/entityType';
 import { FileType } from 'shared/types/fileType';
@@ -105,7 +105,9 @@ class File extends Component<FileOwnProps, FileState> {
       <div>
         <div>
           <span className="badge">
-            <Translate>{language ? getLanguageSchema(language)?.label || '' : ''}</Translate>
+            <Translate>
+              {language ? LanguageUtils.getLanguageSchema(language)?.label || '' : ''}
+            </Translate>
           </span>
           <TocGeneratedLabel file={this.props.file}>
             <Translate>ML TOC</Translate>

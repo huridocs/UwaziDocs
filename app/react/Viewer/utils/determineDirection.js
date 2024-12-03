@@ -1,4 +1,4 @@
-import { LanguageMapper, availableLanguages } from 'shared/languagesList';
+import { LanguageMapper, availableLanguages } from 'shared/language';
 
 export default ({ language }) => {
   const languageKey = LanguageMapper.fromTo(language, 'ISO639_3', 'ISO639_1');
