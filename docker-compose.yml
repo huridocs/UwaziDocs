@@ -3,7 +3,7 @@ services:
   elasticsearch:
     build:
       context: .
-      dockerfile: elastic-icu-7.17.6.Dockerfile
+      dockerfile: elastic-icu-7.17.7.Dockerfile
     container_name: uwazi-elasticsearch
     volumes:
       - esdata01:/usr/share/elasticsearch/data
@@ -24,14 +24,18 @@ services:
       - mongodata:/data/db
     ports:
       - '27017:27017'
+    ulimits:
+      nofile:
+        soft: "65536"
+        hard: "65536"
 
   mongoreplicaset_start_script:
     image: "mongo:5.0.27"
     restart: "no"
     container_name: mongoreplicaset_start_script
-    depends_on: 
+    depends_on:
       - mongo
-    entrypoint: [ "bash", "-c", "sleep 1 && mongo --host mongo:27017 --eval 'rs.initiate();cfg = rs.config(); cfg.members[0].host = \"localhost:27017\";rs.reconfig(cfg, {force:true})'"]   
+    entrypoint: [ "bash", "-c", "sleep 1 && mongo --host mongo:27017 --eval 'rs.initiate();cfg = rs.config(); cfg.members[0].host = \"localhost:27017\";rs.reconfig(cfg, {force:true})'"]
 
   redis:
     image: 'redis:5.0.14'
