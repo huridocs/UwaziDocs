@@ -3,13 +3,22 @@ const calculateScaling = (
   pageWidth: number,
   parentWidth: number | undefined
 ) => {
-  const widthRatio = parentWidth ? parentWidth / pageWidth : pageWidth;
-  const adjustedScale =
-    devicePixelRatio >= 1
-      ? Math.min(1, widthRatio / devicePixelRatio)
-      : widthRatio * Math.max(devicePixelRatio, 0.5);
+  let widthRatio = 1;
+  let adjustedScale = 1;
 
-  return adjustedScale;
+  if (parentWidth) {
+    widthRatio = Math.max(parentWidth / pageWidth, 1);
+  }
+
+  if (devicePixelRatio >= 1) {
+    adjustedScale = Math.min(1, widthRatio / devicePixelRatio);
+  } else {
+    adjustedScale = widthRatio * Math.max(devicePixelRatio, 0.5);
+  }
+
+  console.log(adjustedScale);
+
+  return Math.max(adjustedScale, 0.5);
 };
 
 export { calculateScaling };

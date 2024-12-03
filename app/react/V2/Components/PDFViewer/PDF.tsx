@@ -110,7 +110,7 @@ const PDF = ({
                     pdf={pdf}
                     page={number}
                     highlights={pageHighlights}
-                    initialWidth={pdfContainerRef.current?.clientWidth}
+                    containerWidth={pdfContainerRef.current?.clientWidth}
                   />
                 </SelectionRegion>
               </div>

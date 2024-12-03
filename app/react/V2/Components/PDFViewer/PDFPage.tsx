@@ -12,10 +12,10 @@ interface PDFPageProps {
   pdf: PDFDocumentProxy;
   page: number;
   highlights?: TextHighlight[];
-  initialWidth?: number;
+  containerWidth?: number;
 }
 
-const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
+const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
@@ -64,7 +64,11 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
       };
 
       const { devicePixelRatio } = window;
-      const adjustedScale = calculateScaling(devicePixelRatio, defaultViewport.width, initialWidth);
+      const adjustedScale = calculateScaling(
+        devicePixelRatio,
+        defaultViewport.width,
+        containerWidth
+      );
 
       setScale(adjustedScale);
 
@@ -95,7 +99,7 @@ const PDFPage = ({ pdf, page, initialWidth, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, scale, page, pdfPage, initialWidth, setScale]);
+  }, [isVisible, scale, page, pdfPage, setScale, containerWidth]);
 
   if (error) {
     return <div>{error}</div>;
