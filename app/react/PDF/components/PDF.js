@@ -153,6 +153,7 @@ class PDF extends Component {
           this.pdfContainer = ref;
         }}
         style={this.props.style}
+        id="pdf-container"
       >
         <HandleTextSelection
           onSelect={this.props.onTextSelection}
