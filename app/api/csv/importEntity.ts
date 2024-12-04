@@ -174,7 +174,8 @@ const translateEntity = async (
   template: TemplateSchema,
   importFile: ImportFile,
   propNameToThesauriId: Record<string, string>,
-  indexedTranslations: FullyIndexedTranslations
+  indexedTranslations: FullyIndexedTranslations,
+  dateFormat?: string
 ) => {
   await entitiesModel.saveMultiple(
     await Promise.all(
@@ -190,6 +191,7 @@ const translateEntity = async (
           template,
           {
             language: translatedEntity.language,
+            dateFormat,
           }
         );
 
