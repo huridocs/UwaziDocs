@@ -10,11 +10,6 @@ import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { I18NMenu } from '../I18NMenu';
 
-type TestProviderProps = {
-  initialValues: any[];
-  children: ReactNode;
-};
-
 describe('I18NMenu', () => {
   const settingsAtomValue = {
     languages: [
