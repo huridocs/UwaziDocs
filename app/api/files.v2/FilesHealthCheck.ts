@@ -23,7 +23,11 @@ export class FilesHealthCheck {
   private onMissingInDBCB: (file: missingInDBFileDTO) => void = () => {};
 
   // eslint-disable-next-line class-methods-use-this
-  private onMissingInStorageCB: (fileDTO: { _id: string; filename: string }) => void = () => {};
+  private onMissingInStorageCB: (fileDTO: {
+    _id: string;
+    filename: string;
+    creationDate?: Date;
+  }) => void = () => {};
 
   private fileStorage: FileStorage;
 
@@ -59,7 +63,11 @@ export class FilesHealthCheck {
       if (!existsInStorage && !(file instanceof URLAttachment)) {
         counters.missingInStorage += 1;
         missingInStorageList.push(this.fileStorage.getPath(file));
-        this.onMissingInStorageCB({ _id: file.id, filename: file.filename });
+        this.onMissingInStorageCB({
+          _id: file.id,
+          filename: file.filename,
+          creationDate: file.creationDate,
+        });
       }
     });
 
