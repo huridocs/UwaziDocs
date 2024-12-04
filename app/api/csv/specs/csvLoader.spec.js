@@ -403,7 +403,7 @@ describe('csvLoader', () => {
     });
   });
 
-  test('given the user has english and spanish languages installed and imported a csv with metadata in both versions, it should import translated version correctly', async () => {
+  test('given the user has english, spanish and french languages installed and imported a csv with metadata in both versions, it should import translated version correctly', async () => {
     jest.restoreAllMocks();
     const _fixtures = { ...fixtures };
     const dateFormat = 'MM/dd/yyyy';
