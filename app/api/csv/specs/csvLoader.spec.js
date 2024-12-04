@@ -1,13 +1,15 @@
+/* eslint-disable max-statements */
 /* eslint-disable max-lines */
 import path from 'path';
 
 import { CSVLoader } from 'api/csv';
-import { templateWithGeneratedTitle } from 'api/csv/specs/csvLoaderFixtures';
+import { simpleTemplateId, templateWithGeneratedTitle } from 'api/csv/specs/csvLoaderFixtures';
 import entities from 'api/entities';
 import translations from 'api/i18n';
 import { search } from 'api/search';
 import settings from 'api/settings';
 import db from 'api/utils/testing_db';
+import moment from 'moment';
 import typeParsers from '../typeParsers';
 import fixtures, { template1Id } from './csvLoaderFixtures';
 import { mockCsvFileReadStream } from './helpers';
@@ -398,6 +400,47 @@ describe('csvLoader', () => {
         expect(result[1].title).toEqual(expect.stringMatching(/^[a-zA-Z0-9-]{12}$/));
         expect(result[0].title !== result[1].title);
       });
+    });
+  });
+
+  test('given the user has english and spanish languages installed and imported a csv with metadata in both versions, it should import translated version correctly', async () => {
+    jest.restoreAllMocks();
+    const _fixtures = { ...fixtures };
+    const dateFormat = 'MM/dd/yyyy';
+    const _settings = {
+      ..._fixtures.settings[0],
+      languages: [
+        { key: 'en', label: 'English', default: true },
+        { key: 'es', label: 'Spanish' },
+        { key: 'fr', label: 'French' },
+      ],
+      newNameGeneration: true,
+      dateFormat,
+    };
+    _fixtures.settings = [_settings];
+    await db.setupFixturesAndContext(_fixtures);
+    const csv = path.join(__dirname, '/simple_template.csv');
+    const selectedLanguageOnUserInterface = 'es';
+
+    await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+
+    const [englishEntity] = await entities.get({ language: 'en' });
+    const [spanishEntity] = await entities.get({ language: 'es' });
+    const [frenchEntity] = await entities.get({ language: 'fr' });
+
+    expect(spanishEntity.metadata).toEqual({
+      simple_text_field: [{ value: 'Spanish' }],
+      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
+    });
+
+    expect(englishEntity.metadata).toEqual({
+      simple_text_field: [{ value: 'English' }],
+      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
+    });
+
+    expect(frenchEntity.metadata).toEqual({
+      simple_text_field: [{ value: 'French' }],
+      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
     });
   });
 });
