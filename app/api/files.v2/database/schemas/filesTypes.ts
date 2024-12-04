@@ -5,6 +5,7 @@ interface BaseFileDBOType {
   entity: string;
   filename: string;
   url: string;
+  creationDate: number;
 }
 
 interface DocumentFileDBOType extends BaseFileDBOType {
