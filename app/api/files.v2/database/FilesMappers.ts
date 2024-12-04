@@ -24,7 +24,7 @@ export const FileMappers = {
         fileDBO.entity,
         fileDBO.totalPages,
         fileDBO.url
-      );
+      ).withCreationDate(new Date(fileDBO.creationDate));
     }
     if (fileDBO.type === 'attachment') {
       return new Attachment(
@@ -32,7 +32,7 @@ export const FileMappers = {
         fileDBO.entity,
         fileDBO.totalPages,
         fileDBO.filename
-      );
+      ).withCreationDate(new Date(fileDBO.creationDate));
     }
 
     if (fileDBO.type === 'custom') {
@@ -41,13 +41,13 @@ export const FileMappers = {
         fileDBO.entity,
         fileDBO.totalPages,
         fileDBO.filename
-      );
+      ).withCreationDate(new Date(fileDBO.creationDate));
     }
     return new Document(
       fileDBO._id.toString(),
       fileDBO.entity,
       fileDBO.totalPages,
       fileDBO.filename
-    );
+    ).withCreationDate(new Date(fileDBO.creationDate));
   },
 };
