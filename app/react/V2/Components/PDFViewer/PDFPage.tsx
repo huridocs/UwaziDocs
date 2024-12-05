@@ -72,27 +72,20 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
 
       setScale(adjustedScale);
 
+      const adjustedViewport = pdfPage.getViewport({ scale: adjustedScale });
+
       if (isVisible) {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
           scale: adjustedScale,
-          defaultViewport,
+          defaultViewport: adjustedViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
         });
         pageViewer.setPdfPage(pdfPage);
         currentContainer.style.height = 'auto';
-        pageViewer
-          .draw()
-          .then(() => {
-            const { canvas } = pageViewer;
-            if (canvas) {
-              canvas.style.display = 'block';
-              canvas.style.width = '100%';
-            }
-          })
-          .catch((e: Error) => setError(e.message));
+        pageViewer.draw().catch((e: Error) => setError(e.message));
       }
 
       if (!isVisible) {

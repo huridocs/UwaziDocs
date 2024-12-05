@@ -9,7 +9,7 @@ import PDFJS, { EventBus } from '../PDFJS';
 class PDFPage extends Component {
   constructor(props) {
     super(props);
-    this.state = { rendered: false };
+    this.state = { rendered: false, scaleFactor: 1 };
   }
 
   componentDidMount() {
@@ -115,17 +115,22 @@ class PDFPage extends Component {
       this.props.pdf.getPage(this.props.page).then(page => {
         const defaultViewport = page.getViewport({ scale: 1 });
         const { devicePixelRatio } = window;
+
         const adjustedScale = calculateScaling(
           devicePixelRatio,
           defaultViewport.width,
           this.props.containerWidth
         );
 
+        const adjustedViewport = page.getViewport({ scale: adjustedScale });
+
+        this.setState({ scaleFactor: adjustedScale });
+
         this.pdfPageView = new PDFJS.PDFPageView({
           container: this.pageContainer,
           id: this.props.page,
           scale: adjustedScale,
-          defaultViewport,
+          defaultViewport: adjustedViewport,
           textLayerMode: 1,
           eventBus: new EventBus(),
         });
@@ -134,11 +139,6 @@ class PDFPage extends Component {
         this.pdfPageView
           .draw()
           .then(() => {
-            const { canvas } = this.pdfPageView;
-            if (canvas) {
-              canvas.style.display = 'block';
-              canvas.style.width = '100%';
-            }
             if (this._mounted) {
               this.setState({ height: this.pdfPageView.viewport.height });
             }

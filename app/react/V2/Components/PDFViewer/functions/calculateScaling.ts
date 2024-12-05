@@ -5,20 +5,23 @@ const calculateScaling = (
 ) => {
   let widthRatio = 1;
   let adjustedScale = 1;
+  let minScale = 0.5;
 
   if (parentWidth) {
     widthRatio = Math.max(parentWidth / pageWidth, 1);
+
+    if (parentWidth < 500) {
+      minScale = 0.8;
+    }
   }
 
   if (devicePixelRatio >= 1) {
     adjustedScale = Math.min(1, widthRatio / devicePixelRatio);
   } else {
-    adjustedScale = widthRatio * Math.max(devicePixelRatio, 0.5);
+    adjustedScale = widthRatio / (1 + devicePixelRatio);
   }
 
-  console.log(adjustedScale);
-
-  return Math.max(adjustedScale, 0.5);
+  return Math.max(adjustedScale, minScale);
 };
 
 export { calculateScaling };
