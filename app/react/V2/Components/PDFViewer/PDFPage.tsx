@@ -7,6 +7,7 @@ import { pdfScaleAtom } from 'V2/atoms';
 import { EventBus, PDFJSViewer } from './pdfjs';
 import { TextHighlight } from './types';
 import { calculateScaling } from './functions/calculateScaling';
+import { adjustSelectionsToScale } from './functions/handleTextSelection';
 
 interface PDFPageProps {
   pdf: PDFDocumentProxy;
@@ -104,16 +105,7 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
         highlights?.map(highlight => {
           const scaledHightlight = {
             ...highlight,
-            textSelection: {
-              ...highlight.textSelection,
-              selectionRectangles: highlight.textSelection.selectionRectangles.map(rectangle => ({
-                ...rectangle,
-                left: rectangle.left * scale,
-                top: rectangle.top * scale,
-                width: rectangle.width * scale,
-                height: rectangle.height * scale,
-              })),
-            },
+            textSelection: adjustSelectionsToScale(highlight.textSelection, scale),
           };
           return (
             <Highlight

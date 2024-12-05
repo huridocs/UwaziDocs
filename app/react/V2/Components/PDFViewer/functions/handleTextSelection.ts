@@ -184,9 +184,32 @@ const deleteFileSelection = (
   return updatedSelections;
 };
 
+const adjustSelectionsToScale = (
+  selection: TextSelection,
+  scalingFactor: number,
+  normalize?: boolean
+): TextSelection => {
+  const scaledSelection =
+    scalingFactor === 1
+      ? selection
+      : {
+          ...selection,
+          selectionRectangles: selection.selectionRectangles.map(rectangle => ({
+            ...rectangle,
+            left: normalize ? rectangle.left / scalingFactor : rectangle.left * scalingFactor,
+            top: normalize ? rectangle.top / scalingFactor : rectangle.top * scalingFactor,
+            width: normalize ? rectangle.width / scalingFactor : rectangle.width * scalingFactor,
+            height: normalize ? rectangle.height / scalingFactor : rectangle.height * scalingFactor,
+          })),
+        };
+
+  return scaledSelection;
+};
+
 export {
   getHighlightsFromFile,
   getHighlightsFromSelection,
   updateFileSelection,
   deleteFileSelection,
+  adjustSelectionsToScale,
 };

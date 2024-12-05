@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { isClient } from 'app/utils';
 import { PageReferences } from 'app/Viewer/components/PageReferences';
 import { PageSelections } from 'app/Viewer/components/PageSelections';
-import { calculateScaling } from 'V2/Components/PDFViewer/functions/calculateScaling';
+import { calculateScaling } from 'V2/Components/PDFViewer';
 import PDFJS, { EventBus } from '../PDFJS';
 
 class PDFPage extends Component {
