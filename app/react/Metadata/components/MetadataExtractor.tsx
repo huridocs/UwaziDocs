@@ -65,8 +65,13 @@ const MetadataExtractorComponent = ({
         'warning'
       );
     }
-    setSelection(() => selectionHandlers.adjustSelectionsToScale(selection, pdfScaling, true));
-    updateField(selection.text);
+
+    const selected = selection.selectionRectangles?.length
+      ? selectionHandlers.adjustSelectionsToScale(selection, pdfScaling, true)
+      : selection;
+    setSelection(selected);
+
+    updateField(selected.text);
   };
 
   if (!selection) {
