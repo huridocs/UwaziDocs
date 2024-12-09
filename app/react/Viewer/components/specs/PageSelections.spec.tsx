@@ -7,6 +7,8 @@ import { RenderResult } from '@testing-library/react';
 import { ExtractedMetadataSchema } from 'shared/types/commonTypes';
 import { defaultState, renderConnectedContainer } from 'app/utils/test/renderConnected';
 import { ClientEntitySchema, ClientFile } from 'app/istore';
+import { TestAtomStoreProvider } from 'V2/testing';
+import { pdfScaleAtom } from 'V2/atoms';
 import { PageSelections } from '../PageSelections';
 
 const defaultEntityDocument: ClientFile = {
@@ -61,6 +63,7 @@ describe('Page selections highlights', () => {
   };
   let file: any | ClientFile;
   let selections: ExtractedMetadataSchema[];
+  let pdfScalingValue = 1;
 
   beforeEach(() => {
     file = defaultEntityDocument;
@@ -82,7 +85,12 @@ describe('Page selections highlights', () => {
         }),
       },
     };
-    ({ renderResult } = renderConnectedContainer(<PageSelections />, () => state));
+    ({ renderResult } = renderConnectedContainer(
+      <TestAtomStoreProvider initialValues={[[pdfScaleAtom, pdfScalingValue]]}>
+        <PageSelections />
+      </TestAtomStoreProvider>,
+      () => state
+    ));
   };
 
   it('should only render when editing the entity and has a document', () => {
@@ -99,6 +107,12 @@ describe('Page selections highlights', () => {
   it('should highlight existing selections', () => {
     render();
     expect(renderResult.container.children.length).toBe(2);
+  });
+
+  it('should adjust selections by the pdf scaling factor', () => {
+    pdfScalingValue = 1.5;
+    render();
+    expect(renderResult.baseElement).toMatchSnapshot();
   });
 
   it('should highligh new selections', () => {
