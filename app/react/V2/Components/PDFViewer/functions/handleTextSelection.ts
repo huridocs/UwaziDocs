@@ -189,19 +189,21 @@ const adjustSelectionsToScale = (
   scalingFactor: number,
   normalize?: boolean
 ): TextSelection => {
-  const scaledSelection =
-    scalingFactor === 1
-      ? selection
-      : {
-          ...selection,
-          selectionRectangles: selection.selectionRectangles.map(rectangle => ({
-            ...rectangle,
-            left: normalize ? rectangle.left / scalingFactor : rectangle.left * scalingFactor,
-            top: normalize ? rectangle.top / scalingFactor : rectangle.top * scalingFactor,
-            width: normalize ? rectangle.width / scalingFactor : rectangle.width * scalingFactor,
-            height: normalize ? rectangle.height / scalingFactor : rectangle.height * scalingFactor,
-          })),
-        };
+  if (scalingFactor === 1) {
+    return selection;
+  }
+
+  const scaledSelection = { ...selection };
+
+  if (scaledSelection.selectionRectangles.length) {
+    scaledSelection.selectionRectangles = selection.selectionRectangles.map(rectangle => ({
+      ...rectangle,
+      left: normalize ? rectangle.left / scalingFactor : rectangle.left * scalingFactor,
+      top: normalize ? rectangle.top / scalingFactor : rectangle.top * scalingFactor,
+      width: normalize ? rectangle.width / scalingFactor : rectangle.width * scalingFactor,
+      height: normalize ? rectangle.height / scalingFactor : rectangle.height * scalingFactor,
+    }));
+  }
 
   return scaledSelection;
 };
