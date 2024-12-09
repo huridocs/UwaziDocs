@@ -56,10 +56,6 @@ ItemSnippet.propTypes = {
   }).isRequired,
 };
 
-ItemSnippet.defaultProps = {
-  onSnippetClick: undefined,
-};
-
 export const mapStateToProps = (state, ownProps) => ({
   template: state.templates.find(tmpl => tmpl.get('_id') === ownProps.doc.template),
 });

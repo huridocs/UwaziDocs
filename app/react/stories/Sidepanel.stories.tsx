@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { Sidepanel, Button } from 'V2/Components/UI';
 import { SidePanelProps } from 'app/V2/Components/UI/Sidepanel';
 import { GeneratedContent } from './helpers/GeneratedContent';

@@ -893,6 +893,7 @@ Two-factor verification failed,فشل التحقق الثنائي (التحقق 
 Two-step verification,التحقق الثنائي (التحقق بخطوتين)
 Two-step verification token required,Two-step verification token required
 Type,نوع
+"Unable to save, failed response","Unable to save, failed response"
 Unexpected error,Unexpected error
 Uninstall,Uninstall
 Uninstall language,Uninstall language

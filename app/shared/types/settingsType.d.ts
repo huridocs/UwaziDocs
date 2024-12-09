@@ -133,6 +133,7 @@ export interface Settings {
 }
 
 export interface SettingsSublinkSchema {
+  _id?: string | ObjectId;
   title: string;
   type: 'link';
   url: string;

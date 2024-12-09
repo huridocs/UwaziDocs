@@ -2,7 +2,7 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { InputField } from 'V2/Components/Forms';
 
 const meta: Meta<typeof InputField> = {

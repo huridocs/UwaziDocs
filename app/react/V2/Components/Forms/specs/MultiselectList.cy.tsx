@@ -2,7 +2,7 @@ import React from 'react';
 import 'cypress-axe';
 import { Provider } from 'react-redux';
 import { mount } from '@cypress/react18';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { MultiselectList } from '../MultiselectList';
 
 describe('MultiselectList.cy.tsx', () => {
