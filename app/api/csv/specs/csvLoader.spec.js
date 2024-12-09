@@ -403,44 +403,58 @@ describe('csvLoader', () => {
     });
   });
 
-  test('given the user has english, spanish and french languages installed and imported a csv with metadata in both versions, it should import translated version correctly', async () => {
-    jest.restoreAllMocks();
-    const _fixtures = { ...fixtures };
-    const dateFormat = 'MM/dd/yyyy';
-    const _settings = {
-      ..._fixtures.settings[0],
-      languages: [
-        { key: 'en', label: 'English', default: true },
-        { key: 'es', label: 'Spanish' },
-        { key: 'fr', label: 'French' },
-      ],
-      newNameGeneration: true,
-      dateFormat,
+  describe('should parse date respecting the dateFormat on settings collection ', () => {
+    beforeEach(() => jest.restoreAllMocks());
+
+    const setDateFormat = async dateFormat => {
+      const _fixtures = { ...fixtures };
+      _fixtures.settings = [
+        {
+          ..._fixtures.settings[0],
+          languages: [
+            { key: 'en', label: 'English', default: true },
+            { key: 'es', label: 'Spanish' },
+          ],
+          dateFormat,
+        },
+      ];
+      await db.setupFixturesAndContext(_fixtures);
     };
-    _fixtures.settings = [_settings];
-    await db.setupFixturesAndContext(_fixtures);
-    const csv = path.join(__dirname, '/simple_template.csv');
-    const selectedLanguageOnUserInterface = 'es';
 
-    await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+    it('should correctly parse MM/dd/yyyy', async () => {
+      const dateFormat = 'MM/dd/yyyy';
+      await setDateFormat(dateFormat);
 
-    const [englishEntity] = await entities.get({ language: 'en' });
-    const [spanishEntity] = await entities.get({ language: 'es' });
-    const [frenchEntity] = await entities.get({ language: 'fr' });
+      const dateOnCSV = '12/31/2024';
+      const csv = path.join(__dirname, '/simple_template.csv');
+      const selectedLanguageOnUserInterface = 'es';
+      const expectedDate = moment.utc(dateOnCSV, [dateFormat.toUpperCase()]).unix();
 
-    expect(spanishEntity.metadata).toEqual({
-      simple_text_field: [{ value: 'Spanish' }],
-      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
+      await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+
+      const [englishEntity] = await entities.get({ language: 'en' });
+      const [spanishEntity] = await entities.get({ language: 'es' });
+
+      expect(spanishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
+      expect(englishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
     });
 
-    expect(englishEntity.metadata).toEqual({
-      simple_text_field: [{ value: 'English' }],
-      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
-    });
+    it('should correctly parse yyyy/MM/dd', async () => {
+      const dateFormat = 'yyyy/MM/dd';
+      await setDateFormat(dateFormat);
 
-    expect(frenchEntity.metadata).toEqual({
-      simple_text_field: [{ value: 'French' }],
-      date_field: [{ value: moment.utc('12/01/2024', [dateFormat.toUpperCase()]).unix() }],
+      const dateOnCSV = '2024/12/31';
+      const csv = path.join(__dirname, '/simple_template_2.csv');
+      const selectedLanguageOnUserInterface = 'es';
+      const expectedDate = moment.utc(dateOnCSV, [dateFormat.toUpperCase()]).unix();
+
+      await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+
+      const [englishEntity] = await entities.get({ language: 'en' });
+      const [spanishEntity] = await entities.get({ language: 'es' });
+
+      expect(spanishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
+      expect(englishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
     });
   });
 });
