@@ -894,6 +894,7 @@ Two-factor verification failed,이중 인증 절차 실패
 Two-step verification,이중 인증
 Two-step verification token required,Two-step verification token required
 Type,유형
+"Unable to save, failed response","Unable to save, failed response"
 Unexpected error,Unexpected error
 Uninstall,Uninstall
 Uninstall language,Uninstall language
