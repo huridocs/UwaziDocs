@@ -4,12 +4,13 @@ import { isClient } from 'app/utils';
 import { PageReferences } from 'app/Viewer/components/PageReferences';
 import { PageSelections } from 'app/Viewer/components/PageSelections';
 import { calculateScaling } from 'V2/Components/PDFViewer';
+import { atomStore, pdfScaleAtom } from 'V2/atoms';
 import PDFJS, { EventBus } from '../PDFJS';
 
 class PDFPage extends Component {
   constructor(props) {
     super(props);
-    this.state = { rendered: false, scaleFactor: 1 };
+    this.state = { rendered: false };
   }
 
   componentDidMount() {
@@ -124,7 +125,7 @@ class PDFPage extends Component {
 
         const adjustedViewport = page.getViewport({ scale: adjustedScale });
 
-        this.setState({ scaleFactor: adjustedScale });
+        atomStore.set(pdfScaleAtom, adjustedScale);
 
         this.pdfPageView = new PDFJS.PDFPageView({
           container: this.pageContainer,

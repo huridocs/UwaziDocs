@@ -107,7 +107,10 @@ describe('Page selections highlights', () => {
         propertyID: '4356fdsassda',
         name: 'property_name',
         timestamp: 'today',
-        selection: { text: 'new selected text', selectionRectangles: [{ top: 10, page: '1' }] },
+        selection: {
+          text: 'new selected text',
+          selectionRectangles: [{ top: 10, left: 1, width: 20, height: 1, page: '1' }],
+        },
       },
     ];
     render();
@@ -121,7 +124,7 @@ describe('Page selections highlights', () => {
         timestamp: 'newTitle',
         selection: {
           text: 'new selected text to replace current title',
-          selectionRectangles: [{ top: 10, page: '1' }],
+          selectionRectangles: [{ top: 10, left: 1, width: 20, height: 1, page: '1' }],
         },
       },
     ];
@@ -139,7 +142,7 @@ describe('Page selections highlights', () => {
         timestamp: 'newProperty',
         selection: {
           text: 'new selected text to replace current selected text for the property',
-          selectionRectangles: [{ top: 10, page: '1' }],
+          selectionRectangles: [{ top: 10, left: 1, width: 20, height: 1, page: '1' }],
         },
       },
     ];
