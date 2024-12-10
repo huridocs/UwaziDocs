@@ -196,13 +196,19 @@ const adjustSelectionsToScale = (
   const scaledSelection = { ...selection };
 
   if (scaledSelection.selectionRectangles.length) {
-    scaledSelection.selectionRectangles = selection.selectionRectangles.map(rectangle => ({
-      ...rectangle,
-      left: normalize ? rectangle.left / scalingFactor : rectangle.left * scalingFactor,
-      top: normalize ? rectangle.top / scalingFactor : rectangle.top * scalingFactor,
-      width: normalize ? rectangle.width / scalingFactor : rectangle.width * scalingFactor,
-      height: normalize ? rectangle.height / scalingFactor : rectangle.height * scalingFactor,
-    }));
+    scaledSelection.selectionRectangles = selection.selectionRectangles.map(rectangle => {
+      const left = rectangle.left || 0;
+      const top = rectangle.top || 0;
+      const width = rectangle.width || 0;
+      const height = rectangle.height || 0;
+      return {
+        ...rectangle,
+        left: normalize ? left / scalingFactor : left * scalingFactor,
+        top: normalize ? top / scalingFactor : top * scalingFactor,
+        width: normalize ? width / scalingFactor : width * scalingFactor,
+        height: normalize ? height / scalingFactor : height * scalingFactor,
+      };
+    });
   }
 
   return scaledSelection;
