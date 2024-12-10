@@ -32,7 +32,7 @@ describe('ImageViewer', () => {
     //delay the fetch response
     (global.fetch as jest.Mock).mockImplementation(async () => new Promise(() => {}));
     await renderComponent();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading')).toBeInTheDocument();
   });
 
   it('should render the image if it exists', async () => {
