@@ -31,6 +31,8 @@ import {
   getFilesForSuggestions,
   propertyTypeIsWithoutExtractedMetadata,
   propertyTypeIsSelectOrMultiSelect,
+  NoSegmentedFiles,
+  NoLabeledFiles,
 } from 'api/services/informationextraction/getFiles';
 import { Suggestions } from 'api/suggestions/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
@@ -403,13 +405,13 @@ class InformationExtraction {
 
     const [extractor] = await Extractors.get({ _id: extractorId });
     const serviceUrl = await this.serviceUrl();
-    const materialsSent = await this.materialsForModel(extractor, serviceUrl);
+    const [materialsSent, status] = await this.materialsForModel(extractor, serviceUrl);
     if (!materialsSent) {
       if (model) {
         model.findingSuggestions = false;
         await IXModelsModel.save(model);
       }
-      return { status: 'error', message: 'No labeled data' };
+      return status || { status: 'error', message: 'No labeled data' };
     }
 
     const template = await templatesModel.getById(extractor.templates[0]);
@@ -508,14 +510,33 @@ class InformationExtraction {
     return { status: 'error', message: 'No model found' };
   };
 
-  materialsForModel = async (extractor: IXExtractorType, serviceUrl: string) => {
-    const files = await getFilesForTraining(extractor.templates, extractor.property);
-    if (!files.length) {
-      return false;
+  async materialsForModel(
+    extractor: IXExtractorType,
+    serviceUrl: string
+  ): Promise<[boolean, { status: string; message: string }?]> {
+    try {
+      const files = await getFilesForTraining(extractor.templates, extractor.property);
+      if (!files.length) {
+        return [false];
+      }
+      await this.sendMaterials(files, extractor, serviceUrl);
+      return [true];
+    } catch (e) {
+      if (e instanceof NoSegmentedFiles) {
+        return [
+          false,
+          {
+            status: 'error',
+            message: 'There are no documents segmented yet, please try again later',
+          },
+        ];
+      }
+      if (e instanceof NoLabeledFiles) {
+        return [false, { status: 'error', message: 'No labeled data' }];
+      }
+      throw e;
     }
-    await this.sendMaterials(files, extractor, serviceUrl);
-    return true;
-  };
+  }
 
   saveModelProcess = async (
     extractorId: ObjectIdSchema,

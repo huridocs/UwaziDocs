@@ -1,11 +1,11 @@
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { Provider } from 'jotai';
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { fn } from '@storybook/test';
 import { DatePicker } from 'app/V2/Components/Forms';
-import { LEGACY_createStore as createStore, atomsGlobalState } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore, TestAtomStoreProvider } from 'V2/testing';
+import { settingsAtom } from 'V2/atoms';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Forms/DatePicker',
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof DatePicker>;
 const Primary: Story = {
   render: args => (
     <ReduxProvider store={createStore()}>
-      <Provider store={atomsGlobalState()}>
+      <TestAtomStoreProvider initialValues={[[settingsAtom, { dateFormat: 'dd-mm-yyyy' }]]}>
         <DatePicker
           name={args.name}
           label={args.label}
@@ -42,7 +42,7 @@ const Primary: Story = {
           onBlur={args.onBlur}
           clearFieldAction={args.clearFieldAction}
         />
-      </Provider>
+      </TestAtomStoreProvider>
     </ReduxProvider>
   ),
 };

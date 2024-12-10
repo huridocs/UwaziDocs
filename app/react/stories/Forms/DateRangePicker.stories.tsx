@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { fn } from '@storybook/test';
 import { DateRangePicker } from 'app/V2/Components/Forms';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 
 const meta: Meta<typeof DateRangePicker> = {
   title: 'Forms/DateRangePicker',
