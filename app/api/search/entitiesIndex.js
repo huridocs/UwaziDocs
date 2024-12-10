@@ -7,7 +7,7 @@ import { ElasticEntityMapper } from 'api/entities.v2/database/ElasticEntityMappe
 import { MongoTemplatesDataSource } from 'api/templates.v2/database/MongoTemplatesDataSource';
 import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
 import { MongoSettingsDataSource } from 'api/settings.v2/database/MongoSettingsDataSource';
-import { LanguageMapper } from 'shared/language';
+import { LanguageUtils } from 'shared/language';
 import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
 import elasticMapping from '../../../database/elastic_mapping/elastic_mapping';
 import elasticMapFactory from '../../../database/elastic_mapping/elasticMapFactory';
@@ -50,7 +50,7 @@ function setFullTextSettings(defaultDocument, id, body, doc) {
     language = detectLanguage(fullText);
   }
   if (defaultDocument.language) {
-    language = LanguageMapper.fromTo(defaultDocument.language, 'ISO639_3', 'elastic');
+    language = LanguageUtils.fromISO639_3(defaultDocument.language).elastic;
   }
   const fullTextObject = {
     [`fullText_${language}`]: fullText,

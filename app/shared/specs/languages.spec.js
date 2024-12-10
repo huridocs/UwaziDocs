@@ -1,5 +1,6 @@
 import { detectLanguage } from 'shared/detectLanguage';
-import { availableLanguages, LanguageMapper } from 'shared/language';
+import { availableLanguages, LanguageUtils } from 'shared/language';
+import { otherLanguageSchema } from 'shared/language/availableLanguages';
 
 describe('languages', () => {
   describe('detectLanguage', () => {
@@ -33,42 +34,41 @@ describe('languages', () => {
     });
   });
 
-  describe('Language Mapper', () => {
-    test('when given a valid code language, it should translate correctly', () => {
-      const englishLanguageSchema = availableLanguages.find(item => item.ISO639_3 === 'eng');
+  describe('Language Utils', () => {
+    it('should return language schema for the given a ISO639_3 language code', () => {
+      const input = availableLanguages[0];
 
-      expect(LanguageMapper.fromTo(englishLanguageSchema.ISO639_1, 'ISO639_1', 'ISO639_3')).toBe(
-        englishLanguageSchema.ISO639_3
-      );
-
-      expect(LanguageMapper.fromTo(englishLanguageSchema.ISO639_1, 'ISO639_1', 'elastic')).toBe(
-        englishLanguageSchema.elastic
-      );
-
-      expect(LanguageMapper.fromTo(englishLanguageSchema.ISO639_3, 'ISO639_3', 'ISO639_1')).toBe(
-        englishLanguageSchema.ISO639_1
-      );
-
-      expect(LanguageMapper.fromTo(englishLanguageSchema.ISO639_3, 'ISO639_3', 'elastic')).toBe(
-        englishLanguageSchema.elastic
-      );
-
-      expect(LanguageMapper.fromTo(englishLanguageSchema.elastic, 'elastic', 'ISO639_1')).toBe(
-        englishLanguageSchema.ISO639_1
-      );
-
-      expect(LanguageMapper.fromTo(englishLanguageSchema.elastic, 'elastic', 'ISO639_3')).toBe(
-        englishLanguageSchema.ISO639_3
-      );
+      expect(LanguageUtils.fromISO639_3(input.ISO639_3)).toEqual(input);
     });
 
-    test('when given a code language that does not have a translation and it is different from "ISO639_1", it should return "other" as default value', () => {
-      expect(LanguageMapper.fromTo('any_code_language', 'ISO639_3', 'ISO639_3')).toBe('other');
-      expect(LanguageMapper.fromTo('any_code_language', 'ISO639_3', 'elastic')).toBe('other');
+    it('should return default language schema if given a ISO639_3 language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromISO639_3(input)).toEqual(otherLanguageSchema);
     });
 
-    test('when given a code language that does not have a translation and it is equal to "ISO639_1", it should return null as default value', () => {
-      expect(LanguageMapper.fromTo('any_code_language', 'ISO639_3', 'ISO639_1')).toBe(null);
+    it('should return language schema for the given a elastic language code', () => {
+      const input = availableLanguages.find(language => Boolean(language.elastic));
+
+      expect(LanguageUtils.fromElastic(input.elastic)).toEqual(input);
+    });
+
+    it('should return default language schema if given a elastic language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromElastic(input)).toEqual(otherLanguageSchema);
+    });
+
+    it('should return language schema for the given a ISO639_1 language code', () => {
+      const input = availableLanguages[0];
+
+      expect(LanguageUtils.fromISO639_1(input.ISO639_1)).toEqual(input);
+    });
+
+    it('should return null if given a ISO639_1 language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromISO639_1(input)).toBe(null);
     });
   });
 });

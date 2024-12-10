@@ -9,7 +9,7 @@ import { FileType } from 'shared/types/fileType';
 import { IXSuggestionType } from 'shared/types/suggestionType';
 import { Suggestions } from './suggestions';
 import templates from 'api/templates';
-import { LanguageMapper } from 'shared/language';
+import { LanguageUtils } from 'shared/language';
 
 const fetchEntitiesBatch = async (query: any, limit: number = 100) =>
   entitiesModel.db.find(query).select('sharedId').limit(limit).sort({ _id: 1 }).lean();
@@ -49,7 +49,7 @@ export const getBlankSuggestion = (
   defaultLanguage: string
 ) => ({
   language: file.language
-    ? LanguageMapper.fromTo(file.language, 'ISO639_3', 'ISO639_1') || defaultLanguage
+    ? LanguageUtils.fromISO639_3(file.language)?.ISO639_1 || defaultLanguage
     : defaultLanguage,
   fileId: file._id,
   entityId: file.entity!,

@@ -36,9 +36,12 @@ describe('migration add-file-field-to-connections', () => {
   });
 
   it('should work with unsuported languages by elastic without errors', async () => {
-    const fullyUnsupportedElasticLanguage = { key: 'kn', default: true };
-    fixtures.settings[0].languages = [fullyUnsupportedElasticLanguage];
-
+    fixtures.settings[0].languages = [
+      {
+        key: 'ja',
+        default: true,
+      },
+    ];
     await testingDB.clearAllAndLoad(fixtures);
     await migration.up(testingDB.mongodb);
   });

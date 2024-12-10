@@ -35,7 +35,7 @@ import {
 } from 'api/services/informationextraction/getFiles';
 import { Suggestions } from 'api/suggestions/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
-import { LanguageMapper } from 'shared/language';
+import { LanguageUtils } from 'shared/language';
 import { IXModelType } from 'shared/types/IXModelType';
 import { ParagraphSchema } from 'shared/types/segmentationType';
 import ixmodels from './ixmodels';
@@ -175,7 +175,7 @@ class InformationExtraction {
     _data: CommonMaterialsData
   ): MaterialsData => {
     const languageIso =
-      LanguageMapper.fromTo(file.language!, 'ISO639_3', 'ISO639_1') || defaultTrainingLanguage;
+      LanguageUtils.fromISO639_3(file.language!)?.ISO639_1 || defaultTrainingLanguage;
 
     let data: MaterialsData = { ..._data, language_iso: languageIso };
 
@@ -258,7 +258,7 @@ class InformationExtraction {
   _getEntityFromFile = async (file: EnforcedWithId<FileType> | FileWithAggregation) => {
     let [entity] = await entities.getUnrestricted({
       sharedId: file.entity,
-      language: LanguageMapper.fromTo(file.language!, 'ISO639_3', 'ISO639_1'),
+      language: LanguageUtils.fromISO639_3(file.language!)?.ISO639_1,
     });
 
     if (!entity) {
@@ -347,7 +347,7 @@ class InformationExtraction {
       ...existingSuggestions,
       entityId: entity.sharedId!,
       fileId: file._id,
-      language: LanguageMapper.fromTo(file.language, 'ISO639_3', 'ISO639_1') || 'other',
+      language: LanguageUtils.fromISO639_3(file.language)?.ISO639_1 || 'other',
       extractorId: extractor._id,
       propertyName: extractor.property,
       status: 'processing',
