@@ -58,7 +58,7 @@ describe('FileList', () => {
     render();
     const renderedFiles = component.find(File);
     const firstFile = renderedFiles.at(0).props().file;
-    const language = LanguageUtils.fromISO639_3(firstFile.language as string).ISO639_1;
+    const language = LanguageUtils.fromISO639_3(firstFile.language as string)?.ISO639_1;
     expect(entity.language).toEqual(language);
   });
 
