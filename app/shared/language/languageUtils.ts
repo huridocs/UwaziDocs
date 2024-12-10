@@ -34,8 +34,10 @@ class LanguageUtils {
     return this.uniqueValues(languages.map(item => item[languageCode]) as string[]);
   }
 
-  static fromISO639_3(ISO639_3: string): LanguageSchema {
-    return this.ISO639_3Index[ISO639_3] || otherLanguageSchema;
+  static fromISO639_3(ISO639_3: string, enableFallback = true): LanguageSchema | null {
+    const fallback = enableFallback ? otherLanguageSchema : null;
+
+    return this.ISO639_3Index[ISO639_3] || fallback;
   }
 
   static fromISO639_1(ISO639_1: string): LanguageSchema | null {

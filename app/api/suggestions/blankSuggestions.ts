@@ -49,7 +49,7 @@ export const getBlankSuggestion = (
   defaultLanguage: string
 ) => ({
   language: file.language
-    ? LanguageUtils.fromISO639_3(file.language)?.ISO639_1 || defaultLanguage
+    ? LanguageUtils.fromISO639_3(file.language, false)?.ISO639_1 || defaultLanguage
     : defaultLanguage,
   fileId: file._id,
   entityId: file.entity!,

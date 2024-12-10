@@ -202,7 +202,7 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
   const defaultLang = (await settings.getDefaultLanguage())?.key;
 
   const filesWithEntityValue = files.map(file => {
-    const fileLang = LanguageUtils.fromISO639_3(file.language)?.ISO639_1 || defaultLang;
+    const fileLang = LanguageUtils.fromISO639_3(file.language, false)?.ISO639_1 || defaultLang;
     const entity = indexedEntities[file.entity + fileLang];
     if (!entity?.metadata || !entity?.metadata[property]?.length) {
       return { ...file, propertyType };

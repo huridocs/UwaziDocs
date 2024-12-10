@@ -175,7 +175,7 @@ class InformationExtraction {
     _data: CommonMaterialsData
   ): MaterialsData => {
     const languageIso =
-      LanguageUtils.fromISO639_3(file.language!)?.ISO639_1 || defaultTrainingLanguage;
+      LanguageUtils.fromISO639_3(file.language!, false)?.ISO639_1 || defaultTrainingLanguage;
 
     let data: MaterialsData = { ..._data, language_iso: languageIso };
 
