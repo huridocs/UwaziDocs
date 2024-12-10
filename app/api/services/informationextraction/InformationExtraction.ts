@@ -510,7 +510,10 @@ class InformationExtraction {
     return { status: 'error', message: 'No model found' };
   };
 
-  materialsForModel = async (extractor: IXExtractorType, serviceUrl: string) => {
+  async materialsForModel(
+    extractor: IXExtractorType,
+    serviceUrl: string
+  ): Promise<[boolean, { status: string; message: string }?]> {
     try {
       const files = await getFilesForTraining(extractor.templates, extractor.property);
       if (!files.length) {
@@ -533,7 +536,7 @@ class InformationExtraction {
       }
       throw e;
     }
-  };
+  }
 
   saveModelProcess = async (
     extractorId: ObjectIdSchema,
