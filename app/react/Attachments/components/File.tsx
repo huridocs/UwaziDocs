@@ -105,9 +105,7 @@ class File extends Component<FileOwnProps, FileState> {
       <div>
         <div>
           <span className="badge">
-            <Translate>
-              {language ? LanguageUtils.getLanguageSchema(language)?.label || '' : ''}
-            </Translate>
+            <Translate>{language ? LanguageUtils.getSchema(language)?.label || '' : ''}</Translate>
           </span>
           <TocGeneratedLabel file={this.props.file}>
             <Translate>ML TOC</Translate>

@@ -3,7 +3,7 @@ import { LanguageSchema } from 'shared/types/commonTypes';
 
 type LanguageCode = 'elastic' | 'ISO639_3' | 'ISO639_1';
 
-const OTHER_LANGUAGE_SCHEMA: LanguageSchema = {
+const otherLanguageSchema: LanguageSchema = {
   label: 'Other',
   key: 'other' as any,
   ISO639_1: 'other',
@@ -1553,4 +1553,4 @@ const availableLanguages: LanguageSchema[] = [
 
 export type { LanguageCode };
 
-export { OTHER_LANGUAGE_SCHEMA, availableLanguages };
+export { otherLanguageSchema, availableLanguages };
