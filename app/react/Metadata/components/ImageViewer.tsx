@@ -1,15 +1,36 @@
 import { Translate } from 'app/I18N';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ImageViewerProps {
-  key: string;
-  className: string;
   src: string;
   alt: string;
+  className?: string;
 }
 
-const ImageViewer = (props: ImageViewerProps) => {
+const ImageViewer = ({ alt, src, className }: ImageViewerProps) => {
+  const [imageExists, setImageExists] = useState<boolean | null>(null);
   const [errorFlag, setErrorFlag] = useState(false);
+
+  useEffect(() => {
+    const checkImageExists = async (url: string) => {
+      try {
+        const response = await fetch(url, { method: 'GET' });
+        setImageExists(Boolean(response.ok));
+      } catch (error) {
+        setImageExists(false);
+      }
+    };
+
+    // eslint-disable-next-line no-void
+    void checkImageExists(src);
+  }, [src]);
+  if (imageExists === false) {
+    return (
+      <div className="media-error">
+        <Translate>Image not found</Translate>
+      </div>
+    );
+  }
 
   if (errorFlag) {
     return (
@@ -19,14 +40,11 @@ const ImageViewer = (props: ImageViewerProps) => {
     );
   }
 
-  return (
-    <img
-      {...props}
-      onError={() => {
-        setErrorFlag(true);
-      }}
-    />
-  );
+  if (imageExists === null) {
+    return <div>Loading</div>;
+  }
+
+  return <img className={className} src={src} onError={() => setErrorFlag(true)} alt={alt} />;
 };
 
 export { ImageViewer, type ImageViewerProps };

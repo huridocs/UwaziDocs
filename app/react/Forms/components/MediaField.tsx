@@ -6,6 +6,7 @@ import { ClientFile } from 'app/istore';
 import { prepareHTMLMediaView } from 'shared/fileUploadUtils';
 import { MediaModal, MediaModalProps, MediaModalType } from 'app/Metadata/components/MediaModal';
 import MarkdownMedia, { TimeLink } from 'app/Markdown/components/MarkdownMedia';
+import { ImageViewer } from 'app/Metadata/components/ImageViewer';
 
 type MediaFieldProps = MediaModalProps & {
   value: string | { data: string; originalFile: Partial<File> } | null;
@@ -61,11 +62,6 @@ const MediaField = (props: MediaFieldProps) => {
     multipleEdition,
   } = props;
   const [openModal, setOpenModal] = useState(false);
-  const [imageRenderError, setImageRenderError] = useState(false);
-
-  useEffect(() => {
-    setImageRenderError(false);
-  }, [localAttachments]);
 
   const handleCloseMediaModal = () => {
     setOpenModal(false);
@@ -122,34 +118,12 @@ const MediaField = (props: MediaFieldProps) => {
       </div>
 
       {(() => {
-        if (imageRenderError) {
-          return (
-            <div className="media-error">
-              <Translate>This file type is not supported on media fields</Translate>
-            </div>
-          );
-        }
+        console.log(file, type);
         if (
-          (file &&
-            file.data &&
-            file.supportingFile &&
-            file.supportingFile.mimetype?.search(/image\/*/) !== -1) ||
+          file?.supportingFile?.mimetype?.search(/image\/*/) !== -1 ||
           type === MediaModalType.Image
         ) {
-          return file?.fileURL ? (
-            <img
-              src={file?.fileURL}
-              alt=""
-              onError={() => {
-                if (file?.fileURL) {
-                  setImageRenderError(true);
-                }
-              }}
-            />
-          ) : (
-            // eslint-disable-next-line react/jsx-no-useless-fragment
-            <></>
-          );
+          return file?.fileURL ? <ImageViewer src={file.fileURL} alt="media" /> : null;
         }
         if (file?.fileURL) {
           return (

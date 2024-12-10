@@ -378,6 +378,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.",ပြင်ပ URL ဖြစ်ပါက URL ပုံစံအပြည့်အစုံကို သုံးပါ။ ဥပမာ- http://www.uwazi.io။
 "If you want to continue, please type",ဆက်လက်ဆောင်ရွက်လိုပါက ကျေးဇူးပြု၍ စာရိုက်ပါ
+Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,ထည့်သွင်းရန်
 Import asset,Import asset

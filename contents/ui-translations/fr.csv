@@ -377,6 +377,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","Si c'est une URL externe, utilisez une URL complète. Par exemple, http://www.uwazi.io."
 "If you want to continue, please type","Si vous voulez continuer, veuillez taper"
+Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,Importer
 Import asset,Import asset

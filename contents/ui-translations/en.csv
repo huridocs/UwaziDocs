@@ -380,6 +380,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io."
 "If you want to continue, please type","If you want to continue, please type"
+Image not found,Image not found
 Impact of property change warning,"By making this change, any values  from the previous thesaurus already assigned to entities will be lost."
 Import,Import
 Import asset,Import asset
