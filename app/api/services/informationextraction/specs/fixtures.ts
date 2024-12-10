@@ -16,6 +16,7 @@ const ficturesPdfNameJ = 'documentJ.pdf';
 const fixturesPdfNameK = 'documentK.pdf';
 const fixturesPdfNameL = 'documentL.pdf';
 const fixturesPdfNameM = 'documentM.pdf';
+const pdfWithouTSegmentations = 'documentWithoutSegmentations.pdf';
 
 const fixtures: DBFixture = {
   settings: [
@@ -54,6 +55,7 @@ const fixtures: DBFixture = {
     factory.ixExtractor('extractorWithRelationshipToAny', 'property_relationship_to_any', [
       'templateToSegmentF',
     ]),
+    factory.ixExtractor('extractorWithoutSegmentations', 'title', ['templateWithoutSegmentations']),
   ],
   entities: [
     factory.entity('P1', 'relationshipPartnerTemplate', {}, { sharedId: 'P1sharedId' }),
@@ -137,6 +139,7 @@ const fixtures: DBFixture = {
       property_empty_relationship: [],
       property_relationship_to_any: [],
     }),
+    factory.entity('entityWithoutSegmentation', 'templateWithoutSegmentations', {}),
   ],
   files: [
     factory.fileDeprecated('F1', 'A1', 'document', fixturesPdfNameA, 'other', '', [
@@ -193,6 +196,20 @@ const fixtures: DBFixture = {
     factory.fileDeprecated('F21', 'A21', 'document', fixturesPdfNameK, 'eng'),
     factory.fileDeprecated('F22', 'A22', 'document', fixturesPdfNameL, 'eng'),
     factory.fileDeprecated('F23', 'A23', 'document', fixturesPdfNameM, 'eng'),
+    factory.document('FileWithoutSegmentations', {
+      language: 'eng',
+      filename: pdfWithouTSegmentations,
+      entity: 'entityWithoutSegmentation',
+      extractedMetadata: [
+        {
+          name: 'title',
+          selection: {
+            text: 'something',
+            selectionRectangles: [{ top: 0, left: 0, width: 0, height: 0, page: '1' }],
+          },
+        },
+      ],
+    }),
   ],
   segmentations: [
     {
@@ -764,6 +781,7 @@ const fixtures: DBFixture = {
         relationType: factory.idString('relatedToAny'),
       }),
     ]),
+    factory.template('templateWithoutSegmentations'),
   ],
   dictionaries: [factory.nestedThesauri('thesauri1', ['A', 'B', 'C', { 1: ['1A', '1B'] }])],
 };
