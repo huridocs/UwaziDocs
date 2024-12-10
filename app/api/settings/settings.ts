@@ -17,16 +17,9 @@ import { settingsModel } from './settingsModel';
 
 const DEFAULT_MAP_STARTING_POINT: LatLonSchema[] = [{ lon: 6, lat: 46 }];
 
-type FilterOrLink = SettingsFilterSchema | SettingsLinkSchema;
+type FilterOrLink = SettingsFilterSchema | SettingsLinkSchema | SettingsSublinkSchema;
 
 const isLink = (item: any): item is SettingsLinkSchema => item.type && item.title;
-
-type SubLinkKeyType = keyof SettingsSublinkSchema;
-
-const subLinkProperties: SubLinkKeyType[] = ['title' as 'title', 'url' as 'url'];
-
-const isSubLinkKey = (key: string | number | symbol): key is SubLinkKeyType =>
-  subLinkProperties.includes(key as any);
 
 const getUpdatesAndDeletes = <T extends FilterOrLink>(
   matchProperty: keyof T,
@@ -36,45 +29,45 @@ const getUpdatesAndDeletes = <T extends FilterOrLink>(
 ) => {
   const updatedValues: { [k: string]: any } = {};
   const deletedValues: string[] = [];
+  const values: { [k: string]: string } = {};
 
-  currentValues.forEach(value => {
-    const matchValue = newValues.find(
-      v => v[matchProperty] && v[matchProperty]?.toString() === value[matchProperty]?.toString()
+  //flatten values
+  const flattenedCurrentValues = currentValues.reduce((result, value) => {
+    if (isLink(value) && value.sublinks) {
+      return [...result, ...(value.sublinks as T[]), value];
+    }
+    return [...result, value];
+  }, [] as T[]);
+
+  const flattenedNewValues = newValues.reduce<T[]>((result, value) => {
+    if (isLink(value) && value.sublinks) {
+      return [...result, ...(value.sublinks as T[]), value];
+    }
+    return [...result, value];
+  }, [] as T[]);
+
+  flattenedCurrentValues.forEach(value => {
+    const matchValue = flattenedNewValues.find(
+      (v): v is T =>
+        v[matchProperty] && v[matchProperty]?.toString() === value[matchProperty]?.toString()
     );
 
-    if (value[propertyName] && matchValue && matchValue[propertyName] !== value[propertyName]) {
-      if (isLink(value) && value.sublinks && isSubLinkKey(propertyName)) {
-        value.sublinks.forEach(sublink => {
-          updatedValues[ensure<string>(sublink[propertyName])] = sublink[propertyName];
-        });
-      }
-      updatedValues[ensure<string>(value[propertyName])] = matchValue[propertyName];
-    }
     if (!matchValue) {
-      if (isLink(value) && value.sublinks && isSubLinkKey(propertyName)) {
-        value.sublinks.forEach(sublink => {
-          if (sublink[propertyName]) {
-            deletedValues.push(ensure<string>(sublink[propertyName] as string));
-          }
-        });
-      }
       deletedValues.push(ensure<string>(value[propertyName]));
+      return;
+    }
+
+    const nameHasChanged = value[propertyName] !== matchValue[propertyName];
+    if (nameHasChanged) {
+      updatedValues[ensure<string>(value[propertyName])] = matchValue[propertyName];
     }
   });
 
-  const values = newValues.reduce<{ [k: string]: string }>((result, value) => {
-    const sublinkResults: { [key: string]: string | unknown } = {};
-    if (isLink(value) && value.sublinks && isSubLinkKey(propertyName)) {
-      value.sublinks.forEach(sublink => {
-        sublinkResults[ensure<string>(sublink[propertyName])] = sublink[propertyName];
-      });
-    }
-    return {
-      ...result,
-      [ensure<string>(value[propertyName])]: value[propertyName],
-      ...sublinkResults,
-    } as { [k: string]: string };
-  }, {});
+  //latest values
+  flattenedNewValues.forEach(value => {
+    values[ensure<string>(value[propertyName])] = ensure<string>(value[propertyName]);
+  });
+
   return { updatedValues, deletedValues, values };
 };
 

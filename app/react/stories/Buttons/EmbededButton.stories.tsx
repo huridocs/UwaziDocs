@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import type { Meta, StoryObj } from '@storybook/react';
 import { EmbededButton } from 'app/V2/Components/UI/EmbededButton';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 import { Translate } from 'app/I18N';
 
 const meta: Meta<typeof EmbededButton> = {

@@ -17,7 +17,7 @@ const sanitizeIds = (_link: Link): ClientSettingsLinkSchema => {
   if (link.subRows) {
     const sublinks =
       link.subRows.map(sublink => {
-        const { _id, rowId: _deletedSubrowId, ...rest } = sublink;
+        const { rowId: _deletedSubrowId, ...rest } = sublink;
         return rest;
       }) || [];
     sanitizedLink.sublinks = sublinks;
