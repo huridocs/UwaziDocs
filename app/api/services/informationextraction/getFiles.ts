@@ -25,6 +25,9 @@ const MAX_TRAINING_FILES_NUMBER = 2000;
 
 type PropertyValue = string | Array<{ value: string; label: string }>;
 
+class NoSegmentedFiles extends Error {}
+class NoLabeledFiles extends Error {}
+
 interface FileWithAggregation {
   _id: ObjectIdSchema;
   segmentation: SegmentationType;
@@ -87,7 +90,8 @@ async function getFilesWithAggregations(files: (FileType & FileEnforcedNotUndefi
 
 async function getSegmentedFilesIds() {
   const segmentations = await SegmentationModel.get({ status: 'ready' }, 'fileID');
-  return segmentations.filter(x => x.fileID).map(x => x.fileID) as ObjectIdSchema[];
+  const result = segmentations.filter(x => x.fileID).map(x => x.fileID) as ObjectIdSchema[];
+  return result;
 }
 
 async function getPropertyType(templates: ObjectIdSchema[], property: string) {
@@ -106,27 +110,48 @@ async function getPropertyType(templates: ObjectIdSchema[], property: string) {
   return type;
 }
 
+async function anyFilesLabeled(
+  property: string,
+  propertyType: string,
+  entitiesFromTrainingTemplatesIds: string[]
+) {
+  const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
+  const count = await filesModel.count({
+    type: 'document',
+    filename: { $exists: true },
+    language: { $exists: true },
+    entity: { $in: entitiesFromTrainingTemplatesIds },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
+  });
+  return !!count;
+}
+
+async function anyFilesSegmented(property: string, propertyType: string) {
+  const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
+  const segmentedFilesCount = await filesModel.count({
+    type: 'document',
+    filename: { $exists: true },
+    language: { $exists: true },
+    _id: { $in: await getSegmentedFilesIds() },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
+  });
+  return !!segmentedFilesCount;
+}
+
 async function fileQuery(
   property: string,
   propertyType: string,
   entitiesFromTrainingTemplatesIds: string[]
 ) {
   const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
-  const query: {
-    type: string;
-    filename: { $exists: Boolean };
-    language: { $exists: Boolean };
-    _id: { $in: ObjectIdSchema[] };
-    'extractedMetadata.name'?: string;
-    entity: { $in: string[] };
-  } = {
+  const query = {
     type: 'document',
     filename: { $exists: true },
     language: { $exists: true },
     _id: { $in: await getSegmentedFilesIds() },
     entity: { $in: entitiesFromTrainingTemplatesIds },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
   };
-  if (needsExtractedMetadata) query['extractedMetadata.name'] = property;
   return query;
 }
 
@@ -153,6 +178,14 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
   const entitiesFromTrainingTemplatesIds = entities
     .filter(x => x.sharedId)
     .map(x => x.sharedId) as string[];
+
+  if (!(await anyFilesLabeled(property, propertyType, entitiesFromTrainingTemplatesIds))) {
+    throw new NoLabeledFiles();
+  }
+
+  if (!(await anyFilesSegmented(property, propertyType))) {
+    throw new NoSegmentedFiles();
+  }
 
   const files = (await filesModel.get(
     await fileQuery(property, propertyType, entitiesFromTrainingTemplatesIds),
@@ -238,5 +271,7 @@ export {
   propertyTypeIsSelectOrMultiSelect,
   propertyTypeIsWithoutExtractedMetadata,
   propertyTypeIsMultiValued,
+  NoLabeledFiles,
+  NoSegmentedFiles,
 };
 export type { FileWithAggregation };

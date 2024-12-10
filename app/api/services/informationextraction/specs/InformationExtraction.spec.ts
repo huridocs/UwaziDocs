@@ -444,6 +444,10 @@ describe('InformationExtraction', () => {
               id: `A${i + 1}`,
               label: `A${i + 1}`,
             })),
+            {
+              id: 'entityWithoutSegmentation',
+              label: 'entityWithoutSegmentation',
+            },
           ],
           metadata: {
             extractor_name: 'extractorWithRelationshipToAny',
@@ -481,6 +485,18 @@ describe('InformationExtraction', () => {
         extractorId: factory.id('extractorWithEmptyRelationship'),
       });
       expect(relationshipModel.findingSuggestions).toBe(false);
+    });
+
+    it('should return error status (No segmented files) and stop finding suggestions, when there are no segmented files', async () => {
+      const expectedError = {
+        status: 'error',
+        message: 'There are no documents segmented yet, please try again later',
+      };
+
+      const result = await informationExtraction.trainModel(
+        factory.id('extractorWithoutSegmentations')
+      );
+      expect(result).toMatchObject(expectedError);
     });
   });
 
