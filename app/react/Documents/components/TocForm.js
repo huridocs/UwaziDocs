@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-redux-form';
+import { atomStore, pdfScaleAtom } from 'V2/atoms';
 import { Icon } from 'UI';
 
-export class TocForm extends Component {
+class TocForm extends Component {
   constructor(props) {
     super(props);
     this.submit = this.submit.bind(this);
@@ -24,7 +25,8 @@ export class TocForm extends Component {
   }
 
   submit(toc) {
-    this.props.onSubmit(toc, this.props.file._id);
+    const documentScale = atomStore.get(pdfScaleAtom);
+    this.props.onSubmit(toc, this.props.file._id, documentScale);
   }
 
   render() {
@@ -70,4 +72,5 @@ TocForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 
+export { TocForm };
 export default TocForm;
