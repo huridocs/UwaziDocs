@@ -66,6 +66,6 @@ describe('ImageViewer', () => {
       img.dispatchEvent(new Event('error'));
     });
 
-    expect(screen.getByText('This file type is not supported on image fields')).toBeInTheDocument();
+    expect(screen.getByText('This file type is not supported on media fields')).toBeInTheDocument();
   });
 });
