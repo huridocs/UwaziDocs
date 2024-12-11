@@ -65,16 +65,22 @@ export class TaskManager<T = TaskMessage, R = ResultsMessage> {
     });
 
     this.redisClient.on('connect', () => {
-      this.redisSMQ.createQueue({ qname: this.taskQueue }, (err: Error | undefined) => {
-        if (err && err.name !== 'queueExists') {
-          throw err;
+      this.redisSMQ.createQueue(
+        { qname: this.taskQueue, maxsize: -1 },
+        (err: Error | undefined) => {
+          if (err && err.name !== 'queueExists') {
+            throw err;
+          }
         }
-      });
-      this.redisSMQ.createQueue({ qname: this.resultsQueue }, (err: Error | undefined) => {
-        if (err && err.name !== 'queueExists') {
-          throw err;
+      );
+      this.redisSMQ.createQueue(
+        { qname: this.resultsQueue, maxsize: -1 },
+        (err: Error | undefined) => {
+          if (err && err.name !== 'queueExists') {
+            throw err;
+          }
         }
-      });
+      );
     });
   }
 
