@@ -118,9 +118,8 @@ const MediaField = (props: MediaFieldProps) => {
       </div>
 
       {(() => {
-        console.log(file, type);
         if (
-          file?.supportingFile?.mimetype?.search(/image\/*/) !== -1 ||
+          (file?.data && file?.supportingFile?.mimetype?.search(/image\/*/) !== -1) ||
           type === MediaModalType.Image
         ) {
           return file?.fileURL ? <ImageViewer src={file.fileURL} alt="media" /> : null;
@@ -135,6 +134,7 @@ const MediaField = (props: MediaFieldProps) => {
             />
           );
         }
+        return null;
       })()}
 
       <MediaModal
