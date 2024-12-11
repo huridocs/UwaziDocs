@@ -137,6 +137,56 @@ describe('settings', () => {
             { 'Page 1': 'Page 1', 'Page three': 'Page three' }
           );
         });
+
+        it('should update the translation for links moving to groups', async () => {
+          const config = {
+            ...baseConfig,
+            links: [
+              ...baseConfig.links,
+              { title: 'Page two', type: 'link' as 'link', url: 'url2' },
+              {
+                title: 'Group one',
+                type: 'group' as 'group',
+                sublinks: [],
+              },
+            ],
+          };
+          const savedConfig = await settings.save(config);
+          const finalConfig = {
+            ...baseConfig,
+            links: [
+              {
+                title: 'Page one',
+                type: 'link' as 'link',
+                url: 'url',
+                _id: savedConfig.links?.[0]._id,
+              },
+              {
+                title: 'Group one',
+                type: 'group' as 'group',
+                sublinks: [
+                  {
+                    title: 'Page 2',
+                    type: 'link' as 'link',
+                    url: 'url2',
+                    _id: savedConfig.links?.[1]._id,
+                  },
+                ],
+                _id: savedConfig.links?.[2]._id,
+              },
+            ],
+          };
+
+          jest.clearAllMocks();
+          await settings.save(finalConfig);
+
+          expect(translations.updateContext).toHaveBeenCalledWith(
+            { id: 'Menu', label: 'Menu', type: 'Uwazi UI' },
+            { 'Page two': 'Page 2' },
+            [],
+            { 'Page one': 'Page one', 'Group one': 'Group one', 'Page 2': 'Page 2' }
+          );
+        });
       });
     });
 

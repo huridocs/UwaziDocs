@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Notification } from 'V2/Components/UI/Notification';
 import { Provider } from 'react-redux';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 
 const meta: Meta<typeof Notification> = {
   title: 'Components/Notification',

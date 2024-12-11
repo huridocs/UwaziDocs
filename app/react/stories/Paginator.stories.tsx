@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Paginator } from 'app/V2/Components/UI';
-import { LEGACY_createStore as createStore } from 'V2/shared/testingHelpers';
+import { LEGACY_createStore as createStore } from 'V2/testing';
 
 const meta: Meta<typeof Paginator> = {
   title: 'Components/Paginator',

@@ -167,6 +167,11 @@ const IXSuggestions = () => {
   const filteredTemplates = () =>
     templates ? templates.filter(template => extractor.templates.includes(template._id)) : [];
 
+  const fetchAgregations = async () => {
+    const newAggregations = await suggestionsAPI.aggregation(extractor._id);
+    setAggregations(newAggregations);
+  };
+
   const acceptSuggestions = async (acceptedSuggestions: TableSuggestion[]) => {
     try {
       const preparedSuggestions = acceptedSuggestions.map(acceptedSuggestion => {
@@ -192,8 +197,7 @@ const IXSuggestions = () => {
       });
 
       await suggestionsAPI.accept(preparedSuggestions);
-      const newAggregations = await suggestionsAPI.aggregation(extractor._id);
-      setAggregations(newAggregations);
+      await fetchAgregations();
       setCurrentSuggestions(current => updateSuggestions(current, acceptedSuggestions));
       setNotifications({
         type: 'success',
@@ -368,11 +372,12 @@ const IXSuggestions = () => {
         property={property}
         setShowSidepanel={closeSidepanel}
         suggestion={sidepanelSuggestion as EntitySuggestionType}
-        onEntitySave={updatedEntity =>
+        onEntitySave={async updatedEntity => {
           setCurrentSuggestions(
             updateSuggestionsByEntity(currentSuggestions, updatedEntity, property)
-          )
-        }
+          );
+          await fetchAgregations();
+        }}
       />
     </div>
   );
