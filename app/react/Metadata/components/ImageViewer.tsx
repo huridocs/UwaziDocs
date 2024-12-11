@@ -41,7 +41,7 @@ const ImageViewer = ({ alt, src, className }: ImageViewerProps) => {
   }
 
   if (imageExists === null) {
-    return <div>Loading</div>;
+    return <Translate>Loading</Translate>;
   }
 
   return <img className={className} src={src} onError={() => setErrorFlag(true)} alt={alt} />;
