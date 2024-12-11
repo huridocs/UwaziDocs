@@ -119,11 +119,14 @@ const MediaField = (props: MediaFieldProps) => {
 
       {(() => {
         if (
-          (file?.data && file?.supportingFile?.mimetype?.search(/image\/*/) !== -1) ||
+          (file?.data &&
+            file?.supportingFile?.mimetype &&
+            file?.supportingFile?.mimetype?.search(/image\/*/) !== -1) ||
           type === MediaModalType.Image
         ) {
           return file?.fileURL ? <ImageViewer src={file.fileURL} alt="media" /> : null;
         }
+
         if (file?.fileURL) {
           return (
             <MarkdownMedia
