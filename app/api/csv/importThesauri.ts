@@ -1,6 +1,6 @@
 import { createError } from 'api/utils';
 import csvtojson from 'csvtojson';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { ensure } from 'shared/tsUtils';
 import { LanguageSchema } from 'shared/types/commonTypes';
 import { ThesaurusValueSchema } from 'shared/types/thesaurusType';

@@ -498,6 +498,18 @@ describe('InformationExtraction', () => {
       );
       expect(result).toMatchObject(expectedError);
     });
+
+    it('should return error status (No segmented files) and stop finding suggestions, when there are no segmented files (select/multiselect/relationship)', async () => {
+      const expectedError = {
+        status: 'error',
+        message: 'There are no documents segmented yet, please try again later',
+      };
+
+      const result = await informationExtraction.trainModel(
+        factory.id('selectExtractorWithoutSegmentations')
+      );
+      expect(result).toMatchObject(expectedError);
+    });
   });
 
   describe('when model is trained', () => {

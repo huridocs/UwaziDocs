@@ -3,7 +3,7 @@ import React from 'react';
 import { Transition } from '@headlessui/react';
 import { useParams } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { Translate } from 'app/I18N';
 
 interface SidePanelProps {
