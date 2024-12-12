@@ -2,8 +2,8 @@ import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { FileType } from 'shared/types/fileType';
 import UploadButton from 'app/Metadata/components/UploadButton';
+import { LanguageUtils } from 'shared/language';
 import { EntitySchema } from 'shared/types/entityType';
-import languageLib from 'shared/languages';
 import { ConnectedFile as File } from '../File';
 import { FileList, FileListProps } from '../FileList';
 
@@ -49,7 +49,7 @@ describe('FileList', () => {
     expect(renderedFiles.at(0).props().file).toBe(file);
     expect(renderedFiles.at(1).props().file).toBe(file2);
     const firstFile = renderedFiles.at(0).props().file;
-    const language = languageLib.get(firstFile.language as string, 'ISO639_1');
+    const language = LanguageUtils.fromISO639_3(firstFile.language as string)?.ISO639_1;
     expect(entity.language).toEqual(language);
   });
 
@@ -58,7 +58,7 @@ describe('FileList', () => {
     render();
     const renderedFiles = component.find(File);
     const firstFile = renderedFiles.at(0).props().file;
-    const language = languageLib.get(firstFile.language as string, 'ISO639_1');
+    const language = LanguageUtils.fromISO639_3(firstFile.language as string)?.ISO639_1;
     expect(entity.language).toEqual(language);
   });
 
