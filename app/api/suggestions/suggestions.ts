@@ -277,7 +277,9 @@ const Suggestions = {
   updateStates,
 
   setObsolete: async (query: any) =>
-    IXSuggestionsModel.updateMany(query, { $set: { 'state.obsolete': true } }),
+    IXSuggestionsModel.updateMany(query, {
+      $set: { 'state.obsolete': true, 'state.match': null },
+    }),
 
   markSuggestionsWithoutSegmentation: async (query: any) => {
     const segmentedFilesIds = await getSegmentedFilesIds();
@@ -286,7 +288,7 @@ const Suggestions = {
         ...query,
         fileId: { $nin: segmentedFilesIds },
       },
-      { $set: { 'state.error': true } }
+      { $set: { 'state.error': true, 'state.match': null } }
     );
   },
 

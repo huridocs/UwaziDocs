@@ -117,6 +117,16 @@ const fixtures: DBFixture = {
       date: 5,
       page: 2,
       status: 'ready',
+      state: {
+        labeled: true,
+        obsolete: false,
+        match: true,
+        withValue: false,
+        withSuggestion: false,
+        processing: false,
+        error: false,
+        hasContext: false,
+      },
       error: '',
     },
     {
@@ -130,6 +140,16 @@ const fixtures: DBFixture = {
       date: 5,
       page: 2,
       status: 'ready',
+      state: {
+        labeled: true,
+        obsolete: false,
+        match: false,
+        withValue: false,
+        withSuggestion: false,
+        processing: false,
+        error: false,
+        hasContext: false,
+      },
       error: '',
     },
     {
@@ -1323,9 +1343,9 @@ const stateFilterFixtures: DBFixture = {
     factory.ixSuggestion({
       extractorId: factory.id('unused_extractor'),
       state: {
-        labeled: true,
         match: true,
         obsolete: true,
+        labeled: true,
         error: true,
       },
     }),

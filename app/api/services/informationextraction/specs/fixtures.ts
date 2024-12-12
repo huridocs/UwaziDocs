@@ -56,6 +56,9 @@ const fixtures: DBFixture = {
       'templateToSegmentF',
     ]),
     factory.ixExtractor('extractorWithoutSegmentations', 'title', ['templateWithoutSegmentations']),
+    factory.ixExtractor('selectExtractorWithoutSegmentations', 'property_select', [
+      'templateWithoutSegmentations',
+    ]),
   ],
   entities: [
     factory.entity('P1', 'relationshipPartnerTemplate', {}, { sharedId: 'P1sharedId' }),
@@ -139,7 +142,9 @@ const fixtures: DBFixture = {
       property_empty_relationship: [],
       property_relationship_to_any: [],
     }),
-    factory.entity('entityWithoutSegmentation', 'templateWithoutSegmentations', {}),
+    factory.entity('entityWithoutSegmentation', 'templateWithoutSegmentations', {
+      property_select: [{ value: 'B', label: 'B' }],
+    }),
   ],
   files: [
     factory.fileDeprecated('F1', 'A1', 'document', fixturesPdfNameA, 'other', '', [
@@ -781,7 +786,11 @@ const fixtures: DBFixture = {
         relationType: factory.idString('relatedToAny'),
       }),
     ]),
-    factory.template('templateWithoutSegmentations'),
+    factory.template('templateWithoutSegmentations', [
+      factory.property('property_select', 'select', {
+        content: factory.id('thesauri1').toString(),
+      }),
+    ]),
   ],
   dictionaries: [factory.nestedThesauri('thesauri1', ['A', 'B', 'C', { 1: ['1A', '1B'] }])],
 };
