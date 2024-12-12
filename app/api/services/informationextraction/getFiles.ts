@@ -126,13 +126,18 @@ async function anyFilesLabeled(
   return !!count;
 }
 
-async function anyFilesSegmented(property: string, propertyType: string) {
+async function anyFilesSegmented(
+  property: string,
+  propertyType: string,
+  entitiesFromTrainingTemplatesIds: string[]
+) {
   const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
   const segmentedFilesCount = await filesModel.count({
     type: 'document',
     filename: { $exists: true },
     language: { $exists: true },
     _id: { $in: await getSegmentedFilesIds() },
+    entity: { $in: entitiesFromTrainingTemplatesIds },
     ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
   });
   return !!segmentedFilesCount;
@@ -183,7 +188,7 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
     throw new NoLabeledFiles();
   }
 
-  if (!(await anyFilesSegmented(property, propertyType))) {
+  if (!(await anyFilesSegmented(property, propertyType, entitiesFromTrainingTemplatesIds))) {
     throw new NoSegmentedFiles();
   }
 
