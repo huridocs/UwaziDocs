@@ -3,13 +3,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { availableLanguages as languagesList } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { loadIcons } from './library';
 
 loadIcons();
 
 const Icon = ({ locale = '', ...ownProps }) => {
-  const languageData = languagesList.find(l => l.key === locale);
+  const languageData = availableLanguages.find(l => l.key === locale);
   return (
     <FontAwesomeIcon {...ownProps} flip={languageData && languageData.rtl ? 'horizontal' : null} />
   );
