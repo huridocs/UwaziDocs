@@ -36,6 +36,7 @@ const I18NLink = (props: I18NLinkProps) => {
   const location = useLocation();
 
   const scrollToHashWithRetry = (hash: string, retries = 10, delay = 100) => {
+    if (!hash) return;
     if (retries <= 0) return;
     setTimeout(() => {
       const element = document.getElementById(hash.substring(1));
