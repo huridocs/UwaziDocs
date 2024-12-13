@@ -5,7 +5,7 @@ import { InitialEntry } from '@remix-run/router';
 import { ConnectedComponent, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';
-import { render } from '@testing-library/react';
+import { render, RenderResult } from '@testing-library/react';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 
 const middlewares = [thunk];
@@ -81,7 +81,7 @@ const renderConnectedContainer = (
 ) => {
   const store = configureStore<object>(middlewares)(stateFunc);
 
-  let renderResult;
+  let renderResult: RenderResult;
 
   switch (routerWrapper) {
     case 'BrowserRouter':
