@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { omit } from 'lodash';
 
 const defaultProps = {
@@ -33,17 +33,35 @@ const I18NLink = (props: I18NLinkProps) => {
   } = props;
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToHashWithRetry = (hash: string, retries = 10, delay = 100) => {
+    if (!hash) return;
+    if (retries <= 0) return;
+    setTimeout(() => {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        scrollToHashWithRetry(hash, retries - 1, delay);
+      }
+    }, delay);
+  };
+
+  const _navigate = () => {
+    navigate(to, { replace });
+    scrollToHashWithRetry(location.hash);
+  };
 
   const onClickHandler = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     if (disabled) return;
 
     if (onClick && confirmTitle) {
       props.mainContext.confirm({
         accept: () => {
           onClick(e);
-          navigate(to, { replace });
+          _navigate();
         },
         title: confirmTitle,
         message: confirmMessage,
@@ -53,12 +71,15 @@ const I18NLink = (props: I18NLinkProps) => {
 
     if (onClick) {
       onClick(e);
-      navigate(to, { replace });
+      _navigate();
       return;
     }
-
-    navigate(to, { replace });
+    _navigate();
   };
+
+  useEffect(() => {
+    scrollToHashWithRetry(location.hash);
+  }, [location]);
 
   const newProps = omit(props, [
     'dispatch',
