@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { Highlight } from '@huridocs/react-text-selection-handler';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { pdfScaleAtom } from 'V2/atoms';
-import { EventBus, PDFJSViewer } from './pdfjs';
+import { EventBus, PDFJSViewer, PDFJS } from './pdfjs';
 import { TextHighlight } from './types';
 import { calculateScaling } from './functions/calculateScaling';
 import { adjustSelectionsToScale } from './functions/handleTextSelection';
@@ -21,7 +21,7 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
-  const [scale, setScale] = useAtom(pdfScaleAtom);
+  const [pdfScale, setPdfScale] = useAtom(pdfScaleAtom);
 
   useEffect(() => {
     pdf
@@ -58,34 +58,27 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
   useEffect(() => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
-      const defaultViewport = pdfPage.getViewport({ scale: 1 });
+      const originalViewport = pdfPage.getViewport({ scale: 1 });
+      const scale = calculateScaling(originalViewport.width, containerWidth);
+      const defaultViewport = pdfPage.getViewport({ scale });
+
+      setPdfScale(scale);
 
       const handlePlaceHolder = () => {
         currentContainer.style.height = `${defaultViewport.height}px`;
+        currentContainer.style.width = `${defaultViewport.width}px`;
       };
-
-      const { devicePixelRatio } = window;
-      const adjustedScale = calculateScaling(
-        devicePixelRatio,
-        defaultViewport.width,
-        containerWidth
-      );
-
-      setScale(adjustedScale);
-
-      const adjustedViewport = pdfPage.getViewport({ scale: adjustedScale });
 
       if (isVisible) {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale: adjustedScale,
-          defaultViewport: adjustedViewport,
+          scale: scale / PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS,
+          defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
         });
         pageViewer.setPdfPage(pdfPage);
-        currentContainer.style.height = 'auto';
         pageViewer.draw().catch((e: Error) => setError(e.message));
       }
 
@@ -93,19 +86,19 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, scale, page, pdfPage, setScale, containerWidth]);
+  }, [isVisible, page, pdfPage, containerWidth, setPdfScale]);
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    <div ref={pageContainerRef} style={{ width: '100%' }}>
+    <div ref={pageContainerRef}>
       {isVisible &&
         highlights?.map(highlight => {
           const scaledHightlight = {
             ...highlight,
-            textSelection: adjustSelectionsToScale(highlight.textSelection, scale),
+            textSelection: adjustSelectionsToScale(highlight.textSelection, pdfScale),
           };
           return (
             <Highlight
