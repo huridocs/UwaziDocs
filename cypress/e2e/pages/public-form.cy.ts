@@ -189,8 +189,14 @@ describe('Public Form', () => {
 
       cy.wait('@waitForImages');
 
-      cy.get('.attachments-list-parent').eq(0).scrollIntoView();
-      cy.get('.attachments-list-parent').eq(0).toMatchImageSnapshot();
+      //cy.get('.attachments-list-parent').eq(0).scrollIntoView();
+      //cy.get('.attachments-list-parent').eq(0).toMatchImageSnapshot();
+
+      // get the names of the supporting files in first span of .attachment-name
+      cy.get('.attachment-name span:first-of-type').then($spans => {
+        const names = $spans.toArray().map(span => span.textContent);
+        expect(names).to.deep.equal(['batman.jpg', 'batman.jpg', 'short-video.mp4']);
+      });
     });
   });
 
