@@ -1,6 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-unreachable-loop */
-/* eslint-disable no-restricted-syntax */
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream } from 'fs';
 import entities from 'api/entities';
@@ -179,31 +176,33 @@ const translateEntity = async (
   indexedTranslations: FullyIndexedTranslations,
   dateFormat?: string
 ) => {
-  for (const translatedEntity of translations) {
+  await translations.reduce(async (prevPromise, translation) => {
+    await prevPromise;
+
     const entityParsed = await entityObject(
       {
-        ...translatedEntity,
+        ...translation,
         propertiesFromColumns: {
-          ...translatedEntity.propertiesFromColumns,
+          ...translation.propertiesFromColumns,
           id: ensure(entity.sharedId),
         },
       },
       template,
       {
-        language: translatedEntity.language,
+        language: translation.language,
         dateFormat,
       }
     );
 
     const toSave = translateSelectLabels(
       entityParsed,
-      translatedEntity.language,
+      translation.language,
       indexedTranslations,
       propNameToThesauriId
     );
 
-    await entities.save(toSave, { language: translatedEntity.language, user: {} });
-  }
+    await entities.save(toSave, { language: translation.language, user: {} });
+  }, Promise.resolve());
 
   await Promise.all(
     translations.map(async translatedEntity => {
