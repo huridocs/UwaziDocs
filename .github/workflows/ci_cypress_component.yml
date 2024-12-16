@@ -22,6 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+      - name: install dependencies
+        run: yarn install
+      - name: generate global css
+        run: yarn tailwind
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
