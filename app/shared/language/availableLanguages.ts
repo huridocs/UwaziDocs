@@ -3,23 +3,12 @@ import { LanguageSchema } from 'shared/types/commonTypes';
 
 type LanguageCode = 'elastic' | 'ISO639_3' | 'ISO639_1';
 
-type LegacyElasticObject = Record<
-  string,
-  { franc: string; elastic: string; ISO639_1: string | null }
->;
-
-type Language = {
-  label: string;
-  value: string;
-};
-
-const undefinedLanguage: LanguageSchema = {
+const otherLanguageSchema: LanguageSchema = {
   label: 'Other',
   key: 'other' as any,
   ISO639_1: 'other',
   ISO639_3: 'other',
   elastic: 'other',
-  franc: 'other',
   localized_label: 'Other',
   translationAvailable: false,
 };
@@ -78,7 +67,6 @@ const availableLanguages: LanguageSchema[] = [
     key: 'ar',
     rtl: true,
     ISO639_3: 'arb',
-    franc: 'arb',
     elastic: 'arabic',
     ISO639_1: 'ar',
     localized_label: 'العربية',
@@ -96,7 +84,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Armenian',
     key: 'hy',
     ISO639_3: 'hye',
-    franc: 'hye',
     elastic: 'armenian',
     ISO639_1: 'hy',
     localized_label: 'Հայերեն',
@@ -162,7 +149,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Basque',
     key: 'eu',
     ISO639_3: 'eus',
-    franc: 'eus',
     elastic: 'basque',
     ISO639_1: 'eu',
     localized_label: 'Euskara',
@@ -220,7 +206,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Bulgarian',
     key: 'bg',
     ISO639_3: 'bul',
-    franc: 'bul',
     elastic: 'bulgarian',
     ISO639_1: 'bg',
     localized_label: 'Български',
@@ -238,7 +223,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Catalan',
     key: 'ca',
     ISO639_3: 'cat',
-    franc: 'cat',
     elastic: 'catalan',
     ISO639_1: 'ca',
     localized_label: 'Català',
@@ -272,7 +256,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Chinese',
     key: 'zh',
     ISO639_3: 'zho',
-    franc: 'cjk',
     elastic: 'cjk',
     ISO639_1: 'zh',
     localized_label: '中文',
@@ -282,7 +265,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Chinese (Simplified)',
     key: 'zh-Hans',
     ISO639_3: 'zho-Hans',
-    franc: 'cjk',
     elastic: 'cjk',
     ISO639_1: 'zh-Hans',
     localized_label: '简体中文',
@@ -292,7 +274,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Chinese (Traditional)',
     key: 'zh-Hant',
     ISO639_3: 'zho-Hant',
-    franc: 'cjk',
     elastic: 'cjk',
     ISO639_1: 'zh-Hant',
     localized_label: '繁體中文',
@@ -342,7 +323,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Czech',
     key: 'cs',
     ISO639_3: 'ces',
-    franc: 'ces',
     elastic: 'czech',
     ISO639_1: 'cs',
     localized_label: 'Čeština',
@@ -352,7 +332,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Danish',
     key: 'da',
     ISO639_3: 'dan',
-    franc: 'dan',
     elastic: 'danish',
     ISO639_1: 'da',
     localized_label: 'Dansk',
@@ -371,7 +350,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Dutch',
     key: 'nl',
     ISO639_3: 'nld',
-    franc: 'nld',
     elastic: 'dutch',
     ISO639_1: 'nl',
     localized_label: 'Nederlands',
@@ -389,7 +367,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'English',
     key: 'en',
     ISO639_3: 'eng',
-    franc: 'eng',
     elastic: 'english',
     ISO639_1: 'en',
     localized_label: 'English',
@@ -439,7 +416,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Finnish',
     key: 'fi',
     ISO639_3: 'fin',
-    franc: 'fin',
     elastic: 'finnish',
     ISO639_1: 'fi',
     localized_label: 'Suomi',
@@ -449,7 +425,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'French',
     key: 'fr',
     ISO639_3: 'fra',
-    franc: 'fra',
     elastic: 'french',
     ISO639_1: 'fr',
     localized_label: 'Français',
@@ -467,7 +442,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Galician',
     key: 'gl',
     ISO639_3: 'glg',
-    franc: 'glg',
     elastic: 'galician',
     ISO639_1: 'gl',
     localized_label: 'Galego',
@@ -501,7 +475,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'German',
     key: 'de',
     ISO639_3: 'deu',
-    franc: 'deu',
     elastic: 'german',
     ISO639_1: 'de',
     localized_label: 'Deutsch',
@@ -511,7 +484,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Greek',
     key: 'el',
     ISO639_3: 'ell',
-    franc: 'ell',
     elastic: 'greek',
     ISO639_1: 'el',
     localized_label: 'Ελληνικά',
@@ -571,7 +543,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Hindi',
     key: 'hi',
     ISO639_3: 'hin',
-    franc: 'hin',
     elastic: 'hindi',
     ISO639_1: 'hi',
     localized_label: 'हिन्दी',
@@ -589,7 +560,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Hungarian',
     key: 'hu',
     ISO639_3: 'hun',
-    franc: 'hun',
     elastic: 'hungarian',
     ISO639_1: 'hu',
     localized_label: 'Magyar',
@@ -623,7 +593,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Indonesian',
     key: 'in',
     ISO639_3: 'ind',
-    franc: 'ind',
     elastic: 'indonesian',
     ISO639_1: 'in',
     localized_label: 'Indonesia',
@@ -665,7 +634,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Irish',
     key: 'ga',
     ISO639_3: 'gle',
-    franc: 'gle',
     elastic: 'irish',
     ISO639_1: 'ga',
     localized_label: 'Gaeilge',
@@ -675,7 +643,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Italian',
     key: 'it',
     ISO639_3: 'ita',
-    franc: 'ita',
     elastic: 'italian',
     ISO639_1: 'it',
     localized_label: 'Italiano',
@@ -685,7 +652,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Japanese',
     key: 'ja',
     ISO639_3: 'jpn',
-    franc: 'cjk',
     elastic: 'cjk',
     ISO639_1: 'ja',
     localized_label: '日本語',
@@ -800,7 +766,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Korean',
     key: 'ko',
     ISO639_3: 'kor',
-    franc: 'cjk',
     elastic: 'cjk',
     ISO639_1: 'ko',
     localized_label: '한국어',
@@ -811,7 +776,6 @@ const availableLanguages: LanguageSchema[] = [
     key: 'ku',
     rtl: true,
     ISO639_3: 'kur',
-    franc: 'ckb',
     elastic: 'sorani',
     ISO639_1: 'ku',
     localized_label: 'Kurdî',
@@ -845,7 +809,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Latvian (Lettish)',
     key: 'lv',
     ISO639_3: 'lav',
-    franc: 'lav',
     elastic: 'latvian',
     ISO639_1: 'lv',
     localized_label: 'Latviešu',
@@ -871,7 +834,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Lithuanian',
     key: 'lt',
     ISO639_3: 'lit',
-    franc: 'lit',
     elastic: 'lithuanian',
     ISO639_1: 'lt',
     localized_label: 'Lietuvių',
@@ -1025,7 +987,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Norwegian bokmål',
     key: 'nb',
     ISO639_3: 'nob',
-    franc: 'nob',
     elastic: 'norwegian',
     ISO639_1: 'nb',
     localized_label: 'Norsk bokmål',
@@ -1035,7 +996,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Norwegian nynorsk',
     key: 'nn',
     ISO639_3: 'nno',
-    franc: 'nno',
     elastic: 'norwegian',
     ISO639_1: 'nn',
     localized_label: 'Norsk nynorsk',
@@ -1111,7 +1071,6 @@ const availableLanguages: LanguageSchema[] = [
     key: 'fa',
     rtl: true,
     ISO639_3: 'fas',
-    franc: 'fas',
     elastic: 'persian',
     ISO639_1: 'fa',
     localized_label: 'فارسی',
@@ -1129,7 +1088,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Portuguese',
     key: 'pt',
     ISO639_3: 'por',
-    franc: 'por',
     elastic: 'portuguese',
     ISO639_1: 'pt',
     localized_label: 'Português',
@@ -1163,7 +1121,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Romanian/Moldavian',
     key: 'ro',
     ISO639_3: 'ron',
-    franc: 'ron',
     elastic: 'romanian',
     ISO639_1: 'ro',
     localized_label: 'Română',
@@ -1173,7 +1130,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Russian',
     key: 'ru',
     ISO639_3: 'rus',
-    franc: 'rus',
     elastic: 'russian',
     ISO639_1: 'ru',
     localized_label: 'Русский',
@@ -1319,7 +1275,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Spanish',
     key: 'es',
     ISO639_3: 'spa',
-    franc: 'spa',
     elastic: 'spanish',
     ISO639_1: 'es',
     localized_label: 'Español',
@@ -1345,7 +1300,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Swedish',
     key: 'sv',
     ISO639_3: 'swe',
-    franc: 'swe',
     elastic: 'swedish',
     ISO639_1: 'sv',
     localized_label: 'Svenska',
@@ -1403,7 +1357,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Thai',
     key: 'th',
     ISO639_3: 'tha',
-    franc: 'tha',
     elastic: 'thai',
     ISO639_1: 'th',
     localized_label: 'ไทย',
@@ -1445,7 +1398,6 @@ const availableLanguages: LanguageSchema[] = [
     label: 'Turkish',
     key: 'tr',
     ISO639_3: 'tur',
-    franc: 'tur',
     elastic: 'turkish',
     ISO639_1: 'tr',
     localized_label: 'Türkçe',
@@ -1599,46 +1551,6 @@ const availableLanguages: LanguageSchema[] = [
   },
 ];
 
-const languageMapper = (ISO639_3: string, to: LanguageCode = 'elastic') => {
-  const language = availableLanguages.find(item => item.ISO639_3 === ISO639_3);
-  const defaultValue = to !== 'ISO639_1' ? undefinedLanguage.ISO639_3 : null;
-
-  return language?.[to] || defaultValue;
-};
-
-const getLanguagesByCode = (code: LanguageCode = 'elastic'): Language[] =>
-  availableLanguages
-    .filter(item => Boolean(item[code]))
-    .map(item => ({ value: item[code] as string, label: item.label }));
-
-const getLanguageCodes = (languages: Language[]): string[] => languages.map(item => item.value);
-
-const getLanguageSchema = (ISO639_3: string) =>
-  availableLanguages.find(item => item.ISO639_3 === ISO639_3) || undefinedLanguage;
-
-const ISO6391Languages = getLanguagesByCode('ISO639_1');
-const ISO6391Codes = getLanguageCodes(ISO6391Languages);
-
-const elasticLanguages: LegacyElasticObject = availableLanguages
-  .filter(item => Boolean(item?.elastic && item?.franc))
-  .reduce(
-    (prev, next) => ({
-      ...prev,
-      [next.franc!]: {
-        franc: next.franc!,
-        elastic: next.elastic!,
-        ISO639_1: ['cjk', 'ckb'].includes(next.franc!) ? null : next?.ISO639_1 || null,
-      },
-    }),
-    {} as LegacyElasticObject
-  );
-
 export type { LanguageCode };
 
-export {
-  elasticLanguages,
-  availableLanguages,
-  ISO6391Codes,
-  languageMapper as language,
-  getLanguageSchema,
-};
+export { otherLanguageSchema, availableLanguages };

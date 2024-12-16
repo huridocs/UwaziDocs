@@ -251,7 +251,6 @@ export const languageSchema = {
     rtl: { type: 'boolean' },
     default: { type: 'boolean' },
     ISO639_3: { type: 'string' },
-    franc: { type: 'string' },
     elastic: { type: 'string' },
     ISO639_1: { type: 'string' },
     localized_label: { type: 'string' },
