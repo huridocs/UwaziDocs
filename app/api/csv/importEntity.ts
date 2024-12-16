@@ -61,6 +61,7 @@ const entityObject = async (
   template: TemplateSchema,
   { language, dateFormat = 'YYYY/MM/DD' }: Options
 ) => ({
+  language,
   title: titleByTemplate(template, toImportEntity),
   template: template._id,
   metadata: await toMetadata(template, toImportEntity, dateFormat),
