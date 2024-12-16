@@ -59,8 +59,9 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
       const originalViewport = pdfPage.getViewport({ scale: 1 });
-      const scale = calculateScaling(originalViewport.width, containerWidth);
-      const defaultViewport = pdfPage.getViewport({ scale });
+      const viewPortScale = calculateScaling(originalViewport.width, containerWidth);
+      const defaultViewport = pdfPage.getViewport({ scale: viewPortScale });
+      const scale = viewPortScale / PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS;
 
       setPdfScale(scale);
 
@@ -73,7 +74,7 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
         const pageViewer = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
-          scale: scale / PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS,
+          scale,
           defaultViewport,
           annotationMode: 0,
           eventBus: new EventBus(),
