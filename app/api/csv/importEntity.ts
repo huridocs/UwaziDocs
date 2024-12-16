@@ -1,8 +1,10 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-unreachable-loop */
+/* eslint-disable no-restricted-syntax */
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream } from 'fs';
 import entities from 'api/entities';
 import { search } from 'api/search';
-import entitiesModel from 'api/entities/entitiesModel';
 import { processDocument } from 'api/files/processDocument';
 import { RawEntity } from 'api/csv/entityRow';
 import { TemplateSchema } from 'shared/types/templateType';
@@ -177,33 +179,31 @@ const translateEntity = async (
   indexedTranslations: FullyIndexedTranslations,
   dateFormat?: string
 ) => {
-  await entitiesModel.saveMultiple(
-    await Promise.all(
-      translations.map(async translatedEntity => {
-        const translatedEntityObject = await entityObject(
-          {
-            ...translatedEntity,
-            propertiesFromColumns: {
-              ...translatedEntity.propertiesFromColumns,
-              id: ensure(entity.sharedId),
-            },
-          },
-          template,
-          {
-            language: translatedEntity.language,
-            dateFormat,
-          }
-        );
+  for (const translatedEntity of translations) {
+    const entityParsed = await entityObject(
+      {
+        ...translatedEntity,
+        propertiesFromColumns: {
+          ...translatedEntity.propertiesFromColumns,
+          id: ensure(entity.sharedId),
+        },
+      },
+      template,
+      {
+        language: translatedEntity.language,
+        dateFormat,
+      }
+    );
 
-        return translateSelectLabels(
-          translatedEntityObject,
-          translatedEntity.language,
-          indexedTranslations,
-          propNameToThesauriId
-        );
-      })
-    )
-  );
+    const toSave = translateSelectLabels(
+      entityParsed,
+      translatedEntity.language,
+      indexedTranslations,
+      propNameToThesauriId
+    );
+
+    await entities.save(toSave, { language: translatedEntity.language, user: {} });
+  }
 
   await Promise.all(
     translations.map(async translatedEntity => {
