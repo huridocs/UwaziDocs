@@ -39,6 +39,14 @@ const PDF = ({
   const [pdf, setPDF] = useState<PDFDocumentProxy>();
   const [error, setError] = useState<string>();
 
+  const containerStyles = {
+    height: size?.height || '100%',
+    width: size?.width || '100%',
+    overflow: size?.overflow || 'auto',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+  };
+
   useEffect(() => {
     getPDFFile(fileUrl)
       .then(pdfFile => {
@@ -83,21 +91,15 @@ const PDF = ({
 
   return (
     <HandleTextSelection onSelect={onSelect} onDeselect={onDeselect}>
-      <div
-        id="pdf-container"
-        ref={pdfContainerRef}
-        style={{
-          height: size?.height || '100%',
-          width: size?.width || '100%',
-          overflow: size?.overflow || 'auto',
-          padding: '10px',
-        }}
-      >
+      <div id="pdf-container" ref={pdfContainerRef} style={containerStyles}>
         {pdf ? (
           Array.from({ length: pdf.numPages }, (_, index) => index + 1).map(number => {
             const regionId = number.toString();
             const pageHighlights = highlights ? highlights[regionId] : undefined;
             const shouldScrollToPage = scrollToPage === regionId;
+            const containerWidth =
+              pdfContainerRef.current?.offsetWidth && pdfContainerRef.current.offsetWidth - 20;
+
             return (
               <div
                 key={`page-${regionId}`}
@@ -110,7 +112,7 @@ const PDF = ({
                     pdf={pdf}
                     page={number}
                     highlights={pageHighlights}
-                    containerWidth={pdfContainerRef.current?.clientWidth}
+                    containerWidth={containerWidth}
                   />
                 </SelectionRegion>
               </div>
