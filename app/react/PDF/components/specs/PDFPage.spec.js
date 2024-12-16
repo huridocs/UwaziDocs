@@ -114,10 +114,6 @@ describe('PDFPage', () => {
         draw: jest.fn().mockReturnValue(Promise.resolve()),
       };
 
-      afterAll(() => {
-        jest.clearAllMocks();
-      });
-
       it('should create pdfPageView object and render the page', done => {
         render();
         instance.state.rendered = false;
