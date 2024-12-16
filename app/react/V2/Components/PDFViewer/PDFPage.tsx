@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { Highlight } from '@huridocs/react-text-selection-handler';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { pdfScaleAtom } from 'V2/atoms';
 import { EventBus, PDFJSViewer, PDFJS } from './pdfjs';
 import { TextHighlight } from './types';
