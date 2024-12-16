@@ -12,7 +12,6 @@ import { notificationActions } from 'app/Notifications';
 import { removeDocument, unselectAllDocuments } from 'app/Library/actions/libraryActions';
 import { actions as relationshipActions } from 'app/Relationships';
 import { RequestParams } from 'app/utils/RequestParams';
-import { selectionHandlers } from 'V2/Components/PDFViewer';
 import { closePanel as closeConnectionPanel } from 'app/Connections/actions/uiActions.js';
 import { saveEntityWithFiles } from '../../Library/actions/saveEntityWithFiles';
 import * as selectionActions from './selectionActions';
@@ -70,19 +69,13 @@ export function saveDocument(doc, fileID) {
   };
 }
 
-export function saveToc(toc, fileId, documentScale = 1) {
-  const tableOfContent = toc.map(entry =>
-    selectionHandlers.adjustSelectionsToScale(entry, documentScale, true)
-  );
-
+export function saveToc(toc, fileId) {
   return async (dispatch, getState) => {
     const currentDoc = getState().documentViewer.doc.toJS();
     dispatch(formActions.reset('documentViewer.sidepanel.metadata'));
     dispatch(actions.set('documentViewer/tocBeingEdited', false));
 
-    const updatedFile = (
-      await api.post('files', new RequestParams({ toc: tableOfContent, _id: fileId }))
-    ).json;
+    const updatedFile = (await api.post('files', new RequestParams({ toc, _id: fileId }))).json;
     const doc = {
       ...currentDoc,
       defaultDoc: updatedFile,

@@ -8,8 +8,6 @@ import { Loader } from 'app/components/Elements/Loader';
 import { PDF } from 'app/PDF';
 import Immutable from 'immutable';
 import { highlightSnippet } from 'app/Viewer/actions/uiActions';
-import { selectionHandlers } from 'V2/Components/PDFViewer';
-import { atomStore, pdfScaleAtom } from 'V2/atoms';
 
 import determineDirection from '../utils/determineDirection';
 
@@ -45,11 +43,7 @@ class Document extends Component {
     const selectionRectangles = textSelection.selectionRectangles.map(
       ({ regionId, ...otherProps }) => ({ ...otherProps, page: regionId })
     );
-    const highlight = selectionHandlers.adjustSelectionsToScale(
-      { ...textSelection, selectionRectangles },
-      atomStore.get(pdfScaleAtom),
-      true
-    );
+    const highlight = { ...textSelection, selectionRectangles };
     this.props.setSelection(highlight, this.props.file._id);
     this.props.deactivateReference();
   }
