@@ -186,7 +186,8 @@ const deleteFileSelection = (
 
 const adjustSelectionsToScale = (
   selection: TextSelection,
-  scalingFactor: number
+  scalingFactor: number,
+  normalize?: boolean
 ): TextSelection => {
   if (scalingFactor === 1) {
     return selection;
@@ -202,10 +203,10 @@ const adjustSelectionsToScale = (
       const height = rectangle.height || 0;
       return {
         ...rectangle,
-        left: left * scalingFactor,
-        top: top * scalingFactor,
-        width: width * scalingFactor,
-        height: height * scalingFactor,
+        left: normalize ? left / scalingFactor : left * scalingFactor,
+        top: normalize ? top / scalingFactor : top * scalingFactor,
+        width: normalize ? width / scalingFactor : width * scalingFactor,
+        height: normalize ? height / scalingFactor : height * scalingFactor,
       };
     });
   }

@@ -323,19 +323,29 @@ const PDFSidepanel = ({
     }
 
     if (selectedText) {
+      const normalizedSelections = selectionHandlers.adjustSelectionsToScale(
+        selectedText,
+        pdfScalingValue,
+        true
+      );
+
       setHighlights(
-        selectionHandlers.getHighlightsFromSelection(selectedText, HighlightColors.NEW)
+        selectionHandlers.getHighlightsFromSelection(normalizedSelections, HighlightColors.NEW)
       );
       setSelections(
         selectionHandlers.updateFileSelection(
           { name: suggestion?.propertyName || '', id: property._id as string },
           pdf?.extractedMetadata,
-          selectedText
+          normalizedSelections
         )
       );
 
       if (property.type === 'date' || property.type === 'numeric') {
-        const coercedValue = await coerceValue(property.type, selectedText.text, pdf?.language);
+        const coercedValue = await coerceValue(
+          property.type,
+          normalizedSelections.text,
+          pdf?.language
+        );
 
         if (!coercedValue?.success) {
           setSelectionError('Value cannot be transformed to the correct type');
@@ -346,7 +356,7 @@ const PDFSidepanel = ({
           setSelectionError(undefined);
         }
       } else {
-        setValue('field', selectedText.text, { shouldDirty: true });
+        setValue('field', normalizedSelections.text, { shouldDirty: true });
       }
     }
   };

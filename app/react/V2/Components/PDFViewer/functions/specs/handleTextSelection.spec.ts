@@ -343,5 +343,37 @@ describe('PDF selections handlers', () => {
         ],
       });
     });
+
+    it('should normalize selections', () => {
+      expect(
+        adjustSelectionsToScale(
+          {
+            text: 'selection in scaled pdf',
+            selectionRectangles: [
+              {
+                left: 10,
+                top: 10,
+                width: 10,
+                height: 2,
+                regionId: '1',
+              },
+            ],
+          },
+          2,
+          true
+        )
+      ).toEqual({
+        text: 'selection in scaled pdf',
+        selectionRectangles: [
+          {
+            left: 5,
+            top: 5,
+            width: 5,
+            height: 1,
+            regionId: '1',
+          },
+        ],
+      });
+    });
   });
 });
