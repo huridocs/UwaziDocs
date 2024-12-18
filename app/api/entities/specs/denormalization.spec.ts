@@ -42,6 +42,7 @@ describe('Denormalize relationships', () => {
   describe('title and basic property (text)', () => {
     it('should update denormalized title and icon', async () => {
       const fixtures: DBFixture = {
+        relationtypes: [factory.relationType('rel1')],
         templates: [
           factory.template('templateA', [
             factory.relationshipProp('relationship', 'templateB', 'text'),
@@ -232,6 +233,7 @@ describe('Denormalize relationships', () => {
 
   describe('when the relationship property has no content', () => {
     const fixtures: DBFixture = {
+      relationtypes: [factory.relationType('rel1')],
       templates: [
         factory.template('templateA', [
           factory.relationshipProp('relationship', '', { content: '' }),
@@ -289,6 +291,7 @@ describe('Denormalize relationships', () => {
     beforeEach(async () => {
       jest.spyOn(translations, 'updateContext').mockImplementation(async () => 'ok');
       const fixtures: DBFixture = {
+        relationtypes: [factory.relationType('rel1')],
         templates: [
           factory.template('templateA', [
             factory.inherit('relationship', 'templateB', 'multiselect'),
@@ -383,6 +386,7 @@ describe('Denormalize relationships', () => {
   describe('inherited relationship', () => {
     beforeEach(async () => {
       const fixtures: DBFixture = {
+        relationtypes: [factory.relationType('rel1')],
         templates: [
           factory.template('templateA', [
             factory.inherit('relationship', 'templateB', 'relationshipB'),
@@ -444,6 +448,7 @@ describe('Denormalize relationships', () => {
     beforeEach(async () => {
       await load(
         {
+          relationtypes: [factory.relationType('rel1')],
           templates: [
             factory.template('templateA', [
               factory.inherit('relationshipA', 'templateB', 'relationshipB'),
