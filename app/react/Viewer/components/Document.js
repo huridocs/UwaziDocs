@@ -93,7 +93,7 @@ class Document extends Component {
 
   handleOver() {}
 
-  renderPDF(file) {
+  renderPDF(file, pdfContainerParentId) {
     if (!file._id) {
       return <Loader />;
     }
@@ -111,14 +111,16 @@ class Document extends Component {
         highlightReference={this.highlightReference}
         activeReference={this.props.activeReference}
         key={file.filename}
+        pdfParentId={pdfContainerParentId}
       />
     );
   }
 
   render() {
     const { file } = this.props;
-
     const Header = this.props.header;
+    const pdfContainerParentId = `${this.props.doc.get('sharedId')}-pages`;
+
     return (
       <div>
         <div
@@ -129,12 +131,11 @@ class Document extends Component {
           <Header />
           <div
             className="pages"
-            // eslint-disable-next-line react/no-unused-class-component-methods
-            ref={ref => (this.pagesContainer = ref)}
+            id={pdfContainerParentId}
             onMouseOver={this.handleOver.bind(this)}
             onClick={this.handleClick}
           >
-            {this.renderPDF(file)}
+            {this.renderPDF(file, pdfContainerParentId)}
           </div>
         </div>
       </div>

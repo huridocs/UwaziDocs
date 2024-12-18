@@ -22,7 +22,7 @@ import { secondsToISODate } from 'V2/shared/dateHelpers';
 import { Button, Sidepanel } from 'V2/Components/UI';
 import { InputField, MultiselectList, MultiselectListOption } from 'V2/Components/Forms';
 import { PDF, selectionHandlers } from 'V2/Components/PDFViewer';
-import { notificationAtom, thesauriAtom } from 'V2/atoms';
+import { notificationAtom, pdfScaleAtom, thesauriAtom } from 'V2/atoms';
 import { Highlights } from '../types';
 
 const SELECT_TYPES = ['select', 'multiselect', 'relationship'];
@@ -152,6 +152,7 @@ const PDFSidepanel = ({
   const [selectAndSearch, setSelectAndSearch] = useState(false);
   const [selectAndSearchValue, setSelectAndSearchValue] = useState<string | undefined>();
   const [options, setOptions] = useState<MultiselectListOption[]>([]);
+  const pdfScalingValue = useAtomValue(pdfScaleAtom);
 
   useEffect(() => {
     if (suggestion) {

@@ -115,11 +115,11 @@ class PDFPage extends Component {
       this.setState({ rendered: true });
       this.props.pdf.getPage(this.props.page).then(page => {
         const originalViewport = page.getViewport({ scale: 1 });
-        const viewPortScale = calculateScaling(originalViewport.width, this.props.containerWidth);
-        const defaultViewport = page.getViewport({ scale: viewPortScale });
-        const scale = viewPortScale / PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS;
-
-        atomStore.set(pdfScaleAtom, scale);
+        const scale = calculateScaling(
+          originalViewport.width * PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS,
+          this.props.containerWidth
+        );
+        const defaultViewport = page.getViewport({ scale });
 
         this.pdfPageView = new PDFJS.PDFPageView({
           container: this.pageContainer,
@@ -134,6 +134,7 @@ class PDFPage extends Component {
         this.pdfPageView
           .draw()
           .then(() => {
+            atomStore.set(pdfScaleAtom, scale);
             if (this._mounted) {
               this.setState({ height: this.pdfPageView.viewport.height });
             }
@@ -151,7 +152,7 @@ class PDFPage extends Component {
     return (
       <div
         id={`page-${this.props.page}`}
-        className="doc-page"
+        className="pdf-page"
         ref={ref => {
           this.pageContainer = ref;
         }}

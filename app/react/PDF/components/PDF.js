@@ -148,22 +148,22 @@ class PDF extends Component {
 
   render() {
     return (
-      <div
-        ref={ref => {
-          this.pdfContainer = ref;
-        }}
-        style={this.props.style}
-        id="pdf-container"
+      <HandleTextSelection
+        onSelect={this.props.onTextSelection}
+        onDeselect={this.props.onTextDeselection}
       >
-        <HandleTextSelection
-          onSelect={this.props.onTextSelection}
-          onDeselect={this.props.onTextDeselection}
+        <div
+          ref={ref => {
+            this.pdfContainer = ref;
+          }}
+          style={this.props.style}
+          id="pdf-container"
         >
           {(() => {
             const pages = [];
             for (let page = 1; page <= this.state.pdf.numPages; page += 1) {
               pages.push(
-                <div className="page-wrapper" key={page}>
+                <div className="page-page" key={page}>
                   <SelectionRegion regionId={page.toString()}>
                     <PDFPage
                       onUnload={this.pageUnloaded}
@@ -173,7 +173,7 @@ class PDF extends Component {
                       page={page}
                       pdf={this.state.pdf}
                       highlightReference={this.props.highlightReference}
-                      containerWidth={this.pdfContainer?.clientWidth}
+                      containerWidth={document.getElementById(this.props.pdfParentId).clientWidth}
                     />
                   </SelectionRegion>
                 </div>
@@ -181,8 +181,8 @@ class PDF extends Component {
             }
             return pages;
           })()}
-        </HandleTextSelection>
-      </div>
+        </div>
+      </HandleTextSelection>
     );
   }
 }
@@ -209,6 +209,7 @@ PDF.propTypes = {
   onLoad: PropTypes.func.isRequired,
   style: PropTypes.object,
   highlightReference: PropTypes.func,
+  pdfParentId: PropTypes.string.isRequired,
 };
 
 export default PDF;
