@@ -1,13 +1,15 @@
+/* eslint-disable max-statements */
 /* eslint-disable max-lines */
 import path from 'path';
 
 import { CSVLoader } from 'api/csv';
-import { templateWithGeneratedTitle } from 'api/csv/specs/csvLoaderFixtures';
+import { simpleTemplateId, templateWithGeneratedTitle } from 'api/csv/specs/csvLoaderFixtures';
 import entities from 'api/entities';
 import translations from 'api/i18n';
 import { search } from 'api/search';
 import settings from 'api/settings';
 import db from 'api/utils/testing_db';
+import moment from 'moment';
 import typeParsers from '../typeParsers';
 import fixtures, { template1Id } from './csvLoaderFixtures';
 import { mockCsvFileReadStream } from './helpers';
@@ -398,6 +400,61 @@ describe('csvLoader', () => {
         expect(result[1].title).toEqual(expect.stringMatching(/^[a-zA-Z0-9-]{12}$/));
         expect(result[0].title !== result[1].title);
       });
+    });
+  });
+
+  describe('should parse date respecting the dateFormat on settings collection ', () => {
+    beforeEach(() => jest.restoreAllMocks());
+
+    const setDateFormat = async dateFormat => {
+      const _fixtures = { ...fixtures };
+      _fixtures.settings = [
+        {
+          ..._fixtures.settings[0],
+          languages: [
+            { key: 'en', label: 'English', default: true },
+            { key: 'es', label: 'Spanish' },
+          ],
+          dateFormat,
+        },
+      ];
+      await db.setupFixturesAndContext(_fixtures);
+    };
+
+    it('should correctly parse MM/dd/yyyy', async () => {
+      const dateFormat = 'MM/dd/yyyy';
+      await setDateFormat(dateFormat);
+
+      const dateOnCSV = '12/31/2024';
+      const csv = path.join(__dirname, '/simple_template.csv');
+      const selectedLanguageOnUserInterface = 'es';
+      const expectedDate = moment.utc(dateOnCSV, [dateFormat.toUpperCase()]).unix();
+
+      await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+
+      const [englishEntity] = await entities.get({ language: 'en' });
+      const [spanishEntity] = await entities.get({ language: 'es' });
+
+      expect(spanishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
+      expect(englishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
+    });
+
+    it('should correctly parse yyyy/MM/dd', async () => {
+      const dateFormat = 'yyyy/MM/dd';
+      await setDateFormat(dateFormat);
+
+      const dateOnCSV = '2024/12/31';
+      const csv = path.join(__dirname, '/simple_template_2.csv');
+      const selectedLanguageOnUserInterface = 'es';
+      const expectedDate = moment.utc(dateOnCSV, [dateFormat.toUpperCase()]).unix();
+
+      await loader.load(csv, simpleTemplateId, { language: selectedLanguageOnUserInterface });
+
+      const [englishEntity] = await entities.get({ language: 'en' });
+      const [spanishEntity] = await entities.get({ language: 'es' });
+
+      expect(spanishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
+      expect(englishEntity.metadata.date_field).toEqual([{ value: expectedDate }]);
     });
   });
 });

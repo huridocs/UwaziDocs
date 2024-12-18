@@ -13,7 +13,7 @@ import { TranslationContext, TranslationType, TranslationValue } from 'shared/tr
 // eslint-disable-next-line node/no-restricted-import
 import { createWriteStream } from 'fs';
 import { ObjectId } from 'mongodb';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { ContextType } from 'shared/translationSchema';
 import { LanguageISO6391 } from 'shared/types/commonTypes';
 import { pipeline } from 'stream/promises';

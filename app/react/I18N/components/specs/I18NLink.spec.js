@@ -1,71 +1,91 @@
+/**
+ * @jest-environment jsdom
+ */
+/* eslint-disable max-statements */
 import React from 'react';
-import { shallow } from 'enzyme';
-import { NavLink } from 'react-router-dom';
-
-import { I18NLink, mapStateToProps } from '../I18NLink';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => () => {},
-}));
+import { render, screen, fireEvent } from '@testing-library/react';
+import { I18NLink } from '../I18NLink';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 describe('I18NLink', () => {
-  let component;
   let props;
-  const clickAction = () => {};
-  const mouseOverAction = () => {};
-  const event = jasmine.createSpyObj(['preventDefault']);
+  const clickAction = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     props = {
       locale: 'es',
-      to: '/templates',
-      activeClass: 'is-active',
+      to: '/page/1#section1',
       onClick: clickAction,
-      onMouseOver: mouseOverAction,
-      dispatch: () => {},
+      dispatch: jest.fn(),
     };
   });
 
-  const render = () => {
-    component = shallow(<I18NLink {...props} />);
+  const renderComponent = (initialEntries = ['/']) => {
+    render(
+      <MemoryRouter initialEntries={initialEntries}>
+        <Routes>
+          <Route path="/" element={<I18NLink {...props}>Section 1</I18NLink>} />
+          <Route
+            path="/page/1"
+            element={
+              <div>
+                <I18NLink {...props}>Section 1</I18NLink>
+                <p id="section0">Something to forget</p>
+                <p id="section1">Something to remember</p>
+              </div>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
   };
 
   describe('render', () => {
-    it('should pass other props, except for dispatch', () => {
-      spyOn(props, 'onClick');
-      render();
-      const link = component.find(NavLink);
-      expect(link.props().onMouseOver).toBe(mouseOverAction);
-      expect(link.props().dispatch).toBeUndefined();
-      component.simulate('click', event);
-      expect(props.onClick).toHaveBeenCalledWith(event);
-      expect(link.props().to).toBe(props.to);
+    it('should trigger onClick', () => {
+      renderComponent();
+      const link = screen.getByText('Section 1');
+      fireEvent.click(link);
+      expect(clickAction).toHaveBeenCalled();
+      expect(link).toHaveAttribute('href', props.to);
+    });
+
+    it('should navigate when clicked', () => {
+      renderComponent();
+      const link = screen.getByRole('link');
+      fireEvent.click(link);
+      expect(screen.getByText('Something to remember')).toBeInTheDocument();
+    });
+
+    it('should scroll to the hash element', () => {
+      renderComponent(['/page/1']);
+      const link = screen.getByRole('link');
+      const section = screen.getByText('Something to remember');
+      section.scrollIntoView = jest.fn();
+
+      jest.useFakeTimers();
+      fireEvent.click(link);
+      jest.runAllTimers();
+
+      expect(section.scrollIntoView).toHaveBeenCalled();
     });
   });
 
   describe('when its disabled', () => {
-    it('should do nothing when clicked', () => {
-      I18NLink.navigate = jasmine.createSpy('navigate');
-      spyOn(props, 'onClick');
+    it('should not trigger onClick', () => {
       props.disabled = true;
-      render();
-      component.simulate('click', event);
-      expect(props.onClick).not.toHaveBeenCalled();
-      expect(event.preventDefault).toHaveBeenCalled();
-      expect(I18NLink.navigate).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('mapStateToProps', () => {
-    it('should append the locale to the "to" url', () => {
-      expect(mapStateToProps({ locale: 'es' }, props).to).toBe('/es/templates');
+      renderComponent();
+      const link = screen.getByText('Section 1');
+      fireEvent.click(link);
+      expect(clickAction).not.toHaveBeenCalled();
     });
 
-    describe('when there is no locale', () => {
-      it('should pass the "to" url unchanged', () => {
-        expect(mapStateToProps({}, props).to).toBe('/templates');
-      });
+    it('should not navigate when clicked', () => {
+      props.disabled = true;
+      renderComponent();
+      const link = screen.getByRole('link');
+      fireEvent.click(link);
+      expect(screen.queryByText('Something to remember')).not.toBeInTheDocument();
     });
   });
 });
