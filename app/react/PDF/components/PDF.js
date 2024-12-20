@@ -32,6 +32,7 @@ class PDF extends Component {
     this.pageLoading = this.pageLoading.bind(this);
     this.onPageVisible = this.onPageVisible.bind(this);
     this.onPageHidden = this.onPageHidden.bind(this);
+    this.containerWidth = 0;
   }
 
   componentDidMount() {
@@ -42,6 +43,8 @@ class PDF extends Component {
       });
       document.addEventListener('textlayerrendered', this.props.onPageLoaded, { once: true });
     }
+
+    this.containerWidth = this.props.parentRef.current?.clientWidth;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -173,7 +176,7 @@ class PDF extends Component {
                       page={page}
                       pdf={this.state.pdf}
                       highlightReference={this.props.highlightReference}
-                      containerWidth={document.getElementById(this.props.pdfParentId).clientWidth}
+                      containerWidth={this.containerWidth}
                     />
                   </SelectionRegion>
                 </div>
@@ -209,7 +212,7 @@ PDF.propTypes = {
   onLoad: PropTypes.func.isRequired,
   style: PropTypes.object,
   highlightReference: PropTypes.func,
-  pdfParentId: PropTypes.string.isRequired,
+  parentRef: PropTypes.object.isRequired,
 };
 
 export default PDF;

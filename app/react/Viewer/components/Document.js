@@ -2,7 +2,7 @@ import 'app/Viewer/scss/conversion_base.scss';
 import 'app/Viewer/scss/document.scss';
 
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 
 import { Loader } from 'app/components/Elements/Loader';
 import { PDF } from 'app/PDF';
@@ -29,6 +29,7 @@ class Document extends Component {
     this.onTextSelected = this.onTextSelected.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.highlightReference = this.highlightReference.bind(this);
+    this.containerRef = createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -93,8 +94,8 @@ class Document extends Component {
 
   handleOver() {}
 
-  renderPDF(file, pdfContainerParentId) {
-    if (!file._id) {
+  renderPDF(file) {
+    if (!file._id && this.containerRef) {
       return <Loader />;
     }
 
@@ -111,7 +112,7 @@ class Document extends Component {
         highlightReference={this.highlightReference}
         activeReference={this.props.activeReference}
         key={file.filename}
-        pdfParentId={pdfContainerParentId}
+        parentRef={this.containerRef}
       />
     );
   }
@@ -119,7 +120,6 @@ class Document extends Component {
   render() {
     const { file } = this.props;
     const Header = this.props.header;
-    const pdfContainerParentId = `${this.props.doc.get('sharedId')}-pages`;
 
     return (
       <div>
@@ -131,11 +131,11 @@ class Document extends Component {
           <Header />
           <div
             className="pages"
-            id={pdfContainerParentId}
+            ref={this.containerRef}
             onMouseOver={this.handleOver.bind(this)}
             onClick={this.handleClick}
           >
-            {this.renderPDF(file, pdfContainerParentId)}
+            {this.renderPDF(file)}
           </div>
         </div>
       </div>
