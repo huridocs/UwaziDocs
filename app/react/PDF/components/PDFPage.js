@@ -130,11 +130,12 @@ class PDFPage extends Component {
           eventBus: new EventBus(),
         });
 
+        atomStore.set(pdfScaleAtom, scale);
+
         this.pdfPageView.setPdfPage(page);
         this.pdfPageView
           .draw()
           .then(() => {
-            atomStore.set(pdfScaleAtom, scale);
             if (this._mounted) {
               this.setState({ height: this.pdfPageView.viewport.height });
             }

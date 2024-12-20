@@ -2,14 +2,11 @@ import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { ModelAction } from 'react-redux-form';
-import { useAtomValue } from 'jotai';
 import { Icon } from 'app/UI';
 import { IStore } from 'app/istore';
 import { t, Translate } from 'app/I18N';
 import { notificationActions } from 'app/Notifications';
 import { SelectionRectanglesSchema } from 'shared/types/commonTypes';
-import { pdfScaleAtom } from 'V2/atoms';
-import { selectionHandlers } from 'V2/Components/PDFViewer';
 import { updateSelection, updateFormField } from '../actions/metadataExtractionActions';
 
 type OwnPropTypes = {
@@ -56,8 +53,6 @@ const MetadataExtractorComponent = ({
   updateField,
   notify,
 }: mappedProps) => {
-  const pdfScaling = useAtomValue(pdfScaleAtom);
-
   const onClick = async () => {
     if (!selection.selectionRectangles?.length) {
       notify(
@@ -66,12 +61,9 @@ const MetadataExtractorComponent = ({
       );
     }
 
-    const selected = selection.selectionRectangles?.length
-      ? selectionHandlers.adjustSelectionsToScale(selection, pdfScaling, true)
-      : selection;
-    setSelection(selected);
+    setSelection(selection);
 
-    updateField(selected.text);
+    updateField(selection.text);
   };
 
   if (!selection) {
