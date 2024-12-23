@@ -189,13 +189,13 @@ const adjustSelectionsToScale = (
   scalingFactor: number,
   normalize?: boolean
 ): TextSelection => {
-  if (scalingFactor === 1) {
+  if (scalingFactor === 1 || scalingFactor === 0) {
     return selection;
   }
 
   const scaledSelection = { ...selection };
 
-  if (scaledSelection.selectionRectangles.length) {
+  if (scaledSelection.selectionRectangles?.length) {
     scaledSelection.selectionRectangles = selection.selectionRectangles.map(rectangle => {
       const left = rectangle.left || 0;
       const top = rectangle.top || 0;

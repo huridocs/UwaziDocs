@@ -310,8 +310,9 @@ describe('PDF selections handlers', () => {
   });
 
   describe('adjust selections to pdf scale', () => {
-    it('should return the original selection if there is no scaling', () => {
+    it('should return the original selection if there is no valid scaling', () => {
       expect(adjustSelectionsToScale(selections[0], 1)).toEqual(selections[0]);
+      expect(adjustSelectionsToScale(selections[0], 0)).toEqual(selections[0]);
     });
 
     it('should return the same selections if the rectangles are empty', () => {
