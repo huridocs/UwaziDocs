@@ -4,10 +4,12 @@ import { SelectionRegion, HandleTextSelection } from '@huridocs/react-text-selec
 import { TextSelection } from '@huridocs/react-text-selection-handler/dist/TextSelection';
 import { PDFDocumentProxy } from 'pdfjs-dist';
 import { Translate } from 'app/I18N';
-import { PDFJS, CMAP_URL } from './pdfjs';
+import { PDFJS, CMAP_URL, EventBus } from './pdfjs';
 import { TextHighlight } from './types';
 
 const PDFPage = loadable(async () => import(/* webpackChunkName: "LazyLoadPDFPage" */ './PDFPage'));
+
+const eventBus = new EventBus();
 
 interface PDFProps {
   fileUrl: string;
@@ -111,6 +113,7 @@ const PDF = ({
                   <PDFPage
                     pdf={pdf}
                     page={number}
+                    eventBus={eventBus}
                     highlights={pageHighlights}
                     containerWidth={containerWidth}
                   />

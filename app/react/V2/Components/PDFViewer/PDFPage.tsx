@@ -12,11 +12,12 @@ import { adjustSelectionsToScale } from './functions/handleTextSelection';
 interface PDFPageProps {
   pdf: PDFDocumentProxy;
   page: number;
+  eventBus: typeof EventBus.prototype;
   highlights?: TextHighlight[];
   containerWidth?: number;
 }
 
-const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
+const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPageProps) => {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
@@ -79,7 +80,7 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
           scale,
           defaultViewport,
           annotationMode: 0,
-          eventBus: new EventBus(),
+          eventBus,
         });
 
         pageViewer.setPdfPage(pdfPage);
@@ -91,7 +92,9 @@ const PDFPage = ({ pdf, page, containerWidth, highlights }: PDFPageProps) => {
         handlePlaceHolder();
       }
     }
-  }, [isVisible, page, pdfPage, containerWidth, setPdfScale]);
+    // This effect is expensive and it's preferable to avoid unnecessary re-renderings
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible, containerWidth]);
 
   if (error) {
     return <div>{error}</div>;
