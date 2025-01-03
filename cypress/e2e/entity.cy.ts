@@ -257,6 +257,10 @@ describe('Entities', () => {
         cy.get('.fa-file', { timeout: 5000 }).then(() => {
           cy.get('.fa-file').realClick();
         });
+        cy.contains(
+          '.create-reference li:nth-child(1) span:nth-child(2)',
+          'Relacionado a'
+        ).scrollIntoView();
         cy.contains('.create-reference li:nth-child(1) span:nth-child(2)', 'Relacionado a').click({
           timeout: 5000,
         });
