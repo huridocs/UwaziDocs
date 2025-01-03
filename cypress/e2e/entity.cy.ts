@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 /* eslint-disable max-lines */
 import { clearCookiesAndLogin } from './helpers/login';
 import { changeLanguage } from './helpers/language';
@@ -257,23 +258,17 @@ describe('Entities', () => {
         cy.get('.fa-file', { timeout: 5000 }).then(() => {
           cy.get('.fa-file').realClick();
         });
-        cy.contains(
-          '.create-reference li:nth-child(1) span:nth-child(2)',
-          'Relacionado a'
-        ).scrollIntoView();
-        cy.contains('.create-reference li:nth-child(1) span:nth-child(2)', 'Relacionado a').click({
-          timeout: 5000,
-        });
+        cy.contains('.create-reference', 'Relacionado a').should('be.visible');
+        cy.contains('li.multiselectItem', 'Relacionado a').realClick();
         cy.get('aside.create-reference input').type('Patrick Robinson', { timeout: 5000 });
         cy.contains('Tracy Robinson', { timeout: 5000 });
-        cy.contains('.item-name', 'Patrick Robinson', { timeout: 5000 }).click();
+        cy.contains('.item-name', 'Patrick Robinson', { timeout: 5000 }).realClick();
         cy.contains('aside.create-reference .btn-success', 'Save', { timeout: 5000 }).click({
           timeout: 5000,
         });
         cy.contains('Saved successfully.');
         cy.get('#p3R_mc0').scrollIntoView();
-        cy.get('#p3R_mc24 > span:nth-child(2)').toMatchImageSnapshot();
-        cy.get('.relationship-active').toMatchImageSnapshot();
+        cy.get('.row').toMatchImageSnapshot();
       });
 
       it('should edit the entity and the documents', () => {
