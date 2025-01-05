@@ -336,11 +336,10 @@ describe('Information Extraction', () => {
     });
 
     it('should click to fill with a new text', () => {
-      cy.contains('The Spectacular Spider-Man').parent().parent().siblings().last().click();
+      cy.contains('tr', 'The Spectacular Spider-Man').contains('button', 'Open PDF').click();
       cy.get('aside').within(() => {
         cy.get('input').clear();
       });
-      cy.get('#pdf-container').scrollTo(0, 0);
       cy.contains('button', 'Clear').click();
       cy.contains('span[role="presentation"]', 'The Spectacular Spider-Man')
         .eq(0)
