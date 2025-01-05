@@ -1,6 +1,7 @@
 /* eslint-disable max-statements */
 import React, { useEffect, useRef, useState } from 'react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { PDFPageView } from 'pdfjs-dist/web/pdf_viewer.mjs';
 import { Highlight } from '@huridocs/react-text-selection-handler';
 import { useAtom } from 'jotai';
 import { pdfScaleAtom } from 'V2/atoms';
@@ -23,6 +24,7 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
   const [pdfPage, setPdfPage] = useState<PDFPageProxy>();
   const [error, setError] = useState<string>();
   const [pdfScale, setPdfScale] = useAtom(pdfScaleAtom);
+  const pageViewer = useRef<PDFPageView>();
 
   useEffect(() => {
     pdf
@@ -34,31 +36,6 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
   useEffect(() => {
     if (pageContainerRef.current && pdfPage) {
       const currentContainer = pageContainerRef.current;
-
-      const handleIntersection: IntersectionObserverCallback = entries => {
-        const [entry] = entries;
-        if (!isVisible) {
-          setIsVisible(entry.isIntersecting);
-        }
-      };
-
-      const observer = new IntersectionObserver(handleIntersection, {
-        root: null,
-        rootMargin: '100px',
-        threshold: 0.1,
-      });
-
-      observer.observe(currentContainer);
-
-      return () => observer.unobserve(currentContainer);
-    }
-
-    return () => {};
-  });
-
-  useEffect(() => {
-    if (pageContainerRef.current && pdfPage) {
-      const currentContainer = pageContainerRef.current;
       const originalViewport = pdfPage.getViewport({ scale: 1 });
       const scale = calculateScaling(
         originalViewport.width * PDFJS.PixelsPerInch.PDF_TO_CSS_UNITS,
@@ -66,15 +43,10 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
       );
       const defaultViewport = pdfPage.getViewport({ scale });
 
-      const handlePlaceHolder = () => {
-        currentContainer.style.height = `${defaultViewport.height}px`;
-        currentContainer.style.width = `${defaultViewport.width}px`;
-      };
-
       setPdfScale(scale);
 
-      if (isVisible) {
-        const pageViewer = new PDFJSViewer.PDFPageView({
+      if (!pageViewer.current) {
+        pageViewer.current = new PDFJSViewer.PDFPageView({
           container: currentContainer,
           id: page,
           scale,
@@ -83,18 +55,44 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
           eventBus,
         });
 
-        pageViewer.setPdfPage(pdfPage);
-
-        pageViewer.draw().catch((e: Error) => setError(e.message));
-      }
-
-      if (!isVisible) {
-        handlePlaceHolder();
+        pageViewer.current.setPdfPage(pdfPage);
       }
     }
-    // This effect is expensive and it's preferable to avoid unnecessary re-renderings
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible, containerWidth]);
+  }, [containerWidth, eventBus, page, pdfPage, setPdfScale]);
+
+  useEffect(() => {
+    const currentContainer = pageContainerRef.current;
+
+    const handleIntersection: IntersectionObserverCallback = entries => {
+      const [entry] = entries;
+      setIsVisible(entry.isIntersecting);
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      root: null,
+      threshold: 0.1,
+    });
+
+    if (currentContainer) {
+      observer.observe(currentContainer);
+    }
+
+    return () => {
+      if (currentContainer) observer.unobserve(currentContainer);
+      return undefined;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (pageViewer.current) {
+      if (isVisible) {
+        pageViewer.current.draw().catch(e => setError(e));
+      }
+      if (pageViewer.current.renderingState && !isVisible) {
+        pageViewer.current.destroy();
+      }
+    }
+  }, [isVisible]);
 
   if (error) {
     return <div>{error}</div>;
