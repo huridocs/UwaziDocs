@@ -43,7 +43,9 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
       );
       const defaultViewport = pdfPage.getViewport({ scale });
 
-      setPdfScale(scale);
+      if (scale !== pdfScale) {
+        setPdfScale(scale);
+      }
 
       if (!pageViewer.current) {
         pageViewer.current = new PDFJSViewer.PDFPageView({
@@ -58,7 +60,7 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
         pageViewer.current.setPdfPage(pdfPage);
       }
     }
-  }, [containerWidth, eventBus, page, pdfPage, setPdfScale]);
+  }, [containerWidth, eventBus, page, pdfPage]);
 
   useEffect(() => {
     const currentContainer = pageContainerRef.current;
@@ -84,15 +86,17 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
   }, []);
 
   useEffect(() => {
-    if (pageViewer.current) {
+    if (pageViewer.current && pdfPage) {
       if (isVisible) {
-        pageViewer.current.draw().catch(e => setError(e));
+        if (pageViewer.current.renderingState === PDFJSViewer.RenderingStates.INITIAL) {
+          pageViewer.current.draw().catch(e => setError(e.message));
+        }
       }
-      if (pageViewer.current.renderingState && !isVisible) {
+      if (!isVisible) {
         pageViewer.current.destroy();
       }
     }
-  }, [isVisible]);
+  }, [isVisible, pdfPage]);
 
   if (error) {
     return <div>{error}</div>;
