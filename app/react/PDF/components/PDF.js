@@ -166,7 +166,7 @@ class PDF extends Component {
             const pages = [];
             for (let page = 1; page <= this.state.pdf.numPages; page += 1) {
               pages.push(
-                <div className="page-page" key={page}>
+                <div key={page}>
                   <SelectionRegion regionId={page.toString()}>
                     <PDFPage
                       onUnload={this.pageUnloaded}

@@ -106,7 +106,6 @@ const PDF = ({
               <div
                 key={`page-${regionId}`}
                 id={`page-${regionId}-container`}
-                className="pdf-page"
                 ref={shouldScrollToPage ? scrollToRef : undefined}
               >
                 <SelectionRegion regionId={regionId}>
