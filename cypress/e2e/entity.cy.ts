@@ -2,7 +2,12 @@
 /* eslint-disable max-lines */
 import { clearCookiesAndLogin } from './helpers/login';
 import { changeLanguage } from './helpers/language';
-import { clickOnCreateEntity, clickOnEditEntity } from './helpers/entities';
+import {
+  clickOnCreateEntity,
+  clickOnEditEntity,
+  saveEntity,
+  selectRestrictedEntities,
+} from './helpers';
 
 const filesAttachments = ['./cypress/test_files/valid.pdf', './cypress/test_files/batman.jpg'];
 
@@ -25,35 +30,12 @@ const webAttachments = {
   url: 'https://fonts.googleapis.com/icon?family=Material+Icons',
 };
 
-const goToRestrictedEntities = () => {
-  cy.contains('a', 'Library').click();
-  cy.get('#publishedStatuspublished').then(element => {
-    const publishedStatus = element.val();
-    cy.get('#publishedStatusrestricted').then(restrictedElement => {
-      const restrictedStatis = restrictedElement.val();
-
-      if (publishedStatus) {
-        cy.get('[title="Published"]').click();
-      }
-
-      if (!restrictedStatis) {
-        cy.get('[title="Restricted"]').click();
-      }
-    });
-  });
-};
-
 describe('Entities', () => {
   before(() => {
     const env = { DATABASE_NAME: 'uwazi_e2e', INDEX_NAME: 'uwazi_e2e' };
     cy.exec('yarn e2e-fixtures', { env });
     clearCookiesAndLogin();
   });
-
-  const saveEntity = (message = 'Entity created') => {
-    cy.contains('button', 'Save').click();
-    cy.contains(message);
-  };
 
   it('Should create new entity', () => {
     clickOnCreateEntity();
@@ -88,7 +70,8 @@ describe('Entities', () => {
 
   describe('Entity with files in metadata fields', () => {
     it('should create and entity with and image in a metadata field', () => {
-      goToRestrictedEntities();
+      cy.contains('a', 'Library').click();
+      selectRestrictedEntities();
       clickOnCreateEntity();
       cy.get('[name="library.sidepanel.metadata.title"]').click();
       cy.get('[name="library.sidepanel.metadata.title"]').type('Entity with media files', {
@@ -124,7 +107,8 @@ describe('Entities', () => {
     it('should check the entity', () => {
       cy.get('.sidepanel-body.scrollable').scrollTo('top');
       cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-      goToRestrictedEntities();
+      cy.contains('a', 'Library').click();
+      selectRestrictedEntities();
       cy.contains('.item-name span', 'Entity with media files').click();
       cy.get('.metadata-name-descripci_n > dd > div > p').should(
         'contain.text',
@@ -150,7 +134,8 @@ describe('Entities', () => {
     describe('Entity with supporting files', () => {
       it('Should create a new entity with supporting files', () => {
         cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-        goToRestrictedEntities();
+        cy.contains('a', 'Library').click();
+        selectRestrictedEntities();
         clickOnCreateEntity();
         cy.contains('button', 'Add file').click();
         cy.get('#tab-uploadComputer').click();
@@ -228,7 +213,8 @@ describe('Entities', () => {
     describe('Entity with main documents', () => {
       it('Should create a new entity with a main documents', () => {
         cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-        goToRestrictedEntities();
+        cy.contains('a', 'Library').click();
+        selectRestrictedEntities();
         clickOnCreateEntity();
         cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
         cy.get('textarea[name="library.sidepanel.metadata.title"]').type(
