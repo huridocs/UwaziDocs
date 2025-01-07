@@ -162,8 +162,8 @@ describe('PDF display', () => {
         cy.contains('Entity with pdf (es)');
       });
 
-      it('should check that the pdf renders and scrolls to the correct with a selection', () => {
-        cy.contains('button', 'Open PDF').click();
+      it('should check that the pdf renders and scrolls to the selection', () => {
+        cy.contains('button', 'Open PDF').realClick();
         cy.contains('Loading').should('not.exist');
         cy.get('#pdf-container').within(() => {
           cy.contains(
