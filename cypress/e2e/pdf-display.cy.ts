@@ -1,9 +1,10 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-statements */
 import 'cypress-axe';
 import { clearCookiesAndLogin } from './helpers/login';
 import { clickOnCreateEntity, editPropertyForExtractor, saveEntity } from './helpers';
 
-describe('pdf display', () => {
+describe('PDF display', () => {
   before(() => {
     const env = { DATABASE_NAME: 'uwazi_e2e', INDEX_NAME: 'uwazi_e2e' };
     cy.blankState();
@@ -48,7 +49,7 @@ describe('pdf display', () => {
     it('should check the document', () => {
       cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS');
       cy.get('.row').eq(0).toMatchImageSnapshot();
-      cy.get('#pdf-container').toMatchSnapshot({ name: 'pdf-render-result' });
+      cy.get('#pdf-container').toMatchSnapshot({ name: 'PDF library render' });
     });
 
     it('should paginate forward', () => {
@@ -158,10 +159,12 @@ describe('pdf display', () => {
       it('should view the extractor', () => {
         cy.contains('a', 'Settings').click();
         cy.contains('a', 'Metadata Extraction').click();
+        cy.contains('Extractor 1');
         cy.contains('button', 'Review').click();
+        cy.contains('Entity with pdf (es)');
       });
 
-      it('should check that the pdf renders in the correct page', () => {
+      it('should check that the pdf renders and scrolls to the correct with a selection', () => {
         cy.contains('button', 'Open PDF').click();
         cy.contains('Loading').should('not.exist');
         cy.get('#pdf-container').within(() => {
@@ -171,7 +174,109 @@ describe('pdf display', () => {
           cy.get('.highlight-rectangle').should('be.visible');
         });
         cy.get('#root').toMatchImageSnapshot();
-        cy.get('#pdf-container').toMatchSnapshot();
+        cy.get('#pdf-container').toMatchSnapshot({ name: 'IX sidepanel library render' });
+      });
+
+      it('should only render visible pages', () => {
+        cy.get('#page-2-container .page').should('not.be.empty');
+        cy.get('#page-3-container .page').should('be.empty');
+        cy.get('#page-7-container').scrollIntoView();
+        cy.get('#page-7-container .page').should('not.be.empty');
+        cy.get('#page-2-container .page').should('be.empty');
+        cy.get('#page-3-container .page').should('be.empty');
+        cy.contains('span[role="presentation"]', '1.3 Consideraciones de la Corte').should(
+          'be.visible'
+        );
+      });
+
+      it('should close the sidepanel', () => {
+        cy.contains('button', 'Cancel').click();
+      });
+    });
+  });
+
+  describe('responsiveness', () => {
+    describe('library', () => {
+      beforeEach(() => {
+        cy.viewport('ipad-mini');
+      });
+
+      it('should navigate to the library', () => {
+        cy.get('header').within(() => {
+          cy.get('.menu-button').realTouch();
+        });
+        cy.contains('a', 'Library').realTouch();
+      });
+
+      it('should view the pdf correctly', () => {
+        cy.contains('.item-document', 'Entity with pdf').within(() => {
+          cy.contains('a', 'View').realTouch();
+        });
+        cy.get('.closeSidepanel').realTouch();
+        cy.get('aside.metadata-sidepanel').should('not.be.visible');
+        cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS').should('be.visible');
+        cy.get('#root').toMatchImageSnapshot();
+      });
+
+      it('should check that the selection looks ok', () => {
+        cy.get('#page-2').scrollIntoView();
+        cy.contains('Los escritos de 17 de septiembre y 17 de noviembre de 2010,').should(
+          'be.visible'
+        );
+        cy.get('.ContextMenu-bottom .btn').realTouch();
+        cy.contains('.btn', 'Edit').realTouch();
+        cy.get('.highlight-rectangle').toMatchSnapshot({ name: 'responsive selection' });
+        cy.get('#root').toMatchImageSnapshot();
+        cy.contains('.btn', 'Cancel').realTouch();
+        cy.get('.closeSidepanel').realTouch();
+      });
+    });
+
+    describe('IX sidepanel', () => {
+      beforeEach(() => {
+        cy.viewport('iphone-x');
+      });
+
+      it('should navigate to the extractor', () => {
+        cy.get('header').within(() => {
+          cy.get('.menu-button').realTouch();
+        });
+        cy.get('.menuActions > .menuNav-list').within(() => {
+          cy.contains('.only-mobile', 'Settings').realTouch();
+        });
+        cy.contains('a', 'Metadata Extraction').realTouch();
+        cy.contains('Extractor 1');
+        cy.contains('button', 'Review').realTouch();
+        cy.contains('Entity with pdf (es)');
+      });
+
+      it('should open the pdf sidepanel and show in the correct page', () => {
+        cy.contains('button', 'Open PDF').realTouch();
+        cy.contains('Loading').should('not.exist');
+        cy.get('#pdf-container').within(() => {
+          cy.contains(
+            'Los escritos de 12 de agosto, 14 y 26 de octubre y 24 de noviembre de 2010, de 3'
+          );
+          cy.get('.highlight-rectangle').should('be.visible');
+        });
+        cy.get('#root').toMatchImageSnapshot();
+      });
+
+      it('should only show visible pages', () => {
+        cy.get('#page-1-container .page').should('be.empty');
+        cy.get('#page-2-container .page').should('not.be.empty');
+        cy.get('#page-3-container .page').should('not.be.empty');
+        cy.get('#page-10-container .page').should('be.empty');
+        cy.get('#page-10-container').scrollIntoView();
+        cy.get('#page-1-container .page').should('be.empty');
+        cy.get('#page-2-container .page').should('be.empty');
+        cy.get('#page-3-container .page').should('be.empty');
+        cy.get('#page-10-container .page').should('not.be.empty');
+        cy.get('#page-11-container .page').should('not.be.empty');
+        cy.contains(
+          'span[role="presentation"]',
+          'El artículo 63.2 de la Convención exige que para que la Corte pueda disponer de'
+        ).should('be.visible');
       });
     });
   });

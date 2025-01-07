@@ -1,4 +1,4 @@
-exports[`pdf display > Library > should check the document #0`] = `
+exports[`PDF display > Library > should check the document #0`] = `
 <div id="pdf-container">
   <div>
     <div data-region-selector-id="1">
@@ -2855,7 +2855,7 @@ exports[`pdf display > Library > should check the document #0`] = `
 </div>
 `;
 
-exports[`pdf display > IX sidepanel > pdf on the sidepanel > should check that the pdf renders in the correct page #0`] = `
+exports[`PDF display > IX sidepanel > pdf on the sidepanel > should check that the pdf renders and scrolls to the correct with a selection #0`] = `
 <div
   id="pdf-container"
   style="height: 100%; width: 100%; overflow: auto; padding-left: 10px; padding-right: 10px;"
@@ -4979,4 +4979,11 @@ exports[`pdf display > IX sidepanel > pdf on the sidepanel > should check that t
     </div>
   </div>
 </div>
+`;
+
+exports[`PDF display > responsiveness > library > should check that the selection looks ok #0`] = `
+<div
+  class="highlight-rectangle"
+  style="top: 192.791px; left: 129.219px; width: 536.452px; height: 14.4565px; padding: 0px; margin: 0px; position: absolute; display: block; mix-blend-mode: darken; opacity: 0.5; background-color: rgb(177, 247, 163); z-index: 1;"
+></div>
 `;
