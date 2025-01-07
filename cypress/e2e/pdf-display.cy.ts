@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-statements */
-import 'cypress-axe';
 import { clearCookiesAndLogin } from './helpers/login';
 import { clickOnCreateEntity, editPropertyForExtractor, saveEntity } from './helpers';
 
@@ -10,7 +9,6 @@ describe('PDF display', () => {
     cy.blankState();
     cy.exec('yarn ix-config', { env });
     clearCookiesAndLogin('admin', 'change this password now');
-    cy.injectAxe();
   });
 
   describe('setup', () => {
