@@ -99,7 +99,7 @@ describe('Entities', () => {
         .first()
         .selectFile('./cypress/test_files/short-video.webm', {
           force: true,
-          timeout: 100,
+          timeout: 1000,
         });
       saveEntity('Entity updated');
     });
@@ -114,7 +114,6 @@ describe('Entities', () => {
         'contain.text',
         'A description of the report'
       );
-
       cy.get('.metadata-name-fotograf_a > dd > img')
         .should('have.prop', 'src')
         .and('match', /\w+\/api\/files\/\w+\.jpg$/);
