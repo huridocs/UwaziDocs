@@ -37,9 +37,7 @@ const PDFPage = ({ pdf, page, eventBus, containerWidth, highlights }: PDFPagePro
           );
           const defaultViewport = pdfPage.getViewport({ scale });
 
-          if (scale !== pdfScale) {
-            setPdfScale(scale);
-          }
+          setPdfScale(scale);
 
           const pageViewer = new PDFJSViewer.PDFPageView({
             container: currentContainer,
