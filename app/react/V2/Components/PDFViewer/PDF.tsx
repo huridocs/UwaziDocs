@@ -6,6 +6,7 @@ import { PDFDocumentProxy } from 'pdfjs-dist';
 import { Translate } from 'app/I18N';
 import { PDFJS, CMAP_URL, EventBus } from './pdfjs';
 import { TextHighlight } from './types';
+import { triggerScroll } from './functions/helpers';
 
 const PDFPage = loadable(async () => import(/* webpackChunkName: "LazyLoadPDFPage" */ './PDFPage'));
 
@@ -61,25 +62,9 @@ const PDF = ({
 
   useEffect(() => {
     let animationFrameId = 0;
-    let attempts = 0;
-
-    const triggerScroll = () => {
-      if (attempts > 10) {
-        return;
-      }
-
-      if (scrollToRef.current && scrollToRef.current.clientHeight > 0) {
-        scrollToRef.current.scrollIntoView({ behavior: 'instant' });
-        attempts = 0;
-        return;
-      }
-
-      attempts += 1;
-      animationFrameId = requestAnimationFrame(triggerScroll);
-    };
 
     if (pdf && scrollToPage) {
-      triggerScroll();
+      animationFrameId = triggerScroll(scrollToRef, animationFrameId);
     }
 
     return () => {
