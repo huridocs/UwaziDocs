@@ -23,7 +23,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
-          mongodb-version: 5.0.27
+          mongodb-version: 6.0
           mongodb-replica-set: test-rs
       - uses: actions/checkout@v4
       - name: Use Node.js
@@ -39,7 +39,7 @@ jobs:
         run: yarn install
       - run: yarn blank-state
         id: blank-state-attempt1
-        continue-on-error: true  
+        continue-on-error: true
         env:
           DBHOST: localhost:27017
           ELASTICSEARCH_URL: http://localhost:${{ job.services.elasticsearch.ports[9200] }}
