@@ -157,9 +157,9 @@ describe('PDF display', () => {
       it('should view the extractor', () => {
         cy.contains('a', 'Settings').click();
         cy.contains('a', 'Metadata Extraction').click();
-        cy.contains('Extractor 1');
+        cy.contains('td', 'Extractor 1');
         cy.contains('button', 'Review').click();
-        cy.contains('Entity with pdf (es)');
+        cy.contains('td', 'Entity with pdf (es)');
       });
 
       it('should check that the pdf renders and scrolls to the selection', () => {
@@ -245,9 +245,9 @@ describe('PDF display', () => {
           cy.contains('.only-mobile', 'Settings').realTouch();
         });
         cy.contains('a', 'Metadata Extraction').realTouch();
-        cy.contains('Extractor 1');
+        cy.contains('td', 'Extractor 1');
         cy.contains('button', 'Review').realTouch();
-        cy.contains('Entity with pdf (es)');
+        cy.contains('td', 'Entity with pdf (es)');
       });
 
       it('should open the pdf sidepanel and show in the correct page', () => {
@@ -263,20 +263,22 @@ describe('PDF display', () => {
       });
 
       it('should only show visible pages', () => {
-        cy.get('#page-1-container .page').should('be.empty');
-        cy.get('#page-2-container .page').should('not.be.empty');
-        cy.get('#page-3-container .page').should('not.be.empty');
-        cy.get('#page-10-container .page').should('be.empty');
-        cy.get('#page-10-container').scrollIntoView();
-        cy.get('#page-1-container .page').should('be.empty');
-        cy.get('#page-2-container .page').should('be.empty');
-        cy.get('#page-3-container .page').should('be.empty');
-        cy.get('#page-10-container .page').should('not.be.empty');
-        cy.get('#page-11-container .page').should('not.be.empty');
-        cy.contains(
-          'span[role="presentation"]',
-          'El artículo 63.2 de la Convención exige que para que la Corte pueda disponer de'
-        ).should('be.visible');
+        cy.get('#pdf-container').within(() => {
+          cy.get('#page-1-container .page').should('be.empty');
+          cy.get('#page-2-container .page').should('not.be.empty');
+          cy.get('#page-3-container .page').should('not.be.empty');
+          cy.get('#page-10-container .page').should('be.empty');
+          cy.get('#page-10-container').scrollIntoView();
+          cy.get('#page-1-container .page').should('be.empty');
+          cy.get('#page-2-container .page').should('be.empty');
+          cy.get('#page-3-container .page').should('be.empty');
+          cy.get('#page-10-container .page').should('not.be.empty');
+          cy.get('#page-11-container .page').should('not.be.empty');
+          cy.contains(
+            'span[role="presentation"]',
+            'El artículo 63.2 de la Convención exige que para que la Corte pueda disponer de'
+          ).should('be.visible');
+        });
       });
     });
   });
