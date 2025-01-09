@@ -101,6 +101,9 @@ describe('Entities', () => {
           force: true,
           timeout: 1000,
         });
+      cy.contains('div.form-group.media', 'Video').within(() => {
+        cy.get('video').should('exist');
+      });
       saveEntity('Entity updated');
     });
 
