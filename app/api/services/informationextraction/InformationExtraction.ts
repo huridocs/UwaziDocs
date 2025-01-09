@@ -19,7 +19,6 @@ import settings from 'api/settings/settings';
 import templatesModel from 'api/templates/templates';
 import dictionatiesModel from 'api/thesauri/dictionariesModel';
 import request from 'shared/JSONRequest';
-import languages from 'shared/languages';
 import { EntitySchema } from 'shared/types/entityType';
 import { ExtractedMetadataSchema, ObjectIdSchema, PropertySchema } from 'shared/types/commonTypes';
 import { ModelStatus } from 'shared/types/IXModelSchema';
@@ -31,9 +30,12 @@ import {
   getFilesForSuggestions,
   propertyTypeIsWithoutExtractedMetadata,
   propertyTypeIsSelectOrMultiSelect,
+  NoSegmentedFiles,
+  NoLabeledFiles,
 } from 'api/services/informationextraction/getFiles';
 import { Suggestions } from 'api/suggestions/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
+import { LanguageUtils } from 'shared/language';
 import { IXModelType } from 'shared/types/IXModelType';
 import { ParagraphSchema } from 'shared/types/segmentationType';
 import ixmodels from './ixmodels';
@@ -172,7 +174,8 @@ class InformationExtraction {
     file: FileWithAggregation,
     _data: CommonMaterialsData
   ): MaterialsData => {
-    const languageIso = languages.get(file.language!, 'ISO639_1') || defaultTrainingLanguage;
+    const languageIso =
+      LanguageUtils.fromISO639_3(file.language!, false)?.ISO639_1 || defaultTrainingLanguage;
 
     let data: MaterialsData = { ..._data, language_iso: languageIso };
 
@@ -255,7 +258,7 @@ class InformationExtraction {
   _getEntityFromFile = async (file: EnforcedWithId<FileType> | FileWithAggregation) => {
     let [entity] = await entities.getUnrestricted({
       sharedId: file.entity,
-      language: languages.get(file.language!, 'ISO639_1'),
+      language: LanguageUtils.fromISO639_3(file.language!)?.ISO639_1,
     });
 
     if (!entity) {
@@ -344,7 +347,7 @@ class InformationExtraction {
       ...existingSuggestions,
       entityId: entity.sharedId!,
       fileId: file._id,
-      language: languages.get(file.language, 'ISO639_1') || 'other',
+      language: LanguageUtils.fromISO639_3(file.language)?.ISO639_1 || 'other',
       extractorId: extractor._id,
       propertyName: extractor.property,
       status: 'processing',
@@ -403,13 +406,13 @@ class InformationExtraction {
 
     const [extractor] = await Extractors.get({ _id: extractorId });
     const serviceUrl = await this.serviceUrl();
-    const materialsSent = await this.materialsForModel(extractor, serviceUrl);
+    const [materialsSent, status] = await this.materialsForModel(extractor, serviceUrl);
     if (!materialsSent) {
       if (model) {
         model.findingSuggestions = false;
         await IXModelsModel.save(model);
       }
-      return { status: 'error', message: 'No labeled data' };
+      return status || { status: 'error', message: 'No labeled data' };
     }
 
     const template = await templatesModel.getById(extractor.templates[0]);
@@ -508,14 +511,33 @@ class InformationExtraction {
     return { status: 'error', message: 'No model found' };
   };
 
-  materialsForModel = async (extractor: IXExtractorType, serviceUrl: string) => {
-    const files = await getFilesForTraining(extractor.templates, extractor.property);
-    if (!files.length) {
-      return false;
+  async materialsForModel(
+    extractor: IXExtractorType,
+    serviceUrl: string
+  ): Promise<[boolean, { status: string; message: string }?]> {
+    try {
+      const files = await getFilesForTraining(extractor.templates, extractor.property);
+      if (!files.length) {
+        return [false];
+      }
+      await this.sendMaterials(files, extractor, serviceUrl);
+      return [true];
+    } catch (e) {
+      if (e instanceof NoSegmentedFiles) {
+        return [
+          false,
+          {
+            status: 'error',
+            message: 'There are no documents segmented yet, please try again later',
+          },
+        ];
+      }
+      if (e instanceof NoLabeledFiles) {
+        return [false, { status: 'error', message: 'No labeled data' }];
+      }
+      throw e;
     }
-    await this.sendMaterials(files, extractor, serviceUrl);
-    return true;
-  };
+  }
 
   saveModelProcess = async (
     extractorId: ObjectIdSchema,

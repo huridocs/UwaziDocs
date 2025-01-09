@@ -1541,7 +1541,7 @@ describe('suggestions', () => {
       const query = { entityId: 'shared1' };
       await Suggestions.setObsolete(query);
       const obsoletes = await db.mongodb?.collection('ixsuggestions').find(query).toArray();
-      expect(obsoletes?.every(s => s.state.obsolete)).toBe(true);
+      expect(obsoletes?.every(s => s.state.obsolete && s.state.match === null)).toBe(true);
       expect(obsoletes?.length).toBe(4);
     });
   });
@@ -1555,7 +1555,7 @@ describe('suggestions', () => {
       const query = { entityId: 'shared1' };
       await Suggestions.markSuggestionsWithoutSegmentation(query);
       const notSegmented = await db.mongodb?.collection('ixsuggestions').find(query).toArray();
-      expect(notSegmented?.every(s => s.state.error)).toBe(true);
+      expect(notSegmented?.every(s => s.state.error && s.state.match === null)).toBe(true);
     });
 
     it('should not mark suggestions when segmentations are correct', async () => {
@@ -1572,7 +1572,7 @@ describe('suggestions', () => {
       expect(segmented?.length).toBe(1);
       expect(segmented?.every(s => s.state?.error)).toBe(false);
       expect(notSegmented?.length).toBe(1);
-      expect(notSegmented?.every(s => s.state.error)).toBe(true);
+      expect(notSegmented?.every(s => s.state.error && s.state.match === null)).toBe(true);
     });
   });
 
@@ -1612,6 +1612,7 @@ describe('suggestions', () => {
         ...newErroringSuggestion,
         state: {
           error: true,
+          match: null,
         },
       });
       expect(await findOneSuggestion({ entityId: newProcessingSuggestion.entityId })).toMatchObject(
@@ -1619,6 +1620,7 @@ describe('suggestions', () => {
           ...newProcessingSuggestion,
           state: {
             processing: true,
+            match: null,
           },
         }
       );

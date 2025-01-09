@@ -9,7 +9,7 @@ import settings from 'api/settings';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { TestEmitSources, iosocket, setUpApp } from 'api/utils/testingRoutes';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { LanguageSchema } from 'shared/types/commonTypes';
 import { UserRole } from 'shared/types/userSchema';
 import { TranslationContext, TranslationType } from 'shared/translationType';
