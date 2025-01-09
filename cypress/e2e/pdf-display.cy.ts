@@ -47,7 +47,7 @@ describe('PDF display', () => {
     it('should check the document', () => {
       cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS');
       cy.get('.row').eq(0).toMatchImageSnapshot();
-      cy.get('#pdf-container').toMatchSnapshot({ name: 'PDF library render' });
+      cy.get('div[data-region-selector-id="1"]').toMatchSnapshot({ name: 'PDF library render' });
     });
 
     it('should paginate forward', () => {
@@ -172,7 +172,9 @@ describe('PDF display', () => {
           cy.get('.highlight-rectangle').should('be.visible');
         });
         cy.get('#root').toMatchImageSnapshot();
-        cy.get('#pdf-container').toMatchSnapshot({ name: 'IX sidepanel library render' });
+        cy.get('div[data-region-selector-id="2"]').toMatchSnapshot({
+          name: 'IX sidepanel library render',
+        });
       });
 
       it('should only render visible pages', () => {
