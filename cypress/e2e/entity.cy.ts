@@ -101,17 +101,12 @@ describe('Entities', () => {
           force: true,
           timeout: 1000,
         });
-      cy.contains('div.form-group.media', 'Video').within(() => {
-        cy.get('video').should('exist');
-      });
       saveEntity('Entity updated');
+      cy.get('.sidepanel-body.scrollable').scrollTo('top');
+      cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
     });
 
     it('should check the entity', () => {
-      cy.get('.sidepanel-body.scrollable').scrollTo('top');
-      cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-      cy.contains('a', 'Library').click();
-      selectRestrictedEntities();
       cy.contains('.item-name span', 'Entity with media files').click();
       cy.get('.metadata-name-descripci_n > dd > div > p').should(
         'contain.text',
@@ -121,9 +116,11 @@ describe('Entities', () => {
         .should('have.prop', 'src')
         .and('match', /\w+\/api\/files\/\w+\.jpg$/);
       cy.get('.metadata-sidepanel .sidepanel-body').scrollTo('bottom');
-      cy.get('.metadata-name-video > dd > div > div > div > div:nth-child(1) > div > video')
-        .should('have.prop', 'src')
-        .and('match', /^blob:http:\/\/localhost:3000\/[\w-]+$/);
+      cy.contains('.metadata-name-video', 'Video').within(() => {
+        cy.get('video')
+          .should('have.prop', 'src')
+          .and('match', /^blob:http:\/\/localhost:3000\/[\w-]+$/);
+      });
       const expectedNewEntityFiles = ['batman.jpg', 'short-video.webm'];
       cy.get('.attachment-name span:not(.attachment-size)').each((element, index) => {
         const content = element.text();

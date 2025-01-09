@@ -29,7 +29,9 @@ const grantPermission = (row: number, previous: string, action: string = 'write'
 };
 
 const saveEntity = (message = 'Entity created') => {
+  cy.intercept('POST', '/api/entities').as('saveEntity');
   cy.contains('button', 'Save').click();
+  cy.wait('@saveEntity');
   cy.contains(message);
 };
 
