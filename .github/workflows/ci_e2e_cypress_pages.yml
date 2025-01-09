@@ -127,12 +127,12 @@ jobs:
           DBHOST: localhost:27017
           ELASTICSEARCH_URL: http://localhost:${{ job.services.elasticsearch.ports[9200] }}
           TRANSPILED: true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: snapshots
           path: cypress/e2e/**/__image_snapshots__/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: video
