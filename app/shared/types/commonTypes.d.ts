@@ -215,10 +215,10 @@ export interface ExtractedMetadataSchema {
   selection?: {
     text?: string;
     selectionRectangles?: {
-      top?: number;
-      left?: number;
-      width?: number;
-      height?: number;
+      top: number;
+      left: number;
+      width: number;
+      height: number;
       page?: string;
     }[];
   };
@@ -358,27 +358,27 @@ export interface SelectParentSchema {
 }
 
 export interface SelectionRectangleSchema {
-  top?: number;
-  left?: number;
-  width?: number;
-  height?: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
   page?: string;
 }
 
 export type SelectionRectanglesSchema = {
-  top?: number;
-  left?: number;
-  width?: number;
-  height?: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
   page?: string;
 }[];
 
 export interface TocSchema {
   selectionRectangles?: {
-    top?: number;
-    left?: number;
-    width?: number;
-    height?: number;
+    top: number;
+    left: number;
+    width: number;
+    height: number;
     page?: string;
   }[];
   label?: string;
