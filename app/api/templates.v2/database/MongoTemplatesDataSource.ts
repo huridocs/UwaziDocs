@@ -9,11 +9,16 @@ import { mapPropertyQuery } from './QueryMapper';
 import { TemplateDBO } from './schemas/TemplateDBO';
 import { Template } from '../model/Template';
 import { TemplateMappers } from './TemplateMappers';
+import { DefaultIdGenerator } from 'api/common.v2/database/data_source_defaults';
 
 export class MongoTemplatesDataSource
   extends MongoDataSource<TemplateDBO>
   implements TemplatesDataSource
 {
+  generateNextId(): string {
+    return DefaultIdGenerator.generate();
+  }
+
   protected collectionName = 'templates';
 
   private _nameToPropertyMap?: Record<string, Property>;
@@ -146,5 +151,10 @@ export class MongoTemplatesDataSource
 
   async getById(id: Template['id']): Promise<Template | undefined> {
     return (await this.getByIds([id]).first()) || undefined;
+  }
+
+  async create(template: Template) {
+    const dbo = TemplateMappers.toDB(template)
+    await this.getCollection().insertOne({ ...dbo, _id: genenrateId() })
   }
 }
