@@ -4,7 +4,7 @@ import { readFile, readdir } from 'fs/promises';
 
 import { CSVLoader } from 'api/csv';
 import { objectIndex } from 'shared/data_utils/objectIndex';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 
 const availableLanguagesByKey = objectIndex(
   availableLanguages,

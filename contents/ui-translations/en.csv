@@ -380,6 +380,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io."
 "If you want to continue, please type","If you want to continue, please type"
+Image not found,Image not found
 Impact of property change warning,"By making this change, any values  from the previous thesaurus already assigned to entities will be lost."
 Import,Import
 Import asset,Import asset
@@ -849,7 +850,6 @@ This content is automatically generated,This content is automatically generated
 This entity is not public.,This entity is not public.
 This entity is restricted from public view.,This entity is restricted from public view.
 This field is required,This field is required
-This file type is not supported on image fields,This file type is not supported on image fields
 This file type is not supported on media fields,This file type is not supported on media fields
 This group is empty,This group is empty
 This option will show a notification about the use of cookies in your instance.,This option will show a notification about the use of cookies in your instance.
@@ -896,6 +896,7 @@ Two-factor verification failed,Two-factor verification failed
 Two-step verification,Two-step verification
 Two-step verification token required,Two-step verification token required
 Type,Type
+"Unable to save, failed response","Unable to save, failed response"
 Unexpected error,Unexpected error
 Uninstall,Uninstall
 Uninstall language,Uninstall language

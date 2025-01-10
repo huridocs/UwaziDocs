@@ -7,11 +7,11 @@ import settings from 'api/settings/settings';
 import { emitToTenant } from 'api/socketio/setupSockets';
 import { tenants } from 'api/tenants/tenantContext';
 import createError from 'api/utils/Error';
+import { LanguageUtils } from 'shared/language';
 import { handleError } from 'api/utils/handleError';
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream, createWriteStream } from 'fs';
 import request from 'shared/JSONRequest';
-import { language as getLanguage } from 'shared/languagesList';
 import { FileType } from 'shared/types/fileType';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -146,7 +146,7 @@ const processResults = async (message: ResultsMessage): Promise<void> => {
 const validateLanguage = async (language: string, ocrSettings?: { url: string }) => {
   const _ocrSettings = ocrSettings || (await getSettings());
   const supportedLanguages = await fetchSupportedLanguages(_ocrSettings);
-  return supportedLanguages.includes(getLanguage(language, 'ISO639_1')!);
+  return supportedLanguages.includes(LanguageUtils.fromISO639_3(language)?.ISO639_1!);
 };
 
 const getStatus = async (file: EnforcedWithId<FileType>) => {
@@ -219,7 +219,7 @@ class OcrManager {
       tenant: tenant.name,
       params: {
         filename: file.filename,
-        language: getLanguage(file.language!, 'ISO639_1'),
+        language: LanguageUtils.fromISO639_3(file.language!)?.ISO639_1,
       },
     });
 

@@ -1,5 +1,4 @@
 import { detectLanguage } from 'shared/detectLanguage';
-import { language as languages } from 'shared/languagesList';
 import entities from 'api/entities';
 import { legacyLogger } from 'api/log';
 import { entityDefaultDocument } from 'shared/entityDefaultDocument';
@@ -8,7 +7,9 @@ import { ElasticEntityMapper } from 'api/entities.v2/database/ElasticEntityMappe
 import { MongoTemplatesDataSource } from 'api/templates.v2/database/MongoTemplatesDataSource';
 import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
 import { MongoSettingsDataSource } from 'api/settings.v2/database/MongoSettingsDataSource';
+import { LanguageUtils } from 'shared/language';
 import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
+import { otherLanguageSchema } from 'shared/language/availableLanguages';
 import elasticMapping from '../../../database/elastic_mapping/elastic_mapping';
 import elasticMapFactory from '../../../database/elastic_mapping/elasticMapFactory';
 import { elastic } from './elastic';
@@ -50,8 +51,10 @@ function setFullTextSettings(defaultDocument, id, body, doc) {
     language = detectLanguage(fullText);
   }
   if (defaultDocument.language) {
-    language = languages(defaultDocument.language);
+    language =
+      LanguageUtils.fromISO639_3(defaultDocument.language)?.elastic || otherLanguageSchema.elastic;
   }
+
   const fullTextObject = {
     [`fullText_${language}`]: fullText,
     filename: defaultDocument.filename,

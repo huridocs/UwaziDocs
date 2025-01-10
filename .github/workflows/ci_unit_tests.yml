@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.6-amd64
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.7-amd64
         ports:
           - 9200/tcp
         options: -e="discovery.type=single-node" --health-cmd="curl http://localhost:9200/_cluster/health" --health-interval=10s --health-timeout=5s --health-retries=10
@@ -48,7 +48,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
-          mongodb-version: 5.0.27
+          mongodb-version: 6.0
           mongodb-replica-set: uwazi_replica_set
           mongodb-port: 27017
 

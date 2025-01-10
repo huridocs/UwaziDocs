@@ -302,6 +302,22 @@ describe('relationships', () => {
       });
     });
 
+    describe('when creating relationships using non existent relationship types', () => {
+      it('should throw an error', async () => {
+        const nonExistentRelationshipType = db.id();
+        await expect(async () =>
+          relationships.save(
+            [
+              { entity: 'entity3', template: relation2 },
+              { entity: 'entity2', template: nonExistentRelationshipType },
+              { entity: 'entity4', template: null },
+            ],
+            'en'
+          )
+        ).rejects.toBeInstanceOf(Error);
+      });
+    });
+
     describe('when creating relationships to non existent entities', () => {
       it('should not create them', async () => {
         const relations = await relationships.save(
@@ -373,11 +389,17 @@ describe('relationships', () => {
       });
 
       it('should update correctly if template is null', async () => {
-        const reference = await relationships.getById(connectionID1);
+        let reference = await relationships.getById(connectionID1);
         reference.template = { _id: null };
         const [savedReference] = await relationships.save(reference, 'en');
         expect(savedReference.entity).toBe('entity_id');
         expect(savedReference.template).toBe(null);
+
+        reference = await relationships.getById(connectionID1);
+        reference.template = null;
+        const [savedRef2] = await relationships.save(reference, 'en');
+        expect(savedRef2.entity).toBe('entity_id');
+        expect(savedRef2.template).toBe(null);
       });
     });
 

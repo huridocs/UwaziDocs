@@ -1,4 +1,4 @@
-import { availableLanguagesISO6391 } from 'shared/languagesList';
+import { ISO6391Codes } from 'shared/language';
 
 const linkSchema = {
   type: 'object',
@@ -78,7 +78,7 @@ export const entityInputDataSchema = {
   properties: {
     _id: { type: 'string' },
     sharedId: { type: 'string', minLength: 1 },
-    language: { enum: availableLanguagesISO6391 },
+    language: { enum: ISO6391Codes },
     title: { type: 'string', minLength: 1 },
     template: { type: 'string' },
     metadata: metadataSchema,

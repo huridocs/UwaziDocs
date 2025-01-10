@@ -1,41 +1,8 @@
-import languages from '../languages';
-import { detectLanguage } from '../detectLanguage';
+import { detectLanguage } from 'shared/detectLanguage';
+import { availableLanguages, LanguageUtils } from 'shared/language';
+import { otherLanguageSchema } from 'shared/language/availableLanguages';
 
 describe('languages', () => {
-  describe('getAll', () => {
-    it('should return a list of all languages for the default purpose', () => {
-      expect(languages.getAll().length).toBe(32);
-      expect(languages.getAll()[0]).toBe('arabic');
-    });
-
-    it('should return a list of all languages for the passed purpose', () => {
-      expect(languages.getAll('ISO639_1').length).toBe(31);
-      expect(languages.getAll('ISO639_1')[5]).toBe(languages.data[7].ISO639_1);
-      expect(languages.getAll('franc').length).toBe(33);
-      expect(languages.getAll('franc')[5]).toBe(languages.data[5].franc);
-    });
-  });
-
-  describe('get', () => {
-    it('should return a match for the key for the default purpose', () => {
-      expect(languages.get('glg')).toBe('galician');
-      expect(languages.get('lav')).toBe('latvian');
-    });
-
-    it('should return a match for the key for the passed purpose', () => {
-      expect(languages.get('glg', 'ISO639_1')).toBe('gl');
-      expect(languages.get('lav', 'ISO639_1')).toBe('lv');
-    });
-
-    it('should return other for a key in a non supported lang', () => {
-      expect(languages.get('und')).toBe('other');
-    });
-
-    it('should return null for a key in a non supported lang when asking for ISO639_1', () => {
-      expect(languages.get('und', 'ISO639_1')).toBe(null);
-    });
-  });
-
   describe('detectLanguage', () => {
     it('should return the text language (for elasticsearch by default)', () => {
       expect(detectLanguage('de que color es el caballo blanco de santiago')).toBe('spanish');
@@ -49,10 +16,14 @@ describe('languages', () => {
       expect(detectLanguage('what is the colour of the white horse of santiago', 'ISO639_1')).toBe(
         'en'
       );
-      expect(detectLanguage('de que color es el caballo blanco de santiago', 'franc')).toBe('spa');
-      expect(detectLanguage('what is the colour of the white horse of santiago', 'franc')).toBe(
+      expect(detectLanguage('de que color es el caballo blanco de santiago', 'ISO639_3')).toBe(
+        'spa'
+      );
+      expect(detectLanguage('what is the colour of the white horse of santiago', 'ISO639_3')).toBe(
         'eng'
       );
+
+      expect(detectLanguage('Це перевірка', 'ISO639_3')).toBe('ukr');
     });
 
     it('should return other when the language is not supported', () => {
@@ -60,6 +31,44 @@ describe('languages', () => {
       expect(detectLanguage('sdgfghhg hgjk ljhgfhgjk ghgjh ghfdfgfartytuasd fjh fghjgjasd')).toBe(
         'other'
       );
+    });
+  });
+
+  describe('Language Utils', () => {
+    it('should return language schema for the given a ISO639_3 language code', () => {
+      const input = availableLanguages[0];
+
+      expect(LanguageUtils.fromISO639_3(input.ISO639_3)).toEqual(input);
+    });
+
+    it('should return default language schema if given a ISO639_3 language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromISO639_3(input)).toEqual(otherLanguageSchema);
+    });
+
+    it('should return language schema for the given a elastic language code', () => {
+      const input = availableLanguages.find(language => Boolean(language.elastic));
+
+      expect(LanguageUtils.fromElastic(input.elastic)).toEqual(input);
+    });
+
+    it('should return default language schema if given a elastic language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromElastic(input)).toEqual(otherLanguageSchema);
+    });
+
+    it('should return language schema for the given a ISO639_1 language code', () => {
+      const input = availableLanguages[0];
+
+      expect(LanguageUtils.fromISO639_1(input.ISO639_1)).toEqual(input);
+    });
+
+    it('should return null if given a ISO639_1 language code that does not exist on available languages', () => {
+      const input = 'language_code_that_does_not_exist';
+
+      expect(LanguageUtils.fromISO639_1(input)).toBe(null);
     });
   });
 });

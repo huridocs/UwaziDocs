@@ -4,6 +4,8 @@ import { UserInContextMockFactory } from 'api/utils/testingUserInContext';
 import db from 'api/utils/testing_db';
 import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
 import { UserRole } from 'shared/types/userSchema';
+import { EntitySchema } from 'shared/types/entityType';
+import { FileType } from 'shared/types/fileType';
 import { elastic } from '../elastic';
 import { reindexAll, updateMapping } from '../entitiesIndex';
 import { search } from '../search';
@@ -158,5 +160,31 @@ describe('entitiesIndex', () => {
         mapping.body[elasticIndex].mappings.properties.metadata.properties.dob
       ).toBeUndefined();
     });
+  });
+
+  it('should fallback to "other" language if the language is not fully supported by elastic search', async () => {
+    const sharedId = db.id().toString();
+    const entities: EntitySchema[] = [{ sharedId, title: 'Entity 1', language: 'en' }];
+    const files: FileType[] = [
+      {
+        entity: sharedId,
+        originalname: 'file1',
+        filename: 'file1',
+        type: 'document',
+        mimetype: 'application/pdf',
+        language: 'ukr', // Ukrainian is not fully supported by elastic search
+        fullText: {},
+        totalPages: 0,
+      },
+    ];
+
+    await db.setupFixturesAndContext({ entities, files });
+
+    await elasticTesting.reindex();
+
+    const [indexedFile] = await elasticTesting.getIndexedFullTextFromFiles();
+
+    expect(indexedFile.fullText_other).toBeDefined();
+    expect(indexedFile.fullText_undefined).not.toBeDefined();
   });
 });

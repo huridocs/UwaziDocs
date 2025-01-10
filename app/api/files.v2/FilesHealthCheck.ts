@@ -2,6 +2,7 @@ import { FilesDataSource } from './contracts/FilesDataSource';
 import { FileStorage } from './contracts/FileStorage';
 import { StoredFile } from './model/StoredFile';
 import { URLAttachment } from './model/URLAttachment';
+
 function filterFilesInStorage(files: StoredFile[]) {
   return files.filter(
     file =>
@@ -14,6 +15,7 @@ function filterFilesInStorage(files: StoredFile[]) {
 type missingInDBFileDTO = {
   filename: string;
   checksumMatchCount: number;
+  lastModified?: Date;
 };
 
 export class FilesHealthCheck {
@@ -21,7 +23,11 @@ export class FilesHealthCheck {
   private onMissingInDBCB: (file: missingInDBFileDTO) => void = () => {};
 
   // eslint-disable-next-line class-methods-use-this
-  private onMissingInStorageCB: (fileDTO: { _id: string; filename: string }) => void = () => {};
+  private onMissingInStorageCB: (fileDTO: {
+    _id: string;
+    filename: string;
+    creationDate?: Date;
+  }) => void = () => {};
 
   private fileStorage: FileStorage;
 
@@ -57,7 +63,11 @@ export class FilesHealthCheck {
       if (!existsInStorage && !(file instanceof URLAttachment)) {
         counters.missingInStorage += 1;
         missingInStorageList.push(this.fileStorage.getPath(file));
-        this.onMissingInStorageCB({ _id: file.id, filename: file.filename });
+        this.onMissingInStorageCB({
+          _id: file.id,
+          filename: file.filename,
+          creationDate: file.creationDate,
+        });
       }
     });
 
@@ -69,7 +79,11 @@ export class FilesHealthCheck {
       if (checksumMatchCount > 1) {
         counters.missingInDbWithChecksumMatches += 1;
       }
-      this.onMissingInDBCB({ filename: storedFile.fullPath, checksumMatchCount });
+      this.onMissingInDBCB({
+        filename: storedFile.fullPath,
+        checksumMatchCount,
+        lastModified: storedFile.lastModified,
+      });
     });
 
     return {
