@@ -1,23 +1,26 @@
-import { atomStore, translationsAtom, localeAtom } from 'V2/atoms';
 import React from 'react';
-import translate, { getLocaleTranslation, getContext } from '../../shared/translate';
-import { Translate } from '.';
+import { atomStore, translationsAtom, localeAtom } from 'V2/atoms';
+import translate, { getLocaleTranslation, getContext } from 'shared/translate';
+import { Translate } from './Translate';
 
-const testingEnvironment = process.env.NODE_ENV === 'test';
+//return type as any since there is no way to create conditional returns based on parameters
+interface TranslationFunction {
+  (contextId?: string, key?: string, text?: string | null, returnComponent?: boolean): any;
+  translation?: string;
+}
 
-// eslint-disable-next-line max-statements
-const t = (contextId, key, _text, returnComponent = true) => {
+const t: TranslationFunction = (contextId, key, text, returnComponent = true) => {
+  let translations;
+  let locale;
+
   if (!contextId) {
     // eslint-disable-next-line no-console
     console.warn(`You cannot translate "${key}", because context id is "${contextId}"`);
   }
 
-  if (returnComponent && !testingEnvironment) {
+  if (returnComponent) {
     return <Translate context={contextId}>{key}</Translate>;
   }
-
-  let translations;
-  let locale;
 
   const updateTranslations = () => {
     translations = atomStore.get(translationsAtom);
@@ -25,8 +28,6 @@ const t = (contextId, key, _text, returnComponent = true) => {
     t.translation = getLocaleTranslation(translations, locale);
     return { translations, locale };
   };
-
-  const text = _text || key;
 
   updateTranslations();
 
@@ -36,7 +37,7 @@ const t = (contextId, key, _text, returnComponent = true) => {
 
   const context = getContext(t.translation, contextId);
 
-  return translate(context, key, text);
+  return translate(context, key, text || key);
 };
 
-export default t;
+export { t };

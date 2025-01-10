@@ -8,8 +8,7 @@ import { InputField } from 'app/V2/Components/Forms';
 import { Button } from 'V2/Components/UI/Button';
 import { TranslationValue } from 'V2/shared/types';
 import { postV2 } from 'V2/api/translations';
-import { Translate } from './Translate';
-import { t } from '..';
+import { t } from './translateFunction';
 
 const TranslateModal = () => {
   const [inlineEditState, setInlineEditState] = useAtom(inlineEditAtom);
