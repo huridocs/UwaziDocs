@@ -378,6 +378,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.",외부 URL 인 경우 전체 경로 (http://www. 부터 시작하는 전체 URL) 를 넣으십시오.
 "If you want to continue, please type",계속하려면 다음을 입력하십시오:
+Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,업로드
 Import asset,Import asset
@@ -847,7 +848,6 @@ This content is automatically generated,콘텐츠가 자동으로 생성되었�
 This entity is not public.,공개된 엔티티가 아닙니다.
 This entity is restricted from public view.,이 엔티티는 공개 모드에서 제한됩니다.
 This field is required,This field is required
-This file type is not supported on image fields,This file type is not supported on image fields
 This file type is not supported on media fields,This file type is not supported on media fields
 This group is empty,This group is empty
 This option will show a notification about the use of cookies in your instance.,인스턴스 내 쿠키 사용 알림이 필요할 경우 이 옵션을 선택하십시오.
@@ -894,6 +894,7 @@ Two-factor verification failed,이중 인증 절차 실패
 Two-step verification,이중 인증
 Two-step verification token required,Two-step verification token required
 Type,유형
+"Unable to save, failed response","Unable to save, failed response"
 Unexpected error,Unexpected error
 Uninstall,Uninstall
 Uninstall language,Uninstall language

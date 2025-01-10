@@ -541,6 +541,32 @@ describe('libraryActions', () => {
       );
       expect(store.getActions()).toEqual(expectedActions);
     });
+
+    it('should handle exceptions and dispatch a notification on error', async () => {
+      mockID();
+      const doc = { name: 'entity1' };
+      spyOn(saveEntityWithFiles, 'saveEntityWithFiles').and.throwError('Internal server error.');
+
+      const expectedActions = [
+        { model: 'library.sidepanel.metadata', submitFailed: true, type: 'rrf/setSubmitFailed' },
+        {
+          notification: {
+            id: 'unique_id',
+            message:
+              'Unable to save, failed response with the following errors: [\n  "Internal server error."\n]',
+            type: 'danger',
+          },
+          type: 'NOTIFY',
+        },
+      ];
+      const store = mockStore({});
+      await store.dispatch(actions.saveEntity(doc, 'library.sidepanel.metadata'));
+      expect(saveEntityWithFiles.saveEntityWithFiles).toHaveBeenCalledWith(
+        doc,
+        expect.any(Function)
+      );
+      expect(store.getActions()).toEqual(expectedActions);
+    });
   });
 
   describe('processFilters', () => {

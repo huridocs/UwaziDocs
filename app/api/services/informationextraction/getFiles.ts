@@ -17,13 +17,16 @@ import { objectIndex } from 'shared/data_utils/objectIndex';
 import settings from 'api/settings/settings';
 import templatesModel from 'api/templates/templates';
 import { propertyTypes } from 'shared/propertyTypes';
-import languages from 'shared/languages';
 import { ensure } from 'shared/tsUtils';
+import { LanguageUtils } from 'shared/language';
 
 const BATCH_SIZE = 50;
 const MAX_TRAINING_FILES_NUMBER = 2000;
 
 type PropertyValue = string | Array<{ value: string; label: string }>;
+
+class NoSegmentedFiles extends Error {}
+class NoLabeledFiles extends Error {}
 
 interface FileWithAggregation {
   _id: ObjectIdSchema;
@@ -87,7 +90,8 @@ async function getFilesWithAggregations(files: (FileType & FileEnforcedNotUndefi
 
 async function getSegmentedFilesIds() {
   const segmentations = await SegmentationModel.get({ status: 'ready' }, 'fileID');
-  return segmentations.filter(x => x.fileID).map(x => x.fileID) as ObjectIdSchema[];
+  const result = segmentations.filter(x => x.fileID).map(x => x.fileID) as ObjectIdSchema[];
+  return result;
 }
 
 async function getPropertyType(templates: ObjectIdSchema[], property: string) {
@@ -106,27 +110,53 @@ async function getPropertyType(templates: ObjectIdSchema[], property: string) {
   return type;
 }
 
+async function anyFilesLabeled(
+  property: string,
+  propertyType: string,
+  entitiesFromTrainingTemplatesIds: string[]
+) {
+  const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
+  const count = await filesModel.count({
+    type: 'document',
+    filename: { $exists: true },
+    language: { $exists: true },
+    entity: { $in: entitiesFromTrainingTemplatesIds },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
+  });
+  return !!count;
+}
+
+async function anyFilesSegmented(
+  property: string,
+  propertyType: string,
+  entitiesFromTrainingTemplatesIds: string[]
+) {
+  const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
+  const segmentedFilesCount = await filesModel.count({
+    type: 'document',
+    filename: { $exists: true },
+    language: { $exists: true },
+    _id: { $in: await getSegmentedFilesIds() },
+    entity: { $in: entitiesFromTrainingTemplatesIds },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
+  });
+  return !!segmentedFilesCount;
+}
+
 async function fileQuery(
   property: string,
   propertyType: string,
   entitiesFromTrainingTemplatesIds: string[]
 ) {
   const needsExtractedMetadata = !propertyTypeIsWithoutExtractedMetadata(propertyType);
-  const query: {
-    type: string;
-    filename: { $exists: Boolean };
-    language: { $exists: Boolean };
-    _id: { $in: ObjectIdSchema[] };
-    'extractedMetadata.name'?: string;
-    entity: { $in: string[] };
-  } = {
+  const query = {
     type: 'document',
     filename: { $exists: true },
     language: { $exists: true },
     _id: { $in: await getSegmentedFilesIds() },
     entity: { $in: entitiesFromTrainingTemplatesIds },
+    ...(needsExtractedMetadata ? { 'extractedMetadata.name': property } : {}),
   };
-  if (needsExtractedMetadata) query['extractedMetadata.name'] = property;
   return query;
 }
 
@@ -154,6 +184,14 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
     .filter(x => x.sharedId)
     .map(x => x.sharedId) as string[];
 
+  if (!(await anyFilesLabeled(property, propertyType, entitiesFromTrainingTemplatesIds))) {
+    throw new NoLabeledFiles();
+  }
+
+  if (!(await anyFilesSegmented(property, propertyType, entitiesFromTrainingTemplatesIds))) {
+    throw new NoSegmentedFiles();
+  }
+
   const files = (await filesModel.get(
     await fileQuery(property, propertyType, entitiesFromTrainingTemplatesIds),
     'extractedMetadata entity language filename',
@@ -169,7 +207,7 @@ async function getFilesForTraining(templates: ObjectIdSchema[], property: string
   const defaultLang = (await settings.getDefaultLanguage())?.key;
 
   const filesWithEntityValue = files.map(file => {
-    const fileLang = languages.get(file.language, 'ISO639_1') || defaultLang;
+    const fileLang = LanguageUtils.fromISO639_3(file.language, false)?.ISO639_1 || defaultLang;
     const entity = indexedEntities[file.entity + fileLang];
     if (!entity?.metadata || !entity?.metadata[property]?.length) {
       return { ...file, propertyType };
@@ -238,5 +276,7 @@ export {
   propertyTypeIsSelectOrMultiSelect,
   propertyTypeIsWithoutExtractedMetadata,
   propertyTypeIsMultiValued,
+  NoLabeledFiles,
+  NoSegmentedFiles,
 };
 export type { FileWithAggregation };

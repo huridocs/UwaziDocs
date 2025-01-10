@@ -1,4 +1,4 @@
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { typeParsers } from 'api/activitylog/migrationsParser';
 import templates from 'api/templates/templates';
 import entities from 'api/entities/entities';

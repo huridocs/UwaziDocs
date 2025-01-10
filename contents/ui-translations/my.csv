@@ -378,6 +378,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.",ပြင်ပ URL ဖြစ်ပါက URL ပုံစံအပြည့်အစုံကို သုံးပါ။ ဥပမာ- http://www.uwazi.io။
 "If you want to continue, please type",ဆက်လက်ဆောင်ရွက်လိုပါက ကျေးဇူးပြု၍ စာရိုက်ပါ
+Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,ထည့်သွင်းရန်
 Import asset,Import asset
@@ -847,7 +848,6 @@ This content is automatically generated,ဤအကြောင်းအရာက�
 This entity is not public.,ဤဖြည့်သွင်းချက်ကို အများမမြင်နိုင်ပါ။
 This entity is restricted from public view.,ဤဖြည့်သွင်းချက်ကို အများမမြင်နိုင်အောင် ကန့်သတ်ထားသည်။
 This field is required,This field is required
-This file type is not supported on image fields,This file type is not supported on image fields
 This file type is not supported on media fields,This file type is not supported on media fields
 This group is empty,This group is empty
 This option will show a notification about the use of cookies in your instance.,ဤရွေးချယ်မှုသည် သင့်အခြေအနေတွင် ကွတ်ကီးများ အသုံးပြုမှုအကြောင်း အသိပေးချက် ပြသပါမည်။
@@ -894,6 +894,7 @@ Two-factor verification failed,နှစ်ဆင့်ခံ မှန်ကန
 Two-step verification,နှစ်ဆင့်ခံ မှန်ကန်ကြောင်းစစ်ဆေးမှု
 Two-step verification token required,Two-step verification token required
 Type,အမျိုးအစား
+"Unable to save, failed response","Unable to save, failed response"
 Unexpected error,Unexpected error
 Uninstall,Uninstall
 Uninstall language,Uninstall language

@@ -3,13 +3,13 @@ import { files } from 'api/files';
 import { EnforcedWithId } from 'api/odm';
 import settings from 'api/settings';
 import { propertyTypeIsMultiValued } from 'api/services/informationextraction/getFiles';
-import languages from 'shared/languages';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { IXExtractorType } from 'shared/types/extractorType';
 import { FileType } from 'shared/types/fileType';
 import { IXSuggestionType } from 'shared/types/suggestionType';
 import { Suggestions } from './suggestions';
 import templates from 'api/templates';
+import { LanguageUtils } from 'shared/language';
 
 const fetchEntitiesBatch = async (query: any, limit: number = 100) =>
   entitiesModel.db.find(query).select('sharedId').limit(limit).sort({ _id: 1 }).lean();
@@ -49,7 +49,7 @@ export const getBlankSuggestion = (
   defaultLanguage: string
 ) => ({
   language: file.language
-    ? languages.get(file.language, 'ISO639_1') || defaultLanguage
+    ? LanguageUtils.fromISO639_3(file.language, false)?.ISO639_1 || defaultLanguage
     : defaultLanguage,
   fileId: file._id,
   entityId: file.entity!,

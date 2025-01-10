@@ -270,6 +270,20 @@ export default {
       ).map(r => r.sharedId)
     );
 
+    const relTypesToSave = new Set(
+      relsFlat
+        .map(r => (r.template && Object.hasOwn(r.template, '_id') ? r.template._id : r.template))
+        .filter(r => r)
+    );
+
+    const existingRelationshipTypes = await relationtypes.count({
+      _id: { $in: Array.from(relTypesToSave) },
+    });
+
+    if (relTypesToSave.size !== existingRelationshipTypes) {
+      throw new Error('Some relationship types do not exist');
+    }
+
     const relationships = rels.map(_group => {
       let group = _group.filter(r => existingEntities.has(r.entity));
       if (group.length === 1 && !group[0].hub) {

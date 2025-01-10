@@ -376,6 +376,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","Si utilizas una URL externa, utiliza una dirección completa. Ejemplo: http://www.uwazi.io."
 "If you want to continue, please type","Si quieres continuar, por favor escribe"
+Image not found,Image not found
 Impact of property change warning,Todas las entidades y documentos que ya tienen esta propiedad asignada perderán su valor actual
 Import,Importar
 Import asset,Import asset
@@ -419,12 +420,12 @@ Label your collection note,"Nota: Haz el conjunto de muestra de documentos para 
 Labeled,Labeled
 Landing page,Página de inicio
 Landing page description,"La página de inicio es la primera página que los visitantes ven cuando entran a tu colección. La página de inicio predeterminada es la librería de tu colección. Puedes configurar una página de inicio diferente añadiendo su URL relativa aquí. Por ejemplo:
-      
+
 Una página: */page/dicxg0oagy3xgr7ixef80k9*
 Una vista filtrada en Uwazi: */library/?searchTerm=test*
 Una entidad: */entity/9htbkgpkyy7j5rk9*
 Un documento: */document/4y9i99fadjp833di*
-      
+
 Importante: Debes usar URLs relativos. Estos empiezan con / y no incluyen el nombre del dominio. Por ejemplo: En la dirección *https://yoursite.com/landingpage*, el URL relativo es /landingpage"
 Language,Idioma
 Language Code,Código de Idioma
@@ -844,7 +845,6 @@ This content is automatically generated,Este contenido se genera automáticament
 This entity is not public.,Esta entidad no es pública.
 This entity is restricted from public view.,Esta entidad está restringida de la vista pública.
 This field is required,Este campo es obligatorio
-This file type is not supported on image fields,This file type is not supported on image fields
 This file type is not supported on media fields,This file type is not supported on media fields
 This group is empty,This group is empty
 This option will show a notification about the use of cookies in your instance.,Esta opción mostrará una notificación sobre el uso de cookies en la instancia.
@@ -891,6 +891,7 @@ Two-factor verification failed,Fallo en la verificación del doble factor de aut
 Two-step verification,Verificación de dos pasos.
 Two-step verification token required,El token de verificación es obligatorio
 Type,Tipo
+"Unable to save, failed response","No se pudo guardar, respuesta fallida"
 Unexpected error,Error inesperado
 Uninstall,Desinstalar
 Uninstall language,Desinstalar idioma

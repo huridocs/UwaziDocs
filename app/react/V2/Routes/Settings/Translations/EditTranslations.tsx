@@ -24,7 +24,7 @@ import { Button, ToggleButton } from 'V2/Components/UI';
 import * as translationsAPI from 'V2/api/translations';
 import * as settingsAPI from 'V2/api/settings';
 import { notificationAtom } from 'V2/atoms';
-import { availableLanguages } from 'shared/languagesList';
+import { availableLanguages } from 'shared/language';
 import { Settings } from 'shared/types/settingsType';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { LanguagePill } from './components/LanguagePill';

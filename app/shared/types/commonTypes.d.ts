@@ -215,10 +215,10 @@ export interface ExtractedMetadataSchema {
   selection?: {
     text?: string;
     selectionRectangles?: {
-      top?: number;
-      left?: number;
-      width?: number;
-      height?: number;
+      top: number;
+      left: number;
+      width: number;
+      height: number;
       page?: string;
     }[];
   };
@@ -244,6 +244,8 @@ export interface LanguageSchema {
   rtl?: boolean;
   default?: boolean;
   ISO639_3?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
 }
@@ -255,6 +257,8 @@ export type LanguagesListSchema = {
   rtl?: boolean;
   default?: boolean;
   ISO639_3?: string;
+  elastic?: string;
+  ISO639_1?: string;
   localized_label?: string;
   translationAvailable?: boolean;
 }[];
@@ -354,27 +358,27 @@ export interface SelectParentSchema {
 }
 
 export interface SelectionRectangleSchema {
-  top?: number;
-  left?: number;
-  width?: number;
-  height?: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
   page?: string;
 }
 
 export type SelectionRectanglesSchema = {
-  top?: number;
-  left?: number;
-  width?: number;
-  height?: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
   page?: string;
 }[];
 
 export interface TocSchema {
   selectionRectangles?: {
-    top?: number;
-    left?: number;
-    width?: number;
-    height?: number;
+    top: number;
+    left: number;
+    width: number;
+    height: number;
     page?: string;
   }[];
   label?: string;
