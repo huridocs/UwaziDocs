@@ -48,11 +48,12 @@ const TemplateInputMappers = {
   propertyToApp,
   toApp: (template: TemplateInput): Template => {
     const id = template._id?.toString() || MongoIdHandler.generate();
-    return new Template(
+    return new Template({
       id,
-      template.name,
-      template.properties?.map(p => propertyToApp(p, id)) || []
-    );
+      name: template.name,
+      properties: template.properties?.map(p => propertyToApp(p, id)) || [],
+      commonProperties: template.commonProperties?.map(p => propertyToApp(p, id)) || [],
+    });
   },
 };
 

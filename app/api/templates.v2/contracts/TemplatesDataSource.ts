@@ -14,4 +14,5 @@ export interface TemplatesDataSource {
   getByNames(names: Template['name'][]): ResultSet<Template>;
   getById(id: Template['id']): Promise<Template | undefined>;
   generateNextId(): string;
+  create(template: Template): Promise<Template>;
 }

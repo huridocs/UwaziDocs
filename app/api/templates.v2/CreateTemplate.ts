@@ -1,17 +1,43 @@
 import { UseCase } from 'api/common.v2/contracts/UseCase';
-import { PropertySchema } from 'shared/types/commonTypes';
-import { Template } from './model/Template';
+import { PropertyTypeSchema } from 'shared/types/commonTypes';
 import { TemplatesDataSource } from './contracts/TemplatesDataSource';
-import { Property } from './model/Property';
 import { CommonProperty } from './model/CommonProperty';
+import { Property } from './model/Property';
+import { Template } from './model/Template';
+
+export type NewPropertySchema = {
+  label: string;
+  type: PropertyTypeSchema;
+  name?: string;
+  prioritySorting?: boolean;
+  generatedId?: boolean;
+  content?: string;
+  relationType?: string;
+  inherit?: {
+    property?: string;
+    type?: PropertyTypeSchema;
+  };
+  filter?: boolean;
+  noLabel?: boolean;
+  fullWidth?: boolean;
+  defaultfilter?: boolean;
+  required?: boolean;
+  sortable?: boolean;
+  showInCard?: boolean;
+  style?: string;
+  nestedProperties?: string[];
+  query?: unknown[];
+  denormalizedProperty?: string;
+  targetTemplates?: false | string[];
+};
 
 export type NewTemplateInputModel = {
   name: string;
   color: string;
   default: boolean;
   entityViewPage: string;
-  commonProperties?: [PropertySchema, ...PropertySchema[]];
-  properties?: PropertySchema[];
+  commonProperties: [NewPropertySchema, ...NewPropertySchema[]];
+  properties: NewPropertySchema[];
 };
 
 export type TemplateInputModel = NewTemplateInputModel & { id: string };
@@ -40,21 +66,31 @@ export class CreateTemplate implements UseCase<TemplateInputModel, Output> {
   }
 
   private fromInputModel(input: TemplateInputModel) {
-    return new Template(
-      input.id,
-      input.name,
-      input.properties?.map(property => {
-        return new Property(property._id, property.type, property.name, property.label, input.id);
-      }),
-      input.commonProperties?.map(property => {
-        return new CommonProperty(
-          property._id,
-          property.type,
-          property.name,
-          property.label,
-          input.id
-        );
-      })
-    );
+    return new Template({
+      id: input.id,
+      color: input.color,
+      isDefault: input.default,
+      name: input.name,
+      properties: input.properties.map(
+        property =>
+          new Property(
+            this.templatesDS.generateNextId(),
+            property.type,
+            property.name,
+            property.label,
+            input.id
+          )
+      ),
+      commonProperties: input.commonProperties.map(
+        property =>
+          new CommonProperty(
+            this.templatesDS.generateNextId(),
+            property.type,
+            property.name,
+            property.label,
+            input.id
+          )
+      ),
+    });
   }
 }

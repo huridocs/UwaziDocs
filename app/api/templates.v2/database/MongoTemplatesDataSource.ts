@@ -154,7 +154,7 @@ export class MongoTemplatesDataSource
   }
 
   async create(template: Template) {
-    const dbo = TemplateMappers.toDB(template)
-    await this.getCollection().insertOne({ ...dbo, _id: genenrateId() })
+    await this.getCollection().insertOne(TemplateMappers.toDB(template));
+    return template;
   }
 }

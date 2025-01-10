@@ -1,7 +1,9 @@
 /* eslint-disable no-redeclare */
 import { MongoIdHandler } from 'api/common.v2/database/MongoIdGenerator';
+import { ObjectId } from 'mongodb';
 import { propertyTypes } from 'shared/propertyTypes';
 import { PropertySchema } from 'shared/types/commonTypes';
+import { CommonProperty } from '../model/CommonProperty';
 import { Property } from '../model/Property';
 import { RelationshipProperty } from '../model/RelationshipProperty';
 import { Template } from '../model/Template';
@@ -9,9 +11,17 @@ import { V1RelationshipProperty } from '../model/V1RelationshipProperty';
 import { mapPropertyQuery } from './QueryMapper';
 import { TraverseQueryDBO } from './schemas/RelationshipsQueryDBO';
 import { RelationshipPropertyDBO, TemplateDBO } from './schemas/TemplateDBO';
-import { CommonProperty } from '../model/CommonProperty';
 
 type PropertyDBO = TemplateDBO['properties'][number];
+
+function propertyToDB(property: Property): PropertyDBO {
+  return {
+    _id: new ObjectId(property.id),
+    type: property.type,
+    name: property.name,
+    label: property.label,
+  };
+}
 
 function propertyToApp(
   property: RelationshipPropertyDBO,
@@ -52,12 +62,21 @@ function propertyToApp(property: PropertyDBO, _templateId: TemplateDBO['_id']): 
 const TemplateMappers = {
   propertyToApp,
   toApp: (tdbo: TemplateDBO): Template =>
-    new Template(
-      MongoIdHandler.mapToApp(tdbo._id),
-      tdbo.name,
-      tdbo.properties.map(p => propertyToApp(p, tdbo._id)),
-      tdbo.commonProperties.map(p => propertyToApp(p, tdbo._id))
-    ),
+    new Template({
+      id: MongoIdHandler.mapToApp(tdbo._id),
+      name: tdbo.name,
+      properties: tdbo.properties.map(p => propertyToApp(p, tdbo._id)),
+      commonProperties: tdbo.commonProperties.map(p => propertyToApp(p, tdbo._id)),
+    }),
+
+  toDB: (template: Template): TemplateDBO => ({
+    _id: new ObjectId(template.id),
+    name: template.name,
+    color: template.color,
+    default: template.isDefault,
+    commonProperties: template.commonProperties.map(property => propertyToDB(property)),
+    properties: [],
+  }),
 };
 
 export { TemplateMappers };

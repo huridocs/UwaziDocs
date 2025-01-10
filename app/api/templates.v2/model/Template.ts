@@ -1,22 +1,39 @@
 import { objectIndex } from 'shared/data_utils/objectIndex';
 import { Property, PropertyUpdateInfo } from './Property';
 
+type TemplateProps = {
+  id: string;
+  name: string;
+  color: string;
+  isDefault: boolean;
+  properties: Property[];
+  commonProperties: Property[];
+};
+
 class Template {
   readonly id: string;
 
   readonly name: string;
 
+  readonly color: string;
+
+  readonly isDefault: boolean;
+
   readonly properties: Property[] = [];
 
   readonly commonProperties: Property[] = [];
 
-  constructor(
-    id: string,
-    name: string,
-    properties: Property[] = [],
-    commonProperties: Property[] = []
-  ) {
+  constructor({
+    id,
+    name,
+    color,
+    isDefault,
+    properties = [],
+    commonProperties = [],
+  }: TemplateProps) {
     this.id = id;
+    this.color = color;
+    this.isDefault = isDefault;
     this.name = name;
     this.properties = properties;
     this.commonProperties = commonProperties;
