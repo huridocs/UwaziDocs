@@ -23,8 +23,6 @@ describe('t function', () => {
     locale = 'es';
   });
 
-  afterEach(() => {});
-
   it('should return the translation component with the translated text and not subscribe to the store', () => {
     renderEnvironment(
       'System',
