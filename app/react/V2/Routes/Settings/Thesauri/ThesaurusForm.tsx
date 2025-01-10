@@ -5,7 +5,7 @@ import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { useAtom, useSetAtom } from 'jotai';
 import { isEqual, remove } from 'lodash';
 import { Row } from '@tanstack/react-table';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientThesaurus } from 'app/apiResponseTypes';
 import ThesauriAPI from 'V2/api/thesauri';
 import { thesauriAtom, notificationAtom } from 'app/V2/atoms';

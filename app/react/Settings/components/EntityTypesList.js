@@ -9,7 +9,7 @@ import {
   checkTemplateCanBeDeleted,
   setAsDefault,
 } from 'app/Templates/actions/templatesActions';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Icon } from 'UI';
 import { notificationActions } from 'app/Notifications';
 import { shouldDisplayTranslation } from '../utils/shouldDisplayTranslation';

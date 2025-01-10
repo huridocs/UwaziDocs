@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable max-statements */
 import React, { useEffect, useState, useRef } from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { isString } from 'lodash';
 import { InputField, RadioSelect } from '.';

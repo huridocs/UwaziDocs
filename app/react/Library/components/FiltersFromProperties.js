@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import rison from 'rison-node';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import FormGroup from 'app/DocumentForm/components/FormGroup';
 import { getAggregationSuggestions } from 'app/Library/actions/libraryActions';
 import { selectTemplates } from 'app/utils/coreSelectors';

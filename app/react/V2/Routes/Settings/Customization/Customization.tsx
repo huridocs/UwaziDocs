@@ -4,7 +4,7 @@ import { IncomingHttpHeaders } from 'http';
 import { useSetAtom } from 'jotai';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { ClientSettings } from 'app/apiResponseTypes';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import * as settingsAPI from 'V2/api/settings';
 import { SettingsContent } from 'V2/Components/Layouts/SettingsContent';
 import { Button, Tabs } from 'app/V2/Components/UI';

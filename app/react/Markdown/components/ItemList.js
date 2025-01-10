@@ -5,7 +5,8 @@ import qs from 'qs';
 
 import { RowList } from 'app/Layout/Lists';
 import Doc from 'app/Library/components/Doc';
-import { t, I18NLink } from 'app/I18N';
+import { I18NLink } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { selectSingleDocument } from 'app/Library/actions/libraryActions';
 import { wrapDispatch } from 'app/Multireducer';
 import { bindActionCreators } from 'redux';

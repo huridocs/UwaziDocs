@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import RouteHandler from 'app/App/RouteHandler';
 import qs from 'qs';
 import { Icon } from 'UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { withRouter } from 'app/componentWrappers';
 
 import auth from 'app/Auth';

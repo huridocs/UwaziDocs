@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { CurrentLocationLink } from 'app/Layout';
 import { searchParamsFromSearchParams } from 'app/utils/routeHelpers';
 

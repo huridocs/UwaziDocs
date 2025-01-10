@@ -1,4 +1,4 @@
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import I18NLink from 'app/I18N/components/I18NLink';
 import { IStore } from 'app/istore';
 import React, { Component } from 'react';

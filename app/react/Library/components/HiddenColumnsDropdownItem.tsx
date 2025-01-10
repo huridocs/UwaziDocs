@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from 'UI';
 import { PropertySchema } from 'shared/types/commonTypes';
 import { TableViewColumn } from 'app/istore';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 interface SelectableColumn extends TableViewColumn {
   indeterminate?: boolean;

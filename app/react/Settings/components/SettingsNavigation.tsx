@@ -1,5 +1,6 @@
 import React from 'react';
-import { I18NLink, Translate } from 'app/I18N';
+import { I18NLink } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { NeedAuthorization } from 'app/Auth';
 import { Icon } from 'app/UI';
 import { PreserveIcon } from 'app/Layout/PreserveIcon';

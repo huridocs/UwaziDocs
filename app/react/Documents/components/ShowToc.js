@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { scrollToToc } from 'app/Viewer/actions/uiActions';
 import ShowIf from 'app/App/ShowIf';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { Icon } from 'UI';
 import { selectionHandlers } from 'V2/Components/PDFViewer';
 import './scss/showToc.scss';

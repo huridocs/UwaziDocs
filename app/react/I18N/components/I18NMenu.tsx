@@ -8,8 +8,7 @@ import { LanguagesListSchema } from 'shared/types/commonTypes';
 import { NeedAuthorization } from 'V2/Components/UI';
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
 import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
-import { Translate } from './Translate';
-import t from '../t';
+import { Translate, t } from 'V2/i18n';
 
 const locationSearch = (location: Location) => {
   const cleanSearch = location.search.split(/page=\d+|&page=\d+/).join('');

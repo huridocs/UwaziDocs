@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { fromJS } from 'immutable';
 import { store } from 'app/store';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 
 import { LibraryCharts, mapStateToProps } from '../LibraryCharts';
 import LibraryChart from '../LibraryChart';

@@ -1,5 +1,5 @@
 import { notificationActions } from 'app/Notifications';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { RequestParams } from 'app/utils/RequestParams';
 import SettingsAPI from 'app/Settings/SettingsAPI';
 import { actions } from 'app/BasicReducer';

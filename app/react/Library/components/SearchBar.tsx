@@ -9,7 +9,7 @@ import {
   searchDocuments as searchDocumentsAction,
   processFilters,
 } from 'app/Library/actions/libraryActions';
-import { t, Translate } from 'app/I18N';
+import { t, Translate } from 'V2/i18n';
 import { wrapDispatch } from 'app/Multireducer';
 import ModalTips from 'app/App/ModalTips';
 import { SearchTipsContent } from 'app/App/SearchTipsContent';

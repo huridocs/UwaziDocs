@@ -2,7 +2,7 @@ import React from 'react';
 import { IncomingHttpHeaders } from 'http';
 import { useLoaderData, LoaderFunction } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientTranslationContextSchema, ClientTranslationSchema } from 'app/istore';
 import { Table } from 'V2/Components/UI';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';

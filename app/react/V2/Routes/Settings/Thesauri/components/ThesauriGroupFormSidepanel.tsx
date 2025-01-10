@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { isEmpty, last } from 'lodash';
 import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { InputField } from 'app/V2/Components/Forms';
 import { Button, Card, Sidepanel } from 'app/V2/Components/UI';
 import uniqueID from 'shared/uniqueID';

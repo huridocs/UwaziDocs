@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import sanitizeHtml from 'sanitize-html';
 import { risonDecodeOrIgnore } from 'app/utils';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { MarkdownLink, SearchBox, MarkdownMedia, ItemList } from './components';
 import CustomHookComponents from './CustomHooks';
 

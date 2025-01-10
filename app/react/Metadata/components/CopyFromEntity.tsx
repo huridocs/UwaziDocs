@@ -5,7 +5,7 @@ import { IImmutable } from 'shared/types/Immutable';
 import comonProperties from 'shared/commonProperties';
 import { Icon } from 'UI';
 import { ClientEntitySchema } from 'app/istore';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { actions, ShowMetadata, wrapEntityMetadata } from 'app/Metadata';
 import { store } from 'app/store';
 

@@ -3,7 +3,7 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Icon } from 'UI';
 import { bindActionCreators } from 'redux';
 import { closeImportProgress } from 'app/Uploads/actions/uploadsActions';

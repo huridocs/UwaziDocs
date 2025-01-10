@@ -3,7 +3,7 @@ import { List } from 'immutable';
 import superagent from 'superagent';
 import { actions } from 'app/BasicReducer';
 import { notify } from 'app/Notifications/actions/notificationsActions';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { Dispatch } from 'redux';
 import { IImmutable } from 'shared/types/Immutable';
 import { CaptchaValue } from 'shared/types/Captcha';

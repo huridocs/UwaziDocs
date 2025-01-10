@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Field } from 'react-redux-form';
 import { connect } from 'react-redux';
 import { Icon } from 'app/UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { checkErrorsOnLabel } from '../utils/checkErrorsOnLabel';
 
 import PropertyConfigOptions from './PropertyConfigOptions';

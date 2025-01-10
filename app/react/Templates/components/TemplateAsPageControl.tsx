@@ -6,7 +6,7 @@ import { IStore } from 'app/istore';
 import { Tip } from 'app/Layout';
 import { ToggleChildren } from 'app/Settings/components/ToggleChildren';
 import { Select } from 'app/ReactReduxForms';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { loadPages as loadPagesAction } from 'app/Pages/actions/pageActions';
 import { updateValue as updateValueAction } from 'app/Templates/actions/templateActions';
 

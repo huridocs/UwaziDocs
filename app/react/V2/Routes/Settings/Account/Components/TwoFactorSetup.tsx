@@ -8,7 +8,7 @@ import { RequestParams } from 'app/utils/RequestParams';
 import { notificationAtom } from 'app/V2/atoms';
 
 import { Button, Card, CopyValueInput, Sidepanel } from 'app/V2/Components/UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import loadable from '@loadable/component';
 import { InputField } from 'app/V2/Components/Forms';
 

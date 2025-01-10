@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 
-import { Translate, t } from 'app/I18N';
+import { Translate, t } from 'V2/i18n';
 import SnippetList from 'app/Documents/components/SnippetList';
 import { selectSnippet } from 'app/Viewer/actions/uiActions';
 import { Form } from 'react-redux-form';

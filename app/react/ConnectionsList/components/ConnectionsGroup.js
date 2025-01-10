@@ -4,7 +4,7 @@ import { is, fromJS as Immutable } from 'immutable';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import ShowIf from 'app/App/ShowIf';
 import { Icon } from 'UI';
 

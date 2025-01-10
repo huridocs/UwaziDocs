@@ -2,7 +2,7 @@
 /* eslint-disable max-statements */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Button, Card, Sidepanel } from 'V2/Components/UI';
 import { Checkbox } from 'app/V2/Components/Forms';
 import { useForm } from 'react-hook-form';

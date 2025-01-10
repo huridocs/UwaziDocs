@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import rison from 'rison-node';
 import { Icon } from 'UI';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import ModalTips from 'app/App/ModalTips';
 import { SearchTipsContent } from 'app/App/SearchTipsContent';
 

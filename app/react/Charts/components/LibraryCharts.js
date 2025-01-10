@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 
 import { parseWithAggregations } from 'app/Library/helpers/libraryFilters';
 

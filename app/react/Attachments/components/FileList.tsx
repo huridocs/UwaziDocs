@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withContext } from 'app/componentWrappers';
 import { advancedSort } from 'app/utils/advancedSort';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { FileType } from 'shared/types/fileType';
 import { EntitySchema } from 'shared/types/entityType';
 import UploadButton from 'app/Metadata/components/UploadButton';

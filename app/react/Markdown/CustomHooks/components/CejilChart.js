@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 import { StackedDualBarChart, arrayUtils } from 'app/Charts';
 import { Loader } from 'app/components/Elements/Loader';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 
 const countriesTemplate = '58b2f3a35d59f31e1345b480';
 const countryKey = 'pa_s';

@@ -4,7 +4,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'jotai';
 import { RequestParams } from 'app/utils/RequestParams';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import React from 'react';
 import { useApiCaller } from '../useApiCaller';
 

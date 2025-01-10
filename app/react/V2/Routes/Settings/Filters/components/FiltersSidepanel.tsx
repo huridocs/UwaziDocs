@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAtomValue } from 'jotai';
 import { useLoaderData } from 'react-router-dom';
 import uniqueID from 'shared/uniqueID';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientTemplateSchema } from 'app/istore';
 import { Button, Card, Sidepanel } from 'V2/Components/UI';
 import { InputField, MultiSelect } from 'V2/Components/Forms';

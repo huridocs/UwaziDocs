@@ -7,7 +7,8 @@ import api from 'app/Templates/TemplatesAPI';
 import ID from 'shared/uniqueID';
 import { actions } from 'app/BasicReducer';
 import entitiesApi from 'app/Entities/EntitiesAPI';
-import { t, I18NApi } from 'app/I18N';
+import { I18NApi } from 'app/I18N';
+import { t } from 'V2/i18n';
 import templateCommonProperties from '../utils/templateCommonProperties';
 
 export const prepareTemplate = template => {

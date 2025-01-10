@@ -6,7 +6,7 @@ import { Popover } from '@headlessui/react';
 import { secondsToDate } from 'app/V2/shared/dateHelpers';
 import { EntitySuggestionType } from 'shared/types/suggestionType';
 import { ClientTemplateSchema } from 'app/istore';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { thesauriAtom } from 'V2/atoms';
 import { ClientThesaurus, ClientThesaurusValue } from 'app/apiResponseTypes';
 import { SuggestionValue } from '../types';

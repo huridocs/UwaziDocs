@@ -9,7 +9,7 @@ import { actions } from 'app/Metadata';
 import { FormValue } from 'app/Forms';
 import ToggleDisplay from 'app/Layout/ToggleDisplay';
 import { bindActionCreators } from 'redux';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Icon } from 'UI';
 
 export const IconFieldBase = ({ model, removeIcon }) => (

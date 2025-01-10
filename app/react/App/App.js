@@ -5,13 +5,12 @@ import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import Notifications from 'app/Notifications';
 import Cookiepopup from 'app/App/Cookiepopup';
-import { TranslateForm, t } from 'app/I18N';
 import { Icon } from 'UI';
 import { socket } from 'app/socket';
 import { NotificationsContainer } from 'V2/Components/UI';
 import { Matomo, CleanInsights } from 'app/V2/Components/Analitycs';
 import { settingsAtom } from 'V2/atoms/settingsAtom';
-import { TranslateModal } from 'app/I18N/components/TranslateModal';
+import { TranslateModal, t } from 'V2/i18n';
 import { inlineEditAtom } from 'V2/atoms';
 import Confirm from './Confirm';
 import { Menu } from './Menu';
@@ -95,7 +94,6 @@ const App = ({ customParams }) => {
         <main className="app-content container-fluid">
           <AppMainContext.Provider value={appContext}>
             <Confirm {...confirmOptions} />
-            <TranslateForm />
             <Outlet />
             <GoogleAnalytics />
             <Matomo />

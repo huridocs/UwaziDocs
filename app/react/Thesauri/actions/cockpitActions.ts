@@ -1,5 +1,5 @@
 import { actions } from 'app/BasicReducer';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { IStore, ThesaurusSuggestions } from 'app/istore';
 import * as notifications from 'app/Notifications/actions/notificationsActions';
 import SearchAPI from 'app/Search/SearchAPI';

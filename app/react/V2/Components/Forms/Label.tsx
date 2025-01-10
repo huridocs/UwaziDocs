@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { isString } from 'lodash';
 
 interface LabelProps {

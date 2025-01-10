@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 interface NotificationProps {
   type: 'success' | 'info' | 'error';

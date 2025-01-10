@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CellContext } from '@tanstack/react-table';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Button, Pill } from 'V2/Components/UI';
 import { TranslationContext } from '../TranslationsList';
 

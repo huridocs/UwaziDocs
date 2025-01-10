@@ -9,7 +9,7 @@ import { Icon } from 'UI';
 import debounce from 'app/utils/debounce';
 import libraryHelper, { prepareDefaultFilters } from 'app/Library/helpers/libraryFilters';
 import { searchDocuments } from 'app/Library/actions/libraryActions';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { wrapDispatch } from 'app/Multireducer';
 import { FilterTocGeneration } from 'app/ToggledFeatures/tocGeneration';
 import { TemplatesFilter } from 'app/Library/components/TemplatesFilter';

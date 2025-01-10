@@ -4,7 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import type { Meta, StoryObj } from '@storybook/react';
 import { EmbededButton } from 'app/V2/Components/UI/EmbededButton';
 import { LEGACY_createStore as createStore } from 'V2/testing';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 const meta: Meta<typeof EmbededButton> = {
   title: 'Components/Buttons/EmbededButton',

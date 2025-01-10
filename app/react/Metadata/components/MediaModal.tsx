@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { actions as formActions } from 'react-redux-form';
 import { get } from 'lodash';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Icon } from 'app/UI';
 import { ClientFile, IStore } from 'app/istore';
 import uniqueID from 'shared/uniqueID';

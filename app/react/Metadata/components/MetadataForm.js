@@ -1,6 +1,7 @@
 import entitiesUtil from 'app/Entities/utils/filterBaseProperties';
 import { Select as SimpleSelect } from 'app/Forms';
-import { I18NLink, t, Translate } from 'app/I18N';
+import { I18NLink } from 'app/I18N';
+import { t, Translate } from 'V2/i18n';
 import { notificationActions } from 'app/Notifications';
 import { FormGroup } from 'app/ReactReduxForms';
 import Immutable from 'immutable';

@@ -5,7 +5,7 @@ import { actions } from 'app/BasicReducer';
 import { RequestParams } from 'app/utils/RequestParams';
 import { notificationActions } from 'app/Notifications';
 import api from 'app/Pages/PagesAPI';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import * as types from 'app/Pages/actions/actionTypes';
 
 import { PageType } from 'shared/types/pageType';

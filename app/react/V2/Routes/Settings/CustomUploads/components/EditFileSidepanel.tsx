@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useRevalidator } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
 import { FileType } from 'shared/types/fileType';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { Button, Card, Sidepanel } from 'V2/Components/UI';
 import { InputField } from 'V2/Components/Forms';

@@ -7,7 +7,7 @@ import { actions as connectionsActions } from 'app/Connections';
 import { openPanel, toggleReferences } from 'app/Viewer/actions/uiActions';
 import ShowIf from 'app/App/ShowIf';
 import { Icon } from 'UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 import { addToToc } from '../actions/documentActions';
 

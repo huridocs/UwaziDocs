@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import React, { ReactEventHandler, Ref, useState } from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 interface CheckboxProps {
   name: string;

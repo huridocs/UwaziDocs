@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { ModelAction } from 'react-redux-form';
 import { Icon } from 'app/UI';
 import { IStore } from 'app/istore';
-import { t, Translate } from 'app/I18N';
+import { t, Translate } from 'V2/i18n';
 import { notificationActions } from 'app/Notifications';
 import { SelectionRectanglesSchema } from 'shared/types/commonTypes';
 import { updateSelection, updateFormField } from '../actions/metadataExtractionActions';

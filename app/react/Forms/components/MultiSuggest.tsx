@@ -6,7 +6,7 @@ import { actions as formActions, getModel } from 'react-redux-form';
 import { notify } from 'app/Notifications/actions/notificationsActions';
 import { Icon } from 'UI';
 import { propertyTypes } from 'shared/propertyTypes';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 type MultiSuggestProps = {
   // The template property type.

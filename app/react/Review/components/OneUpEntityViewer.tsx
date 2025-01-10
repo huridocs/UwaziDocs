@@ -15,7 +15,7 @@ import { ConnectionsList } from 'app/ConnectionsList';
 import { connectionsChanged, deleteConnection } from 'app/ConnectionsList/actions/actions';
 import ContextMenu from 'app/ContextMenu';
 import { ShowSidepanelMenu } from 'app/Entities/components/ShowSidepanelMenu';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientEntitySchema, IStore, OneUpState } from 'app/istore';
 import { Icon as PropertyIcon, TemplateLabel } from 'app/Layout';
 import Tip from 'app/Layout/Tip';

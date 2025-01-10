@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useParams } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { availableLanguages } from 'shared/language';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 interface SidePanelProps {
   children: JSX.Element | React.ReactNode;

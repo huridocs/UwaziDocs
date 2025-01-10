@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { createSelector } from 'reselect';
 
 import { Select } from 'app/ReactReduxForms';
-import { Translate, t } from 'app/I18N';
+import { Translate, t } from 'V2/i18n';
 import { Icon } from 'app/UI';
 import PropertyConfigOptions from './PropertyConfigOptions';
 import Tip from '../../Layout/Tip';

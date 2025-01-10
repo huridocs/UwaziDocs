@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Row } from '@tanstack/react-table';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Table } from 'app/V2/Components/UI';
 import { ClientThesaurus, Template } from 'app/apiResponseTypes';
 import { ObjectIdSchema } from 'shared/types/commonTypes';

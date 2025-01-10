@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Icon } from 'app/UI';
-import { t, Translate } from 'app/I18N';
+import { t, Translate } from 'V2/i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { wrapDispatch } from 'app/Multireducer';

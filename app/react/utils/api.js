@@ -3,7 +3,7 @@ import { isClient } from 'app/utils';
 import { notify } from 'app/Notifications/actions/notificationsActions';
 import { store } from 'app/store';
 import loadingBar from 'app/App/LoadingProgressBar';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 
 import { APIURL } from '../config.js';
 import request from '../../shared/JSONRequest';

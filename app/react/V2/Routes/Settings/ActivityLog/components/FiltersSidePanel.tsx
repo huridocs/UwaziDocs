@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Sidepanel, Button } from 'app/V2/Components/UI';
-import { Translate, t } from 'app/I18N';
+import { Translate, t } from 'V2/i18n';
 import { InputField, DateRangePicker, MultiSelect } from 'app/V2/Components/Forms';
 import { useAtomValue } from 'jotai';
 import { ClientSettings } from 'app/apiResponseTypes';

@@ -1,21 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
 import { LoaderFunction, useLoaderData } from 'react-router-dom';
-import * as pxParagraphApi from 'app/V2/api/paragraphExtractor/paragraphs';
+import { useAtomValue } from 'jotai';
+import { LanguageSchema } from 'shared/types/commonTypes';
+import { Template } from 'app/apiResponseTypes';
+import { I18NApi } from 'app/I18N';
+import { RequestParams } from 'app/utils/RequestParams';
+import * as pxParagraphApi from 'V2/api/paragraphExtractor/paragraphs';
 import { SettingsContent } from 'V2/Components/Layouts/SettingsContent';
 import { Table, Button } from 'V2/Components/UI';
 import { Sidepanel } from 'V2/Components/UI/Sidepanel';
-import { Template } from 'app/apiResponseTypes';
-import { Translate, I18NApi } from 'app/I18N';
-import { LanguageSchema } from 'shared/types/commonTypes';
-import { RequestParams } from 'app/utils/RequestParams';
+import { Translate } from 'V2/i18n';
+import { templatesAtom } from 'V2/atoms';
 import { tableBuilder } from './components/PXParagraphTableElements';
 import { TableTitle } from './components/TableTitle';
 import { PXParagraphTable, PXParagraphApiResponse, PXEntityApiResponse } from './types';
 import { getTemplateName } from './utils/getTemplateName';
 import { ViewParagraph } from './components/ViewParagraph';
-import { templatesAtom } from 'V2/atoms';
-import { useAtomValue } from 'jotai';
 
 const formatParagraphData = (
   paragraphs: PXParagraphApiResponse[],

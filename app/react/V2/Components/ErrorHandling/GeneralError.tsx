@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { has } from 'lodash';
 import Footer from 'app/App/Footer';
 import { searchParamsFromSearchParams } from 'app/utils/routeHelpers';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { handledErrors } from 'V2/shared/errorUtils';
 import { ErrorFallback } from './ErrorFallback';
 

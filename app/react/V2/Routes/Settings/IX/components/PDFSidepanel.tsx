@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { ChevronDownIcon, ChevronUpIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { TextSelection } from '@huridocs/react-text-selection-handler/dist/TextSelection';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientEntitySchema, ClientPropertySchema } from 'app/istore';
 import { EntitySuggestionType } from 'shared/types/suggestionType';
 import { FetchResponseError } from 'shared/JSONRequest';

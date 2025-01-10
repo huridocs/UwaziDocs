@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import { ConfirmationModal } from 'app/V2/Components/UI/ConfirmationModal';
 import { LEGACY_createStore as createStore } from 'V2/testing';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 const meta: Meta<typeof ConfirmationModal> = {
   title: 'Components/Modal/ConfirmationModal',

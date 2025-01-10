@@ -3,7 +3,7 @@
 import React from 'react';
 import { CellContext, createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router-dom';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Button, Pill } from 'V2/Components/UI';
 import { PXTable } from '../types';
 import { TableTitle } from './TableTitle';

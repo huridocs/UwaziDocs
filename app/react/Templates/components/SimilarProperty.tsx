@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Icon } from 'UI';
 import { PropertySchema } from 'shared/types/commonTypes';
-import { Translate, t } from 'app/I18N';
+import { Translate, t } from 'V2/i18n';
 import Icons from './Icons';
 
 const titles = {

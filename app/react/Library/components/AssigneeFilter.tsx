@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import FormGroup from 'app/DocumentForm/components/FormGroup';
 import { Aggregations } from 'shared/types/aggregations';
 import { NeedAuthorization } from 'app/Auth';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { MultiSelect } from 'app/Forms';
 import { Control } from 'react-redux-form';
 import { Switcher } from 'app/ReactReduxForms';

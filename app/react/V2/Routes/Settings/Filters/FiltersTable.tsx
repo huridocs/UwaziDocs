@@ -6,7 +6,7 @@ import { IncomingHttpHeaders } from 'http';
 import { RowSelectionState } from '@tanstack/react-table';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { FetchResponseError } from 'shared/JSONRequest';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { notificationAtom, settingsAtom } from 'V2/atoms';
 import * as settingsAPI from 'V2/api/settings';
 import * as templatesAPI from 'V2/api/templates';

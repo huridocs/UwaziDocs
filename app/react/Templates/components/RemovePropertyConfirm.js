@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'app/Layout/Modal';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { removeProperty } from 'app/Templates/actions/templateActions';
 import { hideModal } from 'app/Modals/actions/modalActions';
 

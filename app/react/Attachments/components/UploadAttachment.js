@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import t from 'app/I18N/t';
+import { t } from 'V2/i18n';
 import { Icon } from 'UI';
 
 import { uploadAttachment } from '../actions/actions';

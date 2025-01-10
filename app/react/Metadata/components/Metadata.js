@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { flattenDeep } from 'lodash';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 import { Icon } from 'UI';
 import MarkdownViewer from 'app/Markdown';
 import { GroupedGeolocationViewer } from 'app/Metadata/components/GroupedGeolocationViewer';

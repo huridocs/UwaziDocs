@@ -9,7 +9,7 @@ import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 import { LocalForm } from 'app/Forms/Form';
 import { MetadataFormFields, validator, prepareMetadataAndFiles } from 'app/Metadata';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { publicSubmit } from 'app/Uploads/actions/uploadsActions';
 import { FormGroup } from 'app/Forms';
 import { Icon } from 'UI';

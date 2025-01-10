@@ -2,7 +2,7 @@ import { Field } from 'react-redux-form';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { NestedMultiselect } from 'app/ReactReduxForms';
 
 class NestedFilter extends Component {

@@ -18,7 +18,7 @@ import * as templatesAPI from 'V2/api/templates';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';
 import { EntitySuggestionType } from 'shared/types/suggestionType';
 import { Button, PaginationState, Paginator, Table } from 'V2/Components/UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { IXExtractorInfo } from 'app/V2/shared/types';
 import { ClientPropertySchema, ClientTemplateSchema } from 'app/istore';
 import { notificationAtom } from 'app/V2/atoms';

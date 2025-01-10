@@ -1,4 +1,4 @@
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { wrapDispatch } from 'app/Multireducer';
 import { Icon } from 'app/UI';
 import React, { Dispatch, useEffect, useState } from 'react';

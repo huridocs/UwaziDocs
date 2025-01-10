@@ -7,7 +7,7 @@ import * as metadata from 'app/Metadata';
 import * as types from 'app/Uploads/actions/actionTypes';
 import * as libraryTypes from 'app/Library/actions/actionTypes';
 import { RequestParams } from 'app/utils/RequestParams';
-import { t } from 'app/I18N';
+import { t } from 'V2/i18n';
 
 import { APIURL } from '../../config.js';
 import api from '../../utils/api';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import type { RequestError } from 'V2/shared/errorUtils';
 
 interface ErrorFallbackProps {

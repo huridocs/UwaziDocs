@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Switcher, SwitcherProps } from '../Switcher';
 
 describe('Switcher', () => {

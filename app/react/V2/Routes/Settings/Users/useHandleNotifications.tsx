@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useFetchers } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
 import { last } from 'lodash';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { notificationAtom } from 'app/V2/atoms';
 import { FormIntent } from './types';

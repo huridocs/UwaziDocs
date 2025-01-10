@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from 'app/UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { DisplayPills } from './DisplayPills';
 
 const TableTitle = ({ items = [], icon = 'user' }: { items: string[]; icon?: string }) => (

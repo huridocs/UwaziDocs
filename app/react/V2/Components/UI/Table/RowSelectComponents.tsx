@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useRef } from 'react';
 import { Row, Table } from '@tanstack/react-table';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 
 const IndeterminateCheckboxRow = <T extends { rowId: string }>({ row }: { row: Row<T> }) => {
   const ref = useRef<HTMLInputElement>(null!);

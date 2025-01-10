@@ -5,7 +5,7 @@ import { uniqBy } from 'lodash';
 import { IImmutable } from 'shared/types/Immutable';
 import { ExtractedMetadataSchema } from 'shared/types/commonTypes';
 import { ClientFile, IStore } from 'app/istore';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { deleteSelection } from '../actions/metadataExtractionActions';
 
 type deleteSelectionButtonProps = {

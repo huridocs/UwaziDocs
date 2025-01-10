@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import * as extractorsAPI from 'app/V2/api/paragraphExtractor/extractors';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Modal, Button, MultiselectList } from 'V2/Components/UI';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { Template } from 'app/apiResponseTypes';
 import { ParagraphExtractorApiPayload } from '../types';
 import { NoQualifiedTemplatesMessage } from './NoQualifiedTemplate';

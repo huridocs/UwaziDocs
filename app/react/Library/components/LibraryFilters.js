@@ -1,4 +1,4 @@
-import { t, Translate } from 'app/I18N';
+import { t, Translate } from 'V2/i18n';
 import SidePanel from 'app/Layout/SidePanel';
 import { resetFilters } from 'app/Library/actions/filterActions';
 import FiltersForm from 'app/Library/components/FiltersForm';

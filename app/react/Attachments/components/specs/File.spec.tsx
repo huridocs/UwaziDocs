@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { LocalForm } from 'app/Forms/Form';
 import { FileType } from 'shared/types/fileType';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { File, FileProps } from '../File';
 
 describe('file', () => {

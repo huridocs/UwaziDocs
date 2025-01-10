@@ -4,7 +4,7 @@ import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
 import { Row, SortingState } from '@tanstack/react-table';
 import { FunnelIcon } from '@heroicons/react/24/outline';
 import { useAtomValue } from 'jotai';
-import { Translate } from 'app/I18N';
+import { Translate } from 'V2/i18n';
 import { ClientSettings } from 'app/apiResponseTypes';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';
 import { Button, PaginationState, Paginator, Pill, Table } from 'app/V2/Components/UI';
