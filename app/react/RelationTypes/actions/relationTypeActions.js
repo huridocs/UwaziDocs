@@ -2,7 +2,7 @@ import * as types from 'app/RelationTypes/actions/actionTypes';
 import api from 'app/RelationTypes/RelationTypesAPI';
 import { actions } from 'app/BasicReducer';
 import { notificationActions } from 'app/Notifications';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { RequestParams } from 'app/utils/RequestParams';
 
 export function saveRelationType(relationType) {

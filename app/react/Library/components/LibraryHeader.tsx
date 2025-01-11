@@ -1,5 +1,5 @@
 /* eslint-disable react/no-multi-comp */
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';

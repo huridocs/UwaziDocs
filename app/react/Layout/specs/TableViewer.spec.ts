@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 
 import { renderConnected } from 'app/utils/test/renderConnected';
 import { TableViewer } from 'app/Layout/TableViewer';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 describe('TableViewer', () => {
   let component: any;

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'app/componentWrappers';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { actions as formActions, Field, LocalForm } from 'react-redux-form';
 import { searchSnippets } from 'app/Library/actions/libraryActions';
 import { selectSnippet } from 'app/Viewer/actions/uiActions';

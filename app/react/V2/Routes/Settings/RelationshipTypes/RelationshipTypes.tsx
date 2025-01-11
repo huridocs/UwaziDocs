@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http';
 import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom';
 import { Row } from '@tanstack/react-table';
 import { useSetAtom, useAtomValue } from 'jotai';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import * as relationshipTypesAPI from 'app/V2/api/relationshiptypes';
 import { Template } from 'app/apiResponseTypes';
 import { notificationAtom, templatesAtom, relationshipTypesAtom } from 'app/V2/atoms';

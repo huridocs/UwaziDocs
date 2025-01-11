@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Icon } from 'UI';
 import { attachmentCompleted } from 'app/Metadata/actions/supportingFilesActions';
 import { uploadAttachment, uploadAttachmentFromUrl } from '../actions/actions';

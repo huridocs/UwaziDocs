@@ -3,7 +3,7 @@ import { Field } from 'react-redux-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { orderBy } from 'lodash';
 import { Select } from 'app/ReactReduxForms';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import { Warning } from 'app/Layout';
 import { IStore } from 'app/istore';
 import { ThesaurusSchema } from 'shared/types/thesaurusType';

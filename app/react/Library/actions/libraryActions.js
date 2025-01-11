@@ -2,7 +2,7 @@
 import qs from 'qs';
 import rison from 'rison-node';
 import { actions as formActions } from 'react-redux-form';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { store } from 'app/store';
 import * as types from 'app/Library/actions/actionTypes';
 import { actions } from 'app/BasicReducer';

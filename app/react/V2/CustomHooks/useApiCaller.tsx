@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { notificationAtom } from 'V2/atoms';
 import { RequestParams } from 'app/utils/RequestParams';
 import { FetchResponseError } from 'shared/JSONRequest';

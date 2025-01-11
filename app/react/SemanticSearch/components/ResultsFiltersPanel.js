@@ -6,7 +6,7 @@ import { NumericRangeSlide } from 'app/ReactReduxForms';
 import { Icon } from 'UI';
 
 import SidePanel from 'app/Layout/SidePanel';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 
 const filters = [
   {

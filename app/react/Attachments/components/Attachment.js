@@ -7,7 +7,7 @@ import { Icon } from 'UI';
 import { withContext } from 'app/componentWrappers';
 import { NeedAuthorization } from 'app/Auth';
 import ShowIf from 'app/App/ShowIf';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import AttachmentForm from 'app/Attachments/components/AttachmentForm';
 import { wrapDispatch } from 'app/Multireducer';
 import { notify } from 'app/Notifications/actions/notificationsActions';

@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer, { ReactPlayerProps } from 'react-player';
 import { PlayIcon } from '@heroicons/react/20/solid';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 type MediaType = 'embedded' | 'internal' | 'invalid';
 

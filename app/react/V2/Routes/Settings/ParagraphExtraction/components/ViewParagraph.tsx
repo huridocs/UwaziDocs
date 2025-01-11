@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { PXParagraphTable } from '../types';
 import { DisplayPills } from './DisplayPills';
 

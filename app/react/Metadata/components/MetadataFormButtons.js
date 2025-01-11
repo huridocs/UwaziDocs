@@ -5,8 +5,7 @@ import { bindActionCreators } from 'redux';
 import { wrapDispatch } from 'app/Multireducer';
 
 import { NeedAuthorization } from 'app/Auth';
-import { I18NLink } from 'app/I18N';
-import { Translate } from 'V2/i18n';
+import { Translate, I18NLink } from 'app/I18N';
 import { Icon } from 'UI';
 
 import { ShareButton } from 'app/Permissions/components/ShareButton';

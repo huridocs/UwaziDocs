@@ -5,7 +5,7 @@ import { Field } from 'react-redux-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Icon } from 'UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import ViolatedArticlesNestedProperties from './ViolatedArticlesNestedProperties';
 import PropertyConfigOptions from './PropertyConfigOptions';
 import { checkErrorsOnLabel } from '../utils/checkErrorsOnLabel';

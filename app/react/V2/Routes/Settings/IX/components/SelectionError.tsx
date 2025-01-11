@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 const SelectionError = ({ error }: { error?: string }) => {
   const isVisible = error ? 'visible' : 'invisible';

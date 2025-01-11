@@ -10,7 +10,7 @@ import ShowIf from 'app/App/ShowIf';
 import { Icon } from 'UI';
 import { StateSelector } from 'app/Review/components/StateSelector';
 import { createSelector } from 'reselect';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import FormConfigInput from './FormConfigInput';
 import { FormConfigSelect } from './FormConfigSelect';
 import FormConfigRelationship from './FormConfigRelationship';

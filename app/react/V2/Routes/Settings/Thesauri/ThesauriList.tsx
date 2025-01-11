@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
 import { Link, LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom';
 import { useSetAtom, useAtomValue } from 'jotai';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import ThesauriAPI from 'app/V2/api/thesauri';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';
 import { Button, ConfirmationModal } from 'app/V2/Components/UI';

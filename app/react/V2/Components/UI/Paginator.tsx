@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 interface PaginatorProps {
   currentPage: number;

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Switcher } from 'app/ReactReduxForms';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { IStore } from 'app/istore';
 import { NeedAuthorization } from 'app/Auth';
 import { withRouter } from 'app/componentWrappers';

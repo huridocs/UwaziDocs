@@ -2,7 +2,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Breadcrumb } from 'flowbite-react';
 import { ChevronLeftIcon } from '@heroicons/react/20/solid';
-import { Translate, I18NLink } from 'V2/i18n';
+import { Translate, I18NLink } from 'app/I18N';
 
 interface SettingsContentProps extends PropsWithChildren {
   className?: string;

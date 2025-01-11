@@ -1,7 +1,7 @@
 import MarkdownViewer from 'app/Markdown';
 import React, { Component } from 'react';
 import { TabContent, TabLink, Tabs } from 'react-tabs-redux';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 export interface MarkDownType {
   onChange: () => {};

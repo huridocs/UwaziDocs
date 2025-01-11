@@ -2,7 +2,7 @@
 import { Dispatch } from 'redux';
 import { IStore } from 'app/istore';
 import { notificationActions } from 'app/Notifications';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { savePermissions } from 'app/Permissions/PermissionsAPI';
 import { PermissionsDataSchema } from 'shared/types/permissionType';
 import { wrapDispatch } from 'app/Multireducer';

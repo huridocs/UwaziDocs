@@ -6,3 +6,7 @@ import * as actions from './actions/I18NActions';
 
 export { I18NLink, I18NUtils, I18N, I18NApi, actions };
 export { I18NMenu } from './components/I18NMenu';
+export { I18NLink as I18NLinkV2 } from './I18NLinkV2';
+export { Translate } from './Translate';
+export { t } from './translateFunction';
+export { TranslateModal } from './TranslateModal';

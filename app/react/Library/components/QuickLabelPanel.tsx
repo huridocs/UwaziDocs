@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import { withContext } from 'app/componentWrappers';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { Notice } from 'app/Thesauri/Notice';
 import { IStore, QuickLabelState, QuickLabelMetadata } from 'app/istore';
 import SidePanel from 'app/Layout/SidePanel';

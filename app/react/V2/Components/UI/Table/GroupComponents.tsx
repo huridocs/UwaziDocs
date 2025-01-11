@@ -2,7 +2,7 @@
 import React from 'react';
 import { Row } from '@tanstack/react-table';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { EmbededButton } from '../EmbededButton';
 import { TableRow } from './Table';
 

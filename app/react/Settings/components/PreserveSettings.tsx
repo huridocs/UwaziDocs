@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import api from 'app/utils/api';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { IStore } from 'app/istore';
 import { PreserveIcon } from 'app/Layout/PreserveIcon';
 import { SettingsHeader } from './SettingsHeader';

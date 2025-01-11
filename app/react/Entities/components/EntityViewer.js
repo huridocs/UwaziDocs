@@ -17,7 +17,7 @@ import { RelationshipsFormButtons } from 'app/Relationships';
 import { TemplateLabel, Icon as PropertyIcon } from 'app/Layout';
 import { connectionsChanged, deleteConnection } from 'app/ConnectionsList/actions/actions';
 import { I18NLink } from 'app/I18N';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import AddEntitiesPanel from 'app/Relationships/components/AddEntities';
 import RelationshipMetadata from 'app/Relationships/components/RelationshipMetadata';
 import ShowIf from 'app/App/ShowIf';

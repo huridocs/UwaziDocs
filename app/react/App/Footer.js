@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { I18NLink } from 'app/I18N';
+import { I18NLink, Translate } from 'app/I18N';
 import { createSelector } from 'reselect';
 import { libraryViewInfo } from 'app/App/libraryViewInfo';
-import { Translate } from 'V2/i18n';
 
 const getLibraryURL = libraryView =>
   libraryViewInfo[libraryView] ? `/${libraryViewInfo[libraryView].url}` : '/library';

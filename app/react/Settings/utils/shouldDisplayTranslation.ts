@@ -1,5 +1,5 @@
 import { ClientLanguageSchema } from 'app/apiResponseTypes';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { IImmutable } from 'shared/types/Immutable';
 
 const shouldDisplayTranslation = (

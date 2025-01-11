@@ -1,5 +1,5 @@
 import L, { TileLayer } from 'leaflet';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { getGoogleLayer } from 'app/Map/GoogleMapLayer';
 
 const DEFAULT_MAPBOX_TOKEN =

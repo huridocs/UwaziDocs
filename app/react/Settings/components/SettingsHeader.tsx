@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon } from 'UI';
-import { I18NLink } from 'app/I18N';
-import { Translate } from 'V2/i18n';
+import { Translate, I18NLink } from 'app/I18N';
 
 const SettingsHeader = ({ children, backUrl }: { children: React.ReactNode; backUrl?: string }) => (
   <div className="panel-heading">

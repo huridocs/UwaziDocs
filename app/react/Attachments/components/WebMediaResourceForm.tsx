@@ -3,7 +3,7 @@ import { Icon } from 'UI';
 import React from 'react';
 import { FormGroup } from 'app/Forms';
 import { LocalForm } from 'app/Forms/Form';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 
 interface WebMediaResourceFormProps {
   handleSubmit: (args: any) => void;

@@ -2,7 +2,7 @@ import React from 'react';
 import GeolocationViewer from 'app/Metadata/components/GeolocationViewer';
 import { connect, ConnectedProps } from 'react-redux';
 import { createSelector } from 'reselect';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { bindActionCreators, Dispatch } from 'redux';
 import { IStore } from '../../istore';
 import { ensure } from '../../../shared/tsUtils';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Button, Modal } from '../UI';
 
 type confirmationModalType = {

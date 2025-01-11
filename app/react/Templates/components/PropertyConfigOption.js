@@ -1,7 +1,7 @@
 import { Field } from 'react-redux-form';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 const PropertyConfigOption = ({ children, model, label }) => (
   <Field model={model}>

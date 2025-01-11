@@ -1,4 +1,4 @@
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { ClientTemplateSchema } from 'app/istore';
 import { propertyTypes } from 'shared/propertyTypes';
 import { ObjectIdSchema, PropertySchema } from 'shared/types/commonTypes';

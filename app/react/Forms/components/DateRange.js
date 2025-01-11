@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import DatePicker from './DatePicker';
 
 class DateRange extends Component {

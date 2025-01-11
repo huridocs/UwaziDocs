@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { LanguageUtils } from 'shared/language';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 export class DocumentLanguage extends Component {
   render() {

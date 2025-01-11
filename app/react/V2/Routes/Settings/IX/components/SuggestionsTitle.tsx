@@ -1,6 +1,6 @@
 import React from 'react';
 import { FunnelIcon } from '@heroicons/react/24/solid';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import { Pill, Button } from 'app/V2/Components/UI';
 import { ClientTemplateSchema } from 'app/istore';
 import {

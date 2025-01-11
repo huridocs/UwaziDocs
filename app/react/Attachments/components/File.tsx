@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Control } from 'react-redux-form';
 import { withContext } from 'app/componentWrappers';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { Icon } from 'UI';
 import { APIURL } from 'app/config.js';
 import { ClientBlobFile } from 'app/istore';

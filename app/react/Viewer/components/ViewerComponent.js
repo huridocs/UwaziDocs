@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import EntityView from 'app/Viewer/EntityView';
 import { Loader } from 'app/components/Elements/Loader';
 import { actions } from 'app/BasicReducer';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { ErrorFallback } from 'app/V2/Components/ErrorHandling';
 import { PDFView } from '../PDFView';
 

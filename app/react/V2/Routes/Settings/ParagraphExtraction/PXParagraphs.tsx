@@ -10,7 +10,7 @@ import * as pxParagraphApi from 'V2/api/paragraphExtractor/paragraphs';
 import { SettingsContent } from 'V2/Components/Layouts/SettingsContent';
 import { Table, Button } from 'V2/Components/UI';
 import { Sidepanel } from 'V2/Components/UI/Sidepanel';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { templatesAtom } from 'V2/atoms';
 import { tableBuilder } from './components/PXParagraphTableElements';
 import { TableTitle } from './components/TableTitle';

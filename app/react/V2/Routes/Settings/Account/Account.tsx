@@ -8,7 +8,7 @@ import { useSetAtom } from 'jotai';
 import { ClientUserSchema } from 'app/apiResponseTypes';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { validEmailFormat } from 'V2/shared/formatHelpers';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { updateUser, getCurrentUser } from 'V2/api/users';
 import { notificationAtom } from 'V2/atoms';
 import { InputField } from 'V2/Components/Forms';

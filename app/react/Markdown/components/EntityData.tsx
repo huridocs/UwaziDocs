@@ -6,7 +6,7 @@ import { ClientTemplateSchema, IStore } from 'app/istore';
 import formatter from 'app/Metadata/helpers/formater';
 import { safeName } from 'shared/propertyNames';
 import { showByType } from 'app/Metadata/components/Metadata';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { IImmutable } from 'shared/types/Immutable';
 import { ensure } from 'shared/tsUtils';
 import { logError } from '../utils';

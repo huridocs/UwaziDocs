@@ -5,7 +5,7 @@ import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom'
 import * as extractorsAPI from 'app/V2/api/paragraphExtractor/extractors';
 import { SettingsContent } from 'V2/Components/Layouts/SettingsContent';
 import { Button, Table, ConfirmationModal } from 'V2/Components/UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Template } from 'app/apiResponseTypes';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { notificationAtom, templatesAtom } from 'V2/atoms';

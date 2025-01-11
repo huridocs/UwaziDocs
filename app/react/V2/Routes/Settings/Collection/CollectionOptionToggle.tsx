@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Tooltip } from 'flowbite-react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid';
 import { EnableButtonCheckbox } from 'app/V2/Components/Forms';

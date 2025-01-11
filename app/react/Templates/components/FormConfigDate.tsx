@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'react-redux-form';
 import { connect, ConnectedProps } from 'react-redux';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { IStore } from 'app/istore';
 import { checkErrorsOnLabel } from '../utils/checkErrorsOnLabel';
 import PropertyConfigOptions from './PropertyConfigOptions';

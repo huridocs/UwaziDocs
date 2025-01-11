@@ -1,4 +1,4 @@
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 const ocrStatusTips = {
   noOcr: () => t('System', 'OCR button tip', null, false),

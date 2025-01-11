@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Tip } from 'app/Layout';
 import { SettingsFormElement, ComponentProps } from '../SettingsFormElement';
 import { SettingsLabel } from '../SettingsLabel';

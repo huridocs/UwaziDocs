@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Button, Modal } from 'app/V2/Components/UI';
 import { MultiselectList } from 'app/V2/Components/Forms';
 import { ClientTemplateSchema } from 'app/istore';

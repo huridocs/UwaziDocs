@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import getFieldLabel from '../getFieldLabel';
 
 describe('getFieldLabel', () => {

@@ -1,4 +1,4 @@
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import React, { useCallback, useRef, useState } from 'react';
 import { Icon } from 'UI';
 import { MemberWithPermission } from 'shared/types/entityPermisions';

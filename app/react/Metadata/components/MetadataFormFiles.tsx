@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Field, actions } from 'react-redux-form';
 import { ClientFile } from 'app/istore';
 import { Icon } from 'app/UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { getFileExtension } from 'app/utils/getFileExtension';
 import uniqueID from 'shared/uniqueID';
 

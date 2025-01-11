@@ -4,7 +4,7 @@ import { notificationActions } from 'app/Notifications';
 import api from 'app/utils/api';
 import debounce from 'app/utils/debounce';
 import { RequestParams } from 'app/utils/RequestParams';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 import * as types from './actionTypes';
 import * as uiActions from './uiActions';

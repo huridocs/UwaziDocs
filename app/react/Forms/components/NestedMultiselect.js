@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ShowIf from 'app/App/ShowIf';
 import { Field, Control } from 'react-redux-form';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { advancedSort } from 'app/utils/advancedSort';
 import nestedProperties from 'app/Templates/components/ViolatedArticlesNestedProperties';
 import { store } from 'app/store';

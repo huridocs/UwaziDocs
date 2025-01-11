@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { filesize } from 'filesize';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { ClientFile } from 'app/istore';
 import { RenderAttachment } from 'app/Attachments';
 import { AttachmentSchema } from 'shared/types/commonTypes';

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import LibraryFilters from 'app/Library/components/LibraryFilters';
 import { QuickLabelPanel } from 'app/Library/components/QuickLabelPanel';
 import ViewMetadataPanel from 'app/Library/components/ViewMetadataPanel';

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { Field, actions as formActions } from 'react-redux-form';
 import uuid from 'node-uuid';
 import { FormGroup } from 'app/Forms';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { getSuggestions } from 'app/Metadata/actions/actions';
 import Tip from 'app/Layout/Tip';
 import { propertyTypes } from 'shared/propertyTypes';

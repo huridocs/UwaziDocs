@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { LoaderFunction, useBlocker, useLoaderData, useRevalidator } from 'react-router-dom';
 import { IncomingHttpHeaders } from 'http';
 import { useSetAtom } from 'jotai';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { FileType } from 'shared/types/fileType';
 import { getByType, remove, UploadService } from 'V2/api/files';

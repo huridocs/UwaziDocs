@@ -8,7 +8,7 @@ import { resetTemplate, saveTemplate } from 'app/Templates/actions/templateActio
 import { saveRelationType } from 'app/RelationTypes/actions/relationTypeActions';
 import MetadataTemplate from 'app/Templates/components/MetadataTemplate';
 import PropertyOption from 'app/Templates/components/PropertyOption';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { DNDHTMLBackend } from 'app/App/DNDHTML5Backend';
 
 class TemplateCreator extends Component {

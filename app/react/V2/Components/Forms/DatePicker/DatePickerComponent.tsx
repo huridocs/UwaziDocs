@@ -7,7 +7,7 @@ import { DatepickerProps as FlowbiteDatepickerProps } from 'flowbite-react';
 import Datepicker from 'flowbite-datepicker/Datepicker';
 import 'flowbite/dist/flowbite.min.css';
 import uniqueID from 'shared/uniqueID';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { Label } from '../Label';
 import { InputError } from '../InputError';
 

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useRef } from 'react';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import { InputField, Select, OptionSchema } from 'app/V2/Components/Forms';
 import { useForm } from 'react-hook-form';
 import { Button, Card } from 'app/V2/Components/UI';

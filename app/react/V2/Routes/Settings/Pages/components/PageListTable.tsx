@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { kebabCase } from 'lodash';
 import { CellContext } from '@tanstack/react-table';
 import { Button, Pill } from 'app/V2/Components/UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { TablePage } from '../PagesList';
 
 const getPageUrl = (sharedId: string, title: string) => `page/${sharedId}/${kebabCase(title)}`;

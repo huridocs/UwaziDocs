@@ -7,7 +7,7 @@ import { updateEntity, selectSingleDocument } from 'app/Library/actions/libraryA
 import api from 'app/utils/api';
 import { RequestParams } from 'app/utils/RequestParams';
 import { actions as basicReducerActions } from 'app/BasicReducer';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 import * as types from './actionTypes';
 

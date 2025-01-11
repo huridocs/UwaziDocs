@@ -1,6 +1,6 @@
 import React from 'react';
 import loadable from '@loadable/component';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { CodeEditorProps } from './CodeEditorComponent';
 
 const CodeEditorComponent = loadable(

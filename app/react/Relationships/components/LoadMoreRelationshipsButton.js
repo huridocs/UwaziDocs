@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 import { loadMoreReferences } from '../../ConnectionsList/actions/actions';
 

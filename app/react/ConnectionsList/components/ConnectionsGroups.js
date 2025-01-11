@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import React, { Component } from 'react';
 import { Icon } from 'UI';
 import { connect } from 'react-redux';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import ConnectionsGroup from './ConnectionsGroup';
 import { LibraryViewRelationships } from './LibraryViewRelationships';
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRevalidator } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
 import { FetchResponseError } from 'shared/JSONRequest';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { FileType } from 'shared/types/fileType';
 import { FileDropzone } from 'V2/Components/Forms';
 import { Button, Modal } from 'V2/Components/UI';

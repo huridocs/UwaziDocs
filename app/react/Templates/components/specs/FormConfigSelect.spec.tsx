@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { MockStoreEnhanced } from 'redux-mock-store';
 import { defaultState, renderConnectedContainer } from 'app/utils/test/renderConnected';
 import { store } from 'app/store';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { FormConfigSelect } from '../FormConfigSelect';
 
 const defineTemplateInStore = (

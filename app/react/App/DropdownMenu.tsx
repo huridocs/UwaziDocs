@@ -1,10 +1,9 @@
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
-import { I18NLink } from 'app/I18N';
+import { I18NLink, Translate } from 'app/I18N';
 import { Icon } from 'UI';
 import React, { useRef, useState, useCallback } from 'react';
 import { ILink, ISublink } from 'app/V2/shared/types';
 import { IImmutable } from 'shared/types/Immutable';
-import { Translate } from 'V2/i18n';
 
 export type DropdownMenuProps = {
   link: IImmutable<ILink>;

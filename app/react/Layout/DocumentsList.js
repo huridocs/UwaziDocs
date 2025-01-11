@@ -10,7 +10,7 @@ import { Loader } from 'app/components/Elements/Loader';
 import Footer from 'app/App/Footer';
 
 import { NeedAuthorization } from 'app/Auth';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { DocumentCounter } from 'app/Layout/DocumentCounter';
 import { Icon } from 'UI';
 import { withRouter } from 'app/componentWrappers';

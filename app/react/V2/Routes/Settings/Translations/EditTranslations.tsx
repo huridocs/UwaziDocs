@@ -14,7 +14,7 @@ import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { IncomingHttpHeaders } from 'http';
 import { useForm } from 'react-hook-form';
 import { useSetAtom } from 'jotai';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { advancedSort } from 'app/utils/advancedSort';
 import { ClientTranslationSchema } from 'app/istore';
 import { ConfirmNavigationModal, InputField } from 'app/V2/Components/Forms';

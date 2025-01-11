@@ -7,7 +7,7 @@ import { render, RenderResult } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { localeAtom } from 'V2/atoms';
-import { I18NLink } from '../I18NLink';
+import { I18NLink } from '../I18NLinkV2';
 
 describe('I18NLink', () => {
   let renderResult: RenderResult;

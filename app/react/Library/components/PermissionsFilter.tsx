@@ -3,7 +3,7 @@ import FormGroup from 'app/DocumentForm/components/FormGroup';
 import { MultiSelect } from 'app/Forms';
 import { Aggregations } from 'shared/types/aggregations';
 import { NeedAuthorization } from 'app/Auth';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Control } from 'react-redux-form';
 import { connect } from 'react-redux';
 import { ClientUserSchema } from 'app/apiResponseTypes';

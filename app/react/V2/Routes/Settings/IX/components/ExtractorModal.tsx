@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { uniq } from 'lodash';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Modal, Button, MultiselectList, Pill } from 'V2/Components/UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { ClientPropertySchema, ClientTemplateSchema } from 'app/istore';
 import { IXExtractorInfo } from 'V2/shared/types';
 import { InputField } from 'app/V2/Components/Forms/InputField';

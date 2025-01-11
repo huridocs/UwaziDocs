@@ -5,8 +5,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { Loader } from 'app/components/Elements/Loader';
-import { I18NLink } from 'app/I18N';
-import { t as translate } from 'V2/i18n';
+import { I18NLink, t as translate } from 'app/I18N';
 import ShowIf from 'app/App/ShowIf';
 
 import DocumentsAPI from 'app/Documents/DocumentsAPI';

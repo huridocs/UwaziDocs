@@ -3,7 +3,7 @@ import { actions as formActions, getModel } from 'react-redux-form';
 import { advancedSort } from 'app/utils/advancedSort';
 import { api } from 'app/Entities';
 import { notificationActions } from 'app/Notifications';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { removeDocuments, unselectAllDocuments } from 'app/Library/actions/libraryActions';
 import { reloadThesauri } from 'app/Thesauri/actions/thesaurisActions';
 import { RequestParams } from 'app/utils/RequestParams';

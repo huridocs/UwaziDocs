@@ -1,7 +1,7 @@
 /** @format */
 
 import api from 'app/utils/api';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { actions } from 'app/BasicReducer';
 import { notify } from 'app/Notifications/actions/notificationsActions';
 import { RequestParams } from 'app/utils/RequestParams';

@@ -4,7 +4,7 @@ import { IImmutable } from 'shared/types/Immutable';
 import entitiesAPI from 'app/Entities/EntitiesAPI';
 import { actions } from 'app/BasicReducer';
 import { notificationActions } from 'app/Notifications';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { RequestParams } from 'app/utils/RequestParams';
 import { ClientFile } from 'app/istore';
 

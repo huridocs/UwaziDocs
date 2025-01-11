@@ -5,7 +5,7 @@ import EntitiesAPI from 'app/Entities/EntitiesAPI';
 import { IStore, QuickLabelState, QuickLabelMetadata } from 'app/istore';
 import { notificationActions } from 'app/Notifications';
 import { RequestParams } from 'app/utils/RequestParams';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import { getThesaurusPropertyNames } from 'shared/commonTopicClassification';
 import { MetadataObjectSchema } from 'shared/types/commonTypes';
 import { EntitySchema } from 'shared/types/entityType';

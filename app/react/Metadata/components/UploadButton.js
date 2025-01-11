@@ -8,7 +8,7 @@ import { Icon } from 'UI';
 import { uploadDocument } from 'app/Uploads/actions/uploadsActions';
 import { wrapDispatch } from 'app/Multireducer';
 import { socket } from 'app/socket';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 const renderProgress = progress => (
   <div className="upload-button btn btn-default btn-disabled">

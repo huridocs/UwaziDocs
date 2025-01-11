@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Icon, CountryList } from 'UI';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 
 const style = { display: 'inline-block', width: '25px' };
 

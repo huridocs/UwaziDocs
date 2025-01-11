@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
 import { ActionFunction, LoaderFunction, useFetcher, useLoaderData } from 'react-router-dom';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Button, ConfirmationModal, Table, Tabs } from 'V2/Components/UI';
 import * as usersAPI from 'V2/api/users';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';

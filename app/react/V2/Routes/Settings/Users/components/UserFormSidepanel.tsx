@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router-dom';
 import { FetchResponseError } from 'shared/JSONRequest';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { InputField, Select, MultiSelect } from 'V2/Components/Forms';
 import { Button, Card, ConfirmationModal, Sidepanel } from 'V2/Components/UI';
 import { validEmailFormat } from 'V2/shared/formatHelpers';

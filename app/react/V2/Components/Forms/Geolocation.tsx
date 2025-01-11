@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Map, Layer } from 'app/Map/MapContainer';
 import { Label, InputField } from 'V2/Components/Forms';
 

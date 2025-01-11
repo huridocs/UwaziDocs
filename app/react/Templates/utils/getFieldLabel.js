@@ -1,4 +1,4 @@
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 
 function getTitleLabel(template) {
   const titleField = template.commonProperties.find(p => p.name === 'title');

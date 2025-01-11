@@ -4,7 +4,7 @@ import { DragSource } from 'react-dnd-old';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Icon } from 'UI';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import { removeProperty, addProperty } from 'app/Templates/actions/templateActions';
 import Icons from './Icons';
 

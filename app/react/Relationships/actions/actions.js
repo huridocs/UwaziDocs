@@ -6,7 +6,7 @@ import { notificationActions } from 'app/Notifications';
 import { referencesActions } from 'app/Viewer';
 import { RequestParams } from 'app/utils/RequestParams';
 import SearchApi from 'app/Search/SearchAPI';
-import { t } from 'V2/i18n';
+import { t } from 'app/I18N';
 import EntitiesApi from '../../Entities/EntitiesAPI';
 import * as types from './actionTypes';
 import * as uiActions from './uiActions';

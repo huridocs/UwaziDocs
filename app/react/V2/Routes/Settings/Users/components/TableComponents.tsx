@@ -4,7 +4,7 @@ import { CellContext, createColumnHelper } from '@tanstack/react-table';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from 'flowbite-react';
 import { Button, Pill } from 'app/V2/Components/UI';
-import { t, Translate } from 'V2/i18n';
+import { t, Translate } from 'app/I18N';
 import { User, Group } from '../types';
 
 const userColumns = createColumnHelper<User>();

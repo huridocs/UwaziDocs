@@ -17,7 +17,7 @@ import { InputField, Select, MultiSelect, Geolocation } from 'app/V2/Components/
 import { Button, Card } from 'app/V2/Components/UI';
 import { settingsAtom } from 'app/V2/atoms/settingsAtom';
 import { SettingsContent } from 'app/V2/Components/Layouts/SettingsContent';
-import { Translate, t } from 'V2/i18n';
+import { Translate, t } from 'app/I18N';
 import { ClientSettings, Template } from 'app/apiResponseTypes';
 import { FetchResponseError } from 'shared/JSONRequest';
 import * as tips from './collectionSettingsTips';

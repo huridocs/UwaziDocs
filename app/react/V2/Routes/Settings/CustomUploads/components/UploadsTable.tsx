@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { CellContext, createColumnHelper } from '@tanstack/react-table';
-import { Translate } from 'V2/i18n';
+import { Translate } from 'app/I18N';
 import { Button, FileIcon } from 'V2/Components/UI';
 import { CustomUpload } from '../CustomUploads';
 
