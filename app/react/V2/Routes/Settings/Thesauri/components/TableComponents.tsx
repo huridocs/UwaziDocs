@@ -2,7 +2,7 @@
 import React from 'react';
 import { CellContext, createColumnHelper } from '@tanstack/react-table';
 import { t, Translate } from 'V2/i18n';
-import { Button, Pill } from 'app/V2/Components/UI';
+import { Button, Pill } from 'V2/Components/UI';
 import { ClientThesaurus, ClientThesaurusValue } from 'app/apiResponseTypes';
 import { ThesauriRow } from './ThesauriTable';
 

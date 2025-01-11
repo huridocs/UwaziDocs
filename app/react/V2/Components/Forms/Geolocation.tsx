@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Translate } from 'V2/i18n';
 import { Map, Layer } from 'app/Map/MapContainer';
-import { Label, InputField } from 'app/V2/Components/Forms';
+import { Label, InputField } from 'V2/Components/Forms';
 
 interface GeolocationProps {
   name: string;
