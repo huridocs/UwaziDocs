@@ -298,7 +298,7 @@ const EntryServer = async (req: ExpressRequest, res: Response) => {
     reduxState,
     matched
   );
-  //resetTranslations();
+
   hydrateAtomStore(atomStoreData);
   const componentHtml = ReactDOMServer.renderToString(
     <ReduxProvider store={initialStore as any}>
