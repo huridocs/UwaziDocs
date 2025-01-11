@@ -2,8 +2,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Breadcrumb } from 'flowbite-react';
 import { ChevronLeftIcon } from '@heroicons/react/20/solid';
-import { I18NLink } from 'app/I18N';
-import { Translate } from 'V2/i18n';
+import { Translate, I18NLink } from 'V2/i18n';
 
 interface SettingsContentProps extends PropsWithChildren {
   className?: string;
@@ -39,8 +38,10 @@ const SettingsHeader = ({ contextId, title, children, path, className }: Setting
     </I18NLink>
     <Breadcrumb className="!relative p-1 flex right-0 !bg-transparent m-0 !w-full flex-wrap align-middle">
       {Array.from(path?.entries() || []).map(([key, value]) => (
-        <Breadcrumb.Item key={key} href={value} className="max-w-xs">
-          <Translate className="max-w-xs truncate hover:underline">{key}</Translate>
+        <Breadcrumb.Item key={key} className="max-w-xs">
+          <I18NLink to={value} activeClassname="font-medium text-gray-700 hover:text-gray-900">
+            <Translate className="max-w-xs truncate hover:underline">{key}</Translate>
+          </I18NLink>
         </Breadcrumb.Item>
       ))}
       {title !== undefined && (
