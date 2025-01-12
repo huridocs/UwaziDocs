@@ -60,7 +60,7 @@ const Translate = ({ className, children, context = 'System', translationKey }: 
           });
         }
       }}
-      className={`${activeClassName} ${className}`}
+      className={`${activeClassName} ${className || ''}`}
     >
       {lines.map((line, index) => {
         const boldMatches = parseMarkdownBoldMarker(line);

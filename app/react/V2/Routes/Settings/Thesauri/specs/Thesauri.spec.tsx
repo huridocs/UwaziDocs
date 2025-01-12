@@ -15,7 +15,7 @@ import {
 } from '@testing-library/react/pure';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { has } from 'lodash';
-import { templatesAtom } from 'V2/atoms';
+import { inlineEditAtom, templatesAtom } from 'V2/atoms';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { ThesauriList, thesauriLoader } from '../ThesauriList';
 import { EditThesaurus } from '../EditThesaurus';
