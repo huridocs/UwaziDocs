@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { withOutlet, withRouter } from 'app/componentWrappers';
 import RouteHandler from 'app/App/RouteHandler';
 import { actions } from 'app/BasicReducer';
-import { t, I18NApi } from 'app/I18N';
+import { I18NApi, t } from 'app/I18N';
 import api from 'app/Search/SearchAPI';
 import TemplatesAPI from 'app/Templates/TemplatesAPI';
 import ThesauriAPI from 'app/Thesauri/ThesauriAPI';

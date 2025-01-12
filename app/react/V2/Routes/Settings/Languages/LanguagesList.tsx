@@ -5,7 +5,7 @@ import { useLoaderData, LoaderFunction } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { intersectionBy, keyBy, merge, values } from 'lodash';
 import { Row, createColumnHelper } from '@tanstack/react-table';
-import { Translate, t, I18NApi } from 'app/I18N';
+import { Translate, I18NApi, t } from 'app/I18N';
 import { RequestParams } from 'app/utils/RequestParams';
 import { settingsAtom } from 'app/V2/atoms/settingsAtom';
 import { Button, Table, ConfirmationModal } from 'V2/Components/UI';

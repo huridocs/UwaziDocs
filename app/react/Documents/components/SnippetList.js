@@ -4,8 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18NLink } from 'app/I18N';
-import { t } from 'app/I18N';
+import { t, I18NLink } from 'app/I18N';
 import SafeHTML from 'app/utils/SafeHTML';
 import getFieldLabel from 'app/Templates/utils/getFieldLabel';
 import Immutable from 'immutable';

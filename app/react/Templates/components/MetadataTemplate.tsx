@@ -13,7 +13,7 @@ import { Icon } from 'UI';
 import { withContext } from 'app/componentWrappers';
 import { FormGroup } from 'app/Forms';
 import ColorPicker from 'app/Forms/components/ColorPicker';
-import { t, Translate, I18NLink } from 'app/I18N';
+import { I18NLink, t, Translate } from 'app/I18N';
 import { notificationActions } from 'app/Notifications';
 import { notify } from 'app/Notifications/actions/notificationsActions';
 import { templatesAtom } from 'app/V2/atoms';

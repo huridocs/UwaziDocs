@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { fromJS } from 'immutable';
 import { wrapDispatch } from 'app/Multireducer';
 import { NeedAuthorization } from 'app/Auth';
-import { t, Translate, I18NLink, I18NMenu } from 'app/I18N';
+import { I18NLink, I18NMenu, t, Translate } from 'app/I18N';
 import { processFilters, encodeSearch } from 'app/Library/actions/libraryActions';
 import { showSemanticSearch as showSemanticSearchAction } from 'app/SemanticSearch/actions/actions';
 import { FeatureToggleSemanticSearch } from 'app/SemanticSearch/components/FeatureToggleSemanticSearch';

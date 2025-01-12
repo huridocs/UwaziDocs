@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { I18NApi, Translate } from 'app/I18N';
+import { Translate, I18NApi } from 'app/I18N';
 import { Button, Modal } from 'app/V2/Components/UI';
 import { MultiselectList } from 'app/V2/Components/Forms';
 import { LanguageSchema } from 'shared/types/commonTypes';

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Icon } from 'UI';
-import { t, I18NLink } from 'app/I18N';
+import { I18NLink, t } from 'app/I18N';
 
 const BackButton = ({ to, className }) => (
   <I18NLink to={to} className={`btn btn-default ${className}`}>
