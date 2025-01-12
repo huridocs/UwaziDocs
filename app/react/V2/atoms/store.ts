@@ -67,6 +67,10 @@ if (isClient && window.__atomStoreData__) {
     const value = atomStore.get(pdfScaleAtom);
     store?.dispatch({ type: 'viewer/documentScale/SET', value });
   });
+  atomStore.sub(translationsAtom, () => {
+    const value = atomStore.get(translationsAtom);
+    store?.dispatch({ type: 'translations', value });
+  });
 }
 
 export type { AtomStoreData };

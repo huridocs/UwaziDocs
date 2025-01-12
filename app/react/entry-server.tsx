@@ -157,6 +157,7 @@ const prepareStores = async (req: ExpressRequest, settings: ClientSettings, lang
     templates: templatesApiResponse.json.rows,
     thesauris: thesaurisApiResponse.json.rows,
     relationTypes: relationTypesApiResponse.json.rows,
+    translations: translationsApiResponse.json.rows,
     settings: {
       collection: { ...settingsApiResponse.json, links: settingsApiResponse.json.links || [] },
     },
