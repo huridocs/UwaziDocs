@@ -3,6 +3,11 @@ import { shallow } from 'enzyme';
 import { Pie, Bar } from 'app/Charts';
 import { LibraryChartComponent } from '../LibraryChart';
 
+jest.mock('app/I18N', () => ({
+  t: (_context, key) => key,
+  Translate: ({ children }) => children,
+}));
+
 describe('LibraryChart', () => {
   let component;
   let instance;
