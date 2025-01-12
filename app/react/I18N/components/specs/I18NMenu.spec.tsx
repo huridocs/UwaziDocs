@@ -33,7 +33,6 @@ describe('I18NMenu', () => {
         </TestAtomStoreProvider>
       </MemoryRouter>
     );
-    screen.debug();
   });
 });
 

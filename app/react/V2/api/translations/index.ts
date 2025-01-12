@@ -87,6 +87,4 @@ const importTranslations = async (
   }
 };
 
-const { getLanguages } = I18NApi;
-
-export { get, getV2, post, postV2, importTranslations, getLanguages };
+export { get, getV2, post, postV2, importTranslations };
