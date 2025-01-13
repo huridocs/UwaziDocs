@@ -2,6 +2,7 @@ import { MongoDataSource } from 'api/common.v2/database/MongoDataSource';
 import { MongoIdHandler } from 'api/common.v2/database/MongoIdGenerator';
 import { MongoResultSet } from 'api/common.v2/database/MongoResultSet';
 import { objectIndex } from 'shared/data_utils/objectIndex';
+import { DefaultIdGenerator } from 'api/common.v2/database/data_source_defaults';
 import { TemplatesDataSource } from '../contracts/TemplatesDataSource';
 import { Property } from '../model/Property';
 import { RelationshipProperty } from '../model/RelationshipProperty';
@@ -9,7 +10,6 @@ import { mapPropertyQuery } from './QueryMapper';
 import { TemplateDBO } from './schemas/TemplateDBO';
 import { Template } from '../model/Template';
 import { TemplateMappers } from './TemplateMappers';
-import { DefaultIdGenerator } from 'api/common.v2/database/data_source_defaults';
 
 export class MongoTemplatesDataSource
   extends MongoDataSource<TemplateDBO>

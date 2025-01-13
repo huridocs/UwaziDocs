@@ -1,5 +1,7 @@
 import { Event } from './Event';
-import { IdentifiedDomainObject } from './IdentifiedDomainObject';
+import { IdentifiedDomainObject, IdentifiedDomainObjectProps } from './IdentifiedDomainObject';
+
+type DomainObjectProps = IdentifiedDomainObjectProps;
 
 export abstract class DomainObject extends IdentifiedDomainObject {
   private events: Event[] = [];
@@ -15,3 +17,5 @@ export abstract class DomainObject extends IdentifiedDomainObject {
     return events;
   }
 }
+
+export type { DomainObjectProps };

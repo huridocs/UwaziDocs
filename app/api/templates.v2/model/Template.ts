@@ -1,18 +1,18 @@
+import { DomainObject, DomainObjectProps } from 'api/common.v2/domain/DomainObject';
 import { objectIndex } from 'shared/data_utils/objectIndex';
 import { Property, PropertyUpdateInfo } from './Property';
 
 type TemplateProps = {
-  id: string;
   name: string;
   color: string;
   isDefault: boolean;
   properties: Property[];
   commonProperties: Property[];
-};
+} & DomainObjectProps;
 
-class Template {
-  readonly id: string;
+type TemplateDto = ReturnType<Template['toObject']>;
 
+class Template extends DomainObject {
   readonly name: string;
 
   readonly color: string;
@@ -31,7 +31,8 @@ class Template {
     properties = [],
     commonProperties = [],
   }: TemplateProps) {
-    this.id = id;
+    super({ id });
+
     this.color = color;
     this.isDefault = isDefault;
     this.name = name;
@@ -76,6 +77,19 @@ class Template {
 
     return null;
   }
+
+  toObject() {
+    return {
+      id: this.id,
+      name: this.name,
+      color: this.color,
+      isDefault: this.isDefault,
+      properties: this.properties.map(p => p.toObject()),
+      commonProperties: this.commonProperties.map(p => p.toObject()),
+    };
+  }
 }
 
 export { Template };
+
+export type { TemplateProps, TemplateDto };

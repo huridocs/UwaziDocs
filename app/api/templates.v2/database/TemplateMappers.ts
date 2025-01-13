@@ -67,6 +67,8 @@ const TemplateMappers = {
       name: tdbo.name,
       properties: tdbo.properties.map(p => propertyToApp(p, tdbo._id)),
       commonProperties: tdbo.commonProperties.map(p => propertyToApp(p, tdbo._id)),
+      color: tdbo.color || '',
+      isDefault: tdbo.default || false,
     }),
 
   toDB: (template: Template): TemplateDBO => ({
@@ -75,7 +77,7 @@ const TemplateMappers = {
     color: template.color,
     default: template.isDefault,
     commonProperties: template.commonProperties.map(property => propertyToDB(property)),
-    properties: [],
+    properties: template.properties.map(property => propertyToDB(property)),
   }),
 };
 

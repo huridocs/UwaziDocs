@@ -49,6 +49,16 @@ class Property {
 
     return updateInfo;
   }
+
+  toObject() {
+    return {
+      id: this.id,
+      type: this.type,
+      name: this.name,
+      label: this.label,
+      template: this.template,
+    };
+  }
 }
 
 export { Property };
