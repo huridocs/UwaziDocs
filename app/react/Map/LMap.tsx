@@ -130,8 +130,7 @@ const LMap = ({
       setCurrentMarkers(pointMarkers);
       setCurrentTilesProvider(props.tilesProvider);
       checkMapInitialization(map, containerId);
-      const cleanup = initMap();
-      return cleanup;
+      initMap();
     }
     return () => {
       if (map && reRender) {
