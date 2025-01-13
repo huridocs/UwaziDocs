@@ -3,8 +3,10 @@ import 'cypress-axe';
 
 const addLanguages = (languages: string[]) => {
   languages.forEach(lang => {
-    cy.clearAndType('[data-testid=modal] input[type=text]', lang);
-    cy.contains('button', lang).click();
+    cy.get('[data-testid=modal]').within(() => {
+      cy.clearAndType('input[type=text]', lang);
+      cy.contains('button', lang).click();
+    });
   });
 };
 
@@ -29,7 +31,9 @@ describe('Languages', () => {
       const BACKEND_LANGUAGE_INSTALL_DELAY = 25000;
       cy.intercept('POST', 'api/translations/languages').as('addLanguage');
       addLanguages(['Spanish', 'French']);
-      cy.contains('[data-testid=modal] button', 'Install').click();
+      cy.get('[data-testid=modal]').within(() => {
+        cy.contains('button', 'Install').click();
+      });
       cy.wait('@addLanguage');
       cy.contains('Dismiss').click();
       cy.contains('Spanish', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
