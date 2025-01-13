@@ -9,6 +9,8 @@ const addLanguages = (languages: string[]) => {
         cy.clearAndType('input[type=text]', lang);
         cy.contains('button', lang).click();
       });
+      cy.contains('button', 'Install').click();
+      cy.get('[data-testid=modal]').should('not.exist');
     });
 };
 
@@ -35,10 +37,6 @@ describe('Languages', () => {
       cy.intercept('POST', 'api/translations/languages').as('addLanguage');
 
       addLanguages(['Spanish', 'French']);
-      cy.get('[data-testid=modal]').within(() => {
-        cy.contains('button', 'Install').click();
-      });
-      cy.get('[data-testid=modal]').should('not.exist');
 
       cy.wait('@addLanguage');
       cy.contains('Dismiss').click();
