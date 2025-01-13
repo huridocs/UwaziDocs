@@ -49,7 +49,7 @@ const TranslateModal = () => {
     inlineEditState.context && (
       <div className="tw-content">
         <div className="z-[100] relative">
-          <Modal size="xxxl">
+          <Modal size="xxxl" id="translationsFormModal">
             <form onSubmit={handleSubmit(submit)}>
               <Modal.Header>
                 {t('System', 'Translate', 'Translate', false)}
@@ -57,11 +57,11 @@ const TranslateModal = () => {
                   {t('System', 'Close', 'Close', false)}
                 </Modal.CloseButton>
               </Modal.Header>
-              <Modal.Body>
+              <Modal.Body className="flex flex-col gap-4">
                 {fields?.map((field, index) => (
                   <InputField
                     label={
-                      <span className="font-normal text-gray-300">
+                      <span className="font-normal text-gray-600">
                         {field.language.toUpperCase()}
                       </span>
                     }
