@@ -73,6 +73,14 @@ const LMap = ({
     markerGroup.addTo(map);
   };
 
+  const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
+  const enableScrollWheelZoom = () => shouldScroll && map.scrollWheelZoom.enable();
+  const disableScrollWheelZoom = (event: MouseEvent) => {
+    if (event.target && !map.getContainer().contains(event.target as Node)) {
+      map.scrollWheelZoom.disable();
+    }
+  };
+
   const initMap = () => {
     const baseMaps = getMapProvider(props.tilesProvider, props.mapApiKey);
     const mapLayers: { [k: string]: L.TileLayer } = {};
@@ -84,7 +92,6 @@ const LMap = ({
       mapLayers[key] = baseMaps[key].layer;
     });
 
-    const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
     map = L.map(containerId, {
       center: [props.startingPoint[0].lat, props.startingPoint[0].lon],
       zoom,
@@ -92,8 +99,12 @@ const LMap = ({
       minZoom: 2,
       zoomControl: false,
       preferCanvas: true,
-      scrollWheelZoom: shouldScroll,
+      scrollWheelZoom: false,
+      wheelDebounceTime: 100,
     });
+
+    map.on('click', enableScrollWheelZoom);
+    document.addEventListener('click', disableScrollWheelZoom);
 
     map.getPanes().mapPane.style.zIndex = '0';
     markerGroup = L.markerClusterGroup();
@@ -119,11 +130,13 @@ const LMap = ({
       setCurrentMarkers(pointMarkers);
       setCurrentTilesProvider(props.tilesProvider);
       checkMapInitialization(map, containerId);
-      initMap();
+      const cleanup = initMap();
+      return cleanup;
     }
-
     return () => {
       if (map && reRender) {
+        map.off('click', enableScrollWheelZoom);
+        document.removeEventListener('click', disableScrollWheelZoom);
         map.remove();
       }
     };
