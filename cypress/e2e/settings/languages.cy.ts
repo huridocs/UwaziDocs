@@ -2,12 +2,14 @@ import { clearCookiesAndLogin } from '../helpers/login';
 import 'cypress-axe';
 
 const addLanguages = (languages: string[]) => {
-  languages.forEach(lang => {
-    cy.get('[data-testid=modal]').within(() => {
-      cy.clearAndType('input[type=text]', lang);
-      cy.contains('button', lang).click();
+  cy.get('[data-testid=modal]')
+    .should('be.visible')
+    .within(() => {
+      languages.forEach(lang => {
+        cy.clearAndType('input[type=text]', lang);
+        cy.contains('button', lang).click();
+      });
     });
-  });
 };
 
 const stringToTranslate = "*please keep this key secret and don't share it.";
@@ -24,16 +26,20 @@ describe('Languages', () => {
   describe('Languages List', () => {
     it('should open the install language modal', () => {
       cy.contains('Install Language').click();
+      cy.get('[data-testid=modal]').should('be.visible');
       cy.checkA11y();
     });
 
     it('should install new languages', () => {
       const BACKEND_LANGUAGE_INSTALL_DELAY = 25000;
       cy.intercept('POST', 'api/translations/languages').as('addLanguage');
+
       addLanguages(['Spanish', 'French']);
       cy.get('[data-testid=modal]').within(() => {
         cy.contains('button', 'Install').click();
       });
+      cy.get('[data-testid=modal]').should('not.exist');
+
       cy.wait('@addLanguage');
       cy.contains('Dismiss').click();
       cy.contains('Spanish', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
