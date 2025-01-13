@@ -9,9 +9,10 @@ import { Provider as AtomProvider } from 'jotai';
 import { MockStoreEnhanced } from 'redux-mock-store';
 import { defaultState, renderConnectedContainer } from 'app/utils/test/renderConnected';
 import { atomStore, localeAtom, translationsAtom } from 'V2/atoms';
+import { ClientTranslationSchema } from 'app/istore';
 import { FormConfigSelect } from '../FormConfigSelect';
 
-const translations = [
+const translations: ClientTranslationSchema[] = [
   {
     locale: 'es',
     contexts: [
