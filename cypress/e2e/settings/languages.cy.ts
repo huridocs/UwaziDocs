@@ -2,6 +2,7 @@ import { clearCookiesAndLogin } from '../helpers/login';
 import 'cypress-axe';
 
 const addLanguages = (languages: string[]) => {
+  cy.contains('Install Language').click();
   cy.get('[data-testid=modal]')
     .should('be.visible')
     .within(() => {
@@ -31,6 +32,9 @@ describe('Languages', () => {
       cy.contains('Install Language').click();
       cy.get('[data-testid=modal]').should('be.visible');
       cy.checkA11y();
+      cy.get('[data-testid=modal]').within(() => {
+        cy.contains('button', 'Cancel').click();
+      });
     });
 
     it('should install new languages', () => {
