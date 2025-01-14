@@ -6,10 +6,11 @@ const addLanguages = (languages: string[]) => {
     .should('be.visible')
     .within(() => {
       languages.forEach(lang => {
-        cy.clearAndType('input[type=text]', lang);
-        cy.contains('button', lang).click();
+        cy.get('input[type=text]').clear();
+        cy.get('input[type=text]').realType(lang);
+        cy.contains('button', lang).realClick();
       });
-      cy.contains('button', 'Install').click();
+      cy.contains('button', 'Install').realClick();
       cy.get('[data-testid=modal]').should('not.exist');
     });
 };
