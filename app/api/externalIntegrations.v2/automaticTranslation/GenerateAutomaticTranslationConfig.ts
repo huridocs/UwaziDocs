@@ -46,7 +46,7 @@ export class GenerateAutomaticTranslationsCofig {
           })
           .concat(
             (configData.commonProperties || []).map(label => {
-              const foundProperty = templateData?.commonProperties.find(p => p.label === label);
+              const foundProperty = templateData?.properties.find(p => p.label === label);
               if (!foundProperty) {
                 throw new GenerateATConfigError(`Common property not found: ${label}`);
               }

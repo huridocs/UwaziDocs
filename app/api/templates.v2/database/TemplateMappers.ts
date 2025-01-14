@@ -65,8 +65,10 @@ const TemplateMappers = {
     new Template({
       id: MongoIdHandler.mapToApp(tdbo._id),
       name: tdbo.name,
-      properties: tdbo.properties.map(p => propertyToApp(p, tdbo._id)),
-      commonProperties: tdbo.commonProperties.map(p => propertyToApp(p, tdbo._id)),
+      properties: [
+        ...tdbo.commonProperties.map(p => propertyToApp(p, tdbo._id)),
+        ...tdbo.properties.map(p => propertyToApp(p, tdbo._id)),
+      ],
       color: tdbo.color || '',
       isDefault: tdbo.default || false,
     }),
@@ -76,8 +78,12 @@ const TemplateMappers = {
     name: template.name,
     color: template.color,
     default: template.isDefault,
-    commonProperties: template.commonProperties.map(property => propertyToDB(property)),
-    properties: template.properties.map(property => propertyToDB(property)),
+    commonProperties: template.properties
+      .filter(item => item.isCommonProperty())
+      .map(property => propertyToDB(property)),
+    properties: template.properties
+      .filter(item => !item.isCommonProperty())
+      .map(property => propertyToDB(property)),
   }),
 };
 

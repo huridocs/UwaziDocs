@@ -7,10 +7,7 @@ type TemplateProps = {
   color: string;
   isDefault: boolean;
   properties: Property[];
-  commonProperties: Property[];
 } & DomainObjectProps;
-
-type TemplateDto = ReturnType<Template['toObject']>;
 
 class Template extends DomainObject {
   readonly name: string;
@@ -19,25 +16,30 @@ class Template extends DomainObject {
 
   readonly isDefault: boolean;
 
-  readonly properties: Property[] = [];
+  readonly properties: Property[];
 
-  readonly commonProperties: Property[] = [];
-
-  constructor({
-    id,
-    name,
-    color,
-    isDefault,
-    properties = [],
-    commonProperties = [],
-  }: TemplateProps) {
+  constructor({ id, name, color, isDefault, properties = [] }: TemplateProps) {
     super({ id });
+    this.validate(properties);
 
     this.color = color;
     this.isDefault = isDefault;
     this.name = name;
     this.properties = properties;
-    this.commonProperties = commonProperties;
+  }
+
+  private validate(properties: Property[]) {
+    const title = properties.find(item => item.isCommonProperty() && item.type === 'text');
+    const creationDate = properties.find(
+      item => item.isCommonProperty() && item.type === 'date' && item.name === 'creationDate'
+    );
+    const editDate = properties.find(
+      item => item.isCommonProperty() && item.type === 'date' && item.name === 'editDate'
+    );
+
+    if (!title) throw new Error('Title common property is required');
+    if (!creationDate) throw new Error('Creation date common property is required');
+    if (!editDate) throw new Error('Edit date common property is required');
   }
 
   selectNewProperties(newTemplate: Template): Property[] {
@@ -65,31 +67,10 @@ class Template extends DomainObject {
   };
 
   getPropertyById(propertyId: string) {
-    const property = this.properties.find(p => p.id === propertyId);
-    if (property) {
-      return property;
-    }
-
-    const commonProperty = this.commonProperties.find(p => p.id === propertyId);
-    if (commonProperty) {
-      return commonProperty;
-    }
-
-    return null;
-  }
-
-  toObject() {
-    return {
-      id: this.id,
-      name: this.name,
-      color: this.color,
-      isDefault: this.isDefault,
-      properties: this.properties.map(p => p.toObject()),
-      commonProperties: this.commonProperties.map(p => p.toObject()),
-    };
+    return this.properties.find(item => item.id === propertyId);
   }
 }
 
 export { Template };
 
-export type { TemplateProps, TemplateDto };
+export type { TemplateProps };

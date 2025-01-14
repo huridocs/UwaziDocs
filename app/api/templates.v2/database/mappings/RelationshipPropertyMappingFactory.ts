@@ -1,8 +1,9 @@
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
-import { Property, PropertyTypes } from 'api/templates.v2/model/Property';
+import { Property } from 'api/templates.v2/model/Property';
+import { PropertyType } from 'api/templates.v2/model/PropertyType';
 import { objectIndex } from 'shared/data_utils/objectIndex';
 
-type MappedPropertyTypes = Exclude<PropertyTypes, 'preview' | 'newRelationship'>;
+type MappedPropertyTypes = Exclude<PropertyType, 'preview' | 'newRelationship'>;
 
 type PropertyMappings = { [key in MappedPropertyTypes]: () => unknown };
 

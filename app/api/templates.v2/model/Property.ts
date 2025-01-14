@@ -1,6 +1,4 @@
-import { PropertySchema } from 'shared/types/commonTypes';
-
-type PropertyTypes = PropertySchema['type'];
+import { PropertyType } from './PropertyType';
 
 type PropertyUpdateInfo = {
   id: string;
@@ -12,7 +10,7 @@ type PropertyUpdateInfo = {
 class Property {
   readonly id: string;
 
-  readonly type: PropertyTypes;
+  readonly type: PropertyType;
 
   readonly name: string;
 
@@ -20,7 +18,7 @@ class Property {
 
   readonly template: string;
 
-  constructor(id: string, type: PropertyTypes, name: string, label: string, template: string) {
+  constructor(id: string, type: PropertyType, name: string, label: string, template: string) {
     this.id = id;
     this.type = type;
     this.name = name;
@@ -59,7 +57,11 @@ class Property {
       template: this.template,
     };
   }
+
+  isCommonProperty() {
+    return false;
+  }
 }
 
 export { Property };
-export type { PropertyTypes, PropertyUpdateInfo };
+export type { PropertyUpdateInfo };

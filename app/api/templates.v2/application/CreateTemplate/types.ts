@@ -1,54 +1,57 @@
+import { z } from 'zod';
 import { SettingsDataSource } from 'api/settings.v2/contracts/SettingsDataSource';
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
-import { TemplateDto } from 'api/templates.v2/model/Template';
-import { PropertyTypeSchema } from 'shared/types/commonTypes';
+import { PropertyTypeSchema } from 'api/templates.v2/model/PropertyType';
+import { Template } from 'api/templates.v2/model/Template';
 
-type PropertyDto = {
-  label: string;
-  type: PropertyTypeSchema;
-  name?: string;
-  prioritySorting?: boolean;
-  generatedId?: boolean;
-  content?: string;
-  relationType?: string;
-  inherit?: {
-    property?: string;
-    type?: PropertyTypeSchema;
-  };
-  filter?: boolean;
-  noLabel?: boolean;
-  fullWidth?: boolean;
-  defaultfilter?: boolean;
-  required?: boolean;
-  sortable?: boolean;
-  showInCard?: boolean;
-  style?: string;
-  nestedProperties?: string[];
-  query?: unknown[];
-  denormalizedProperty?: string;
-  targetTemplates?: false | string[];
-};
+type CreateTemplateInput = z.infer<typeof CreateTemplateInputSchema>;
 
-type CreateTemplateInput = {
-  name: string;
-  color: string;
-  default: boolean;
-  entityViewPage?: string;
-  commonProperties: [PropertyDto, ...PropertyDto[]];
-  properties: PropertyDto[];
-};
+type CreateTemplateOutput = Template;
 
-type CreateTemplateOutput = TemplateDto;
-
-type CreateTemplateProps = {
+type Dependencies = {
   templatesDS: TemplatesDataSource;
   settingsDS: SettingsDataSource;
 };
 
-type CreatePropertyProps = {
-  generateRandomName?: boolean;
-  templateId: string;
-  property: PropertyDto;
-};
+type CreatePropertyInput = z.infer<typeof CreatePropertyInputSchema>;
 
-export type { CreatePropertyProps, CreateTemplateInput, CreateTemplateOutput, CreateTemplateProps };
+const CreatePropertyInputSchema = z.object({
+  label: z.string(),
+  type: PropertyTypeSchema,
+
+  name: z.string().optional(),
+  isCommonProperty: z.boolean().optional(),
+  prioritySorting: z.boolean().optional(),
+  generatedId: z.boolean().optional(),
+  content: z.string().optional(),
+  relationType: z.string().optional(),
+  inherit: z
+    .object({
+      property: z.string(),
+      type: PropertyTypeSchema,
+    })
+    .optional(),
+  filter: z.boolean().optional(),
+  noLabel: z.boolean().optional(),
+  fullWidth: z.boolean().optional(),
+  defaultfilter: z.boolean().optional(),
+  required: z.boolean().optional(),
+  sortable: z.boolean().optional(),
+  showInCard: z.boolean().optional(),
+  style: z.string().optional(),
+  nestedProperties: z.array(z.string()).optional(),
+  query: z.array(z.any()).optional(),
+  denormalizedProperty: z.string().optional(),
+  targetTemplates: z.array(z.string()).optional(),
+});
+
+const CreateTemplateInputSchema = z.object({
+  name: z.string(),
+  color: z.string(),
+  default: z.boolean(),
+  entityViewPage: z.string().optional(),
+  properties: z.array(CreatePropertyInputSchema),
+});
+
+export { CreateTemplateInputSchema };
+export type { CreateTemplateInput, CreatePropertyInput, CreateTemplateOutput, Dependencies };
