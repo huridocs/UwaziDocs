@@ -1,7 +1,6 @@
-// Kevin------------------------------------------------------------------
 /* eslint-disable max-lines */
 /* eslint-disable max-statements */
-/* eslint-disable camelcase */
+
 import urljoin from 'url-join';
 import _ from 'lodash';
 import { ObjectId } from 'mongodb';
@@ -68,7 +67,6 @@ interface TaskMessage {
 
 type ResultParameters = TaskParameters;
 
-/* eslint-disable camelcase */
 interface ResultMessage<P = ResultParameters> {
   tenant: string;
   task: TaskTypes;
@@ -78,7 +76,6 @@ interface ResultMessage<P = ResultParameters> {
   success?: boolean;
   error_message?: string;
 }
-/* eslint-enable camelcase */
 
 interface InternalResultParameters {
   id: ObjectId;
