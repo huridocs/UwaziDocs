@@ -4,15 +4,29 @@
 import React from 'react';
 import { act, fireEvent, RenderResult, screen, render } from '@testing-library/react';
 import { Location, MemoryRouter } from 'react-router-dom';
+import { createStore, Provider } from 'jotai';
 import { ClientUserSchema } from 'app/apiResponseTypes';
 import { inlineEditAtom, localeAtom, settingsAtom, userAtom } from 'V2/atoms';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { UserRole } from 'shared/types/userSchema';
+import { LanguageISO6391 } from 'shared/types/commonTypes';
 import { I18NMenu } from '../I18NMenu';
 
 const defaultLanguages = [
-  { _id: '1', label: 'English', key: 'en', localized_label: 'English', default: true },
-  { _id: '2', label: 'Spanish', key: 'es', localized_label: 'Español', default: false },
+  {
+    _id: '1',
+    label: 'English',
+    key: 'en' as LanguageISO6391,
+    localized_label: 'English',
+    default: true,
+  },
+  {
+    _id: '2',
+    label: 'Spanish',
+    key: 'es' as LanguageISO6391,
+    localized_label: 'Español',
+    default: false,
+  },
 ];
 
 const users = [
@@ -91,34 +105,6 @@ describe('I18NMenu', () => {
     expect(renderResult.container).toMatchSnapshot('after turning on live translate');
   });
 
-  it('should trigger a reload if the current language is deleted', async () => {
-    renderComponent(users[0]);
-
-    const newSettingsAtomValue = {
-      languages: [
-        { _id: '2', label: 'Spanish', key: 'es', localized_label: 'Español', default: true },
-      ],
-    };
-
-    renderResult.rerender(
-      <MemoryRouter initialEntries={[initialEntry]}>
-        <TestAtomStoreProvider
-          initialValues={[
-            [settingsAtom, newSettingsAtomValue],
-            [userAtom, users[0]],
-            [localeAtom, 'es'],
-            [inlineEditAtom, inlineEditAtomValue],
-          ]}
-        >
-          <I18NMenu />
-        </TestAtomStoreProvider>
-      </MemoryRouter>
-    );
-
-    expect(window.location.assign).toHaveBeenCalledTimes(1);
-    expect(window.location.assign).toHaveBeenCalledWith('/es/library');
-  });
-
   describe('when there is a user', () => {
     it('should render then laguages and the live translate option', () => {
       renderComponent(users[0]);
@@ -166,5 +152,49 @@ describe('I18NMenu', () => {
         );
       }
     );
+  });
+
+  describe('reloading after language change', () => {
+    const testStore = createStore();
+    testStore.set(userAtom, users[0]);
+    testStore.set(localeAtom, 'en');
+    testStore.set(settingsAtom, settingsAtomValue);
+
+    it('should trigger a reload if the current language is deleted', async () => {
+      const result = render(
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Provider store={testStore}>
+            <I18NMenu />
+          </Provider>
+        </MemoryRouter>
+      );
+
+      const newSettingsAtomValue = {
+        languages: [
+          {
+            _id: '2',
+            label: 'Spanish',
+            key: 'es' as LanguageISO6391,
+            localized_label: 'Español',
+            default: true,
+          },
+        ],
+      };
+
+      await act(() => {
+        testStore.set(settingsAtom, newSettingsAtomValue);
+      });
+
+      result.rerender(
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Provider store={testStore}>
+            <I18NMenu />
+          </Provider>
+        </MemoryRouter>
+      );
+
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+      expect(window.location.assign).toHaveBeenCalledWith('/library');
+    });
   });
 });
