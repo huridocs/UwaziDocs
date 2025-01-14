@@ -3,23 +3,26 @@ import 'cypress-axe';
 
 const stringToTranslate = "*please keep this key secret and don't share it.";
 
+const addLanguages = () => {
+  cy.contains('Install Language').click();
+  cy.get('[data-testid=modal]')
+    .should('be.visible')
+    .within(() => {
+      cy.get('input[type=text]').realClick().realType('Spanish');
+      cy.contains('button', 'Spanish').should('be.visible').realClick();
+      cy.get('input[type=text]').clear();
+      cy.get('input[type=text]').realType('French');
+      cy.contains('button', 'French').should('be.visible').realClick();
+      cy.get('input[type=text]').clear();
+      cy.contains('label', '(2)').click();
+      cy.contains('span', '* French (fr)').should('be.visible');
+      cy.contains('span', '* Spanish (es)').should('be.visible');
+      cy.contains('button', 'Install').realClick();
+    });
+  cy.get('[data-testid=modal]').should('not.exist');
+};
+
 describe('Languages', () => {
-  const addLanguages = (languages: string[]) => {
-    cy.contains('Install Language').click();
-    cy.get('[data-testid=modal]')
-      .should('be.visible')
-      .within(() => {
-        languages.forEach(lang => {
-          cy.get('input[type=text]').clear();
-          cy.get('input[type=text]').realType(lang);
-          cy.contains('button', lang).realClick();
-        });
-
-        cy.contains('button', 'Install').realClick();
-      });
-    cy.get('[data-testid=modal]').should('not.exist');
-  };
-
   before(() => {
     cy.blankState();
     clearCookiesAndLogin('admin', 'change this password now');
@@ -42,7 +45,7 @@ describe('Languages', () => {
       const BACKEND_LANGUAGE_INSTALL_DELAY = 25000;
       cy.intercept('POST', 'api/translations/languages').as('addLanguage');
 
-      addLanguages(['Spanish', 'French']);
+      addLanguages();
 
       cy.wait('@addLanguage');
       cy.contains('Dismiss').click();
