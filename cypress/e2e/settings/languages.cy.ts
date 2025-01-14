@@ -1,24 +1,25 @@
 import { clearCookiesAndLogin } from '../helpers/login';
 import 'cypress-axe';
 
-const addLanguages = (languages: string[]) => {
-  cy.contains('Install Language').click();
-  cy.get('[data-testid=modal]')
-    .should('be.visible')
-    .within(() => {
-      languages.forEach(lang => {
-        cy.get('input[type=text]').clear();
-        cy.get('input[type=text]').realType(lang);
-        cy.contains('button', lang).realClick();
-      });
-      cy.contains('button', 'Install').realClick();
-      cy.get('[data-testid=modal]').should('not.exist');
-    });
-};
-
 const stringToTranslate = "*please keep this key secret and don't share it.";
 
 describe('Languages', () => {
+  const addLanguages = (languages: string[]) => {
+    cy.contains('Install Language').click();
+    cy.get('[data-testid=modal]')
+      .should('be.visible')
+      .within(() => {
+        languages.forEach(lang => {
+          cy.get('input[type=text]').clear();
+          cy.get('input[type=text]').realType(lang);
+          cy.contains('button', lang).realClick();
+        });
+
+        cy.contains('button', 'Install').realClick();
+      });
+    cy.get('[data-testid=modal]').should('not.exist');
+  };
+
   before(() => {
     cy.blankState();
     clearCookiesAndLogin('admin', 'change this password now');
