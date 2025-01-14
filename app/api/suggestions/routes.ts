@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { Application, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 
@@ -31,7 +30,7 @@ async function processTrainFunction(
     return;
   }
 
-  const status = await callback(new ObjectId(req.body.extractorId));
+  const status = await callback(ObjectId.createFromHexString(req.body.extractorId));
   res.json(status);
 }
 
@@ -51,7 +50,6 @@ function extractorIdRequestValidation(root = 'body') {
   });
 }
 
-// eslint-disable-next-line max-statements
 export const suggestionsRoutes = (app: Application) => {
   app.get(
     '/api/suggestions/',
