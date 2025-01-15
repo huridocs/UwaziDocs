@@ -1,6 +1,6 @@
 {
   "name": "uwazi",
-  "version": "1.194.5",
+  "version": "1.195.0",
   "description": "Uwazi is a free, open-source solution for organising, analysing and publishing your documents.",
   "keywords": [
     "react"
@@ -173,7 +173,7 @@
     "mime-types": "^2.1.35",
     "moment": "^2.30.1",
     "moment-timezone": "0.5.46",
-    "monaco-editor": "^0.52.0",
+    "monaco-editor": "0.50.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
     "mongodb": "6.10.0",
     "mongoose": "8.8.3",

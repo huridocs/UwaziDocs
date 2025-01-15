@@ -378,6 +378,7 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.",หากเป็น URL จากภายนอก กรุณาใช้ URL แบบเต็มเช่น http://www.uwazi.io
 "If you want to continue, please type",ถ้าคุณต้องการดำเนินการต่อ กรุณาพิมพ์
+Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,นำเข้า
 Import asset,Import asset
@@ -847,7 +848,6 @@ This content is automatically generated,เนื้อหานี้ถูก�
 This entity is not public.,รายการนี้ไม่ได้เปิดการเข้าถึงแบบสาธารณะ
 This entity is restricted from public view.,รายการนี้ถูกจำกัดการเข้าถึงแบบสาธารณะ
 This field is required,This field is required
-This file type is not supported on image fields,This file type is not supported on image fields
 This file type is not supported on media fields,This file type is not supported on media fields
 This group is empty,This group is empty
 This option will show a notification about the use of cookies in your instance.,ตัวเลือกนี้จะแสดงการแจ้งเตือนเกี่ยวกับการใช้คุ้กกี้ในระบบของคุณ

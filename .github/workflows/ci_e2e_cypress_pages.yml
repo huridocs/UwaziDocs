@@ -13,6 +13,8 @@ concurrency:
 jobs:
   e2e-cypress:
     runs-on: ubuntu-20.04
+    env:
+      CYPRESS_RETRIES: 2
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.7-amd64
@@ -125,12 +127,12 @@ jobs:
           DBHOST: localhost:27017
           ELASTICSEARCH_URL: http://localhost:${{ job.services.elasticsearch.ports[9200] }}
           TRANSPILED: true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: snapshots
           path: cypress/e2e/**/__image_snapshots__/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: video
