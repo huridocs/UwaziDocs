@@ -121,7 +121,7 @@ jobs:
           browser: chrome
           component: false
           config-file: cypress.config.ts
-          spec: 'cypress/e2e/settings/languages.cy.ts'
+          spec: 'cypress/e2e/settings/*.cy.ts'
         timeout-minutes: 25
         env:
           DBHOST: localhost:27017
