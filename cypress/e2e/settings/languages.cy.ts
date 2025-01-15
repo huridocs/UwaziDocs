@@ -17,8 +17,10 @@ const addLanguages = () => {
       cy.contains('label', '(2)').click();
       cy.contains('span', '* French (fr)').should('be.visible');
       cy.contains('span', '* Spanish (es)').should('be.visible');
-      cy.contains('button', 'Install').realClick();
     });
+  cy.get('[data-testid=modal]').within(() => {
+    cy.contains('button', 'Install').realClick();
+  });
   cy.get('[data-testid=modal]').should('not.exist');
 };
 
@@ -49,16 +51,16 @@ describe('Languages', () => {
 
       cy.wait('@addLanguage');
       cy.contains('Dismiss').click();
-      cy.contains('Spanish', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
-      cy.contains('French', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
+      cy.contains('tr', 'Spanish', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
+      cy.contains('tr', 'French', { timeout: BACKEND_LANGUAGE_INSTALL_DELAY });
       cy.contains('Languages installed successfully').click();
     });
 
     it('should render the list of installed languages', () => {
       cy.get('[data-testid=settings-languages]').toMatchImageSnapshot();
-      cy.contains('English');
-      cy.contains('Spanish');
-      cy.contains('French');
+      cy.contains('tr', 'English');
+      cy.contains('tr', 'Spanish');
+      cy.contains('tr', 'French');
       cy.checkA11y();
     });
   });
