@@ -55,7 +55,10 @@ const postV2 = async (
   headers?: IncomingHttpHeaders
 ): Promise<ClientTranslationSchema[]> => {
   try {
-    const translations = updatedTranslations.map(ut => ({ ...ut, context }));
+    const translations = updatedTranslations.map(ut => ({
+      ...ut,
+      context: { id: context.id, label: context.label, type: context.type },
+    }));
     const params = new RequestParams(translations, headers);
     const response = await api.post('translationsV2', params);
     return response.status.ok;

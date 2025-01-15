@@ -17,6 +17,7 @@ import { availableLanguages } from 'shared/language';
 import { ContextType } from 'shared/translationSchema';
 import { LanguageISO6391 } from 'shared/types/commonTypes';
 import { pipeline } from 'stream/promises';
+import { TranslationSyO } from 'api/i18n.v2/schemas/TranslationSyO';
 import {
   addLanguageV2,
   deleteTranslationsByContextIdV2,
@@ -207,6 +208,32 @@ export default {
 
     await upsertTranslationsV2([translationToSave]);
     return translationToSave;
+  },
+
+  async v2StructureSave(translations: TranslationSyO[]) {
+    const thesaurusTranslations = translations.filter(
+      translation => translation.context.type === 'Thesaurus'
+    );
+
+    if (thesaurusTranslations.length) {
+      const { context } = thesaurusTranslations[0];
+      const translations = await getTranslationsV2ByContext(context.id);
+      const changedValues = translations.reduce((result, language) => {}, []);
+
+      const thesaurus = await thesauri.getById(context.id);
+
+      return Promise.all(
+        changesMatchingDictionaryId.map(async change =>
+          thesauri.renameThesaurusInMetadata(
+            change.id,
+            change.value,
+            context.id,
+            translation.locale
+          )
+        )
+      );
+    }
+    await upsertTranslationsV2(translations);
   },
 
   async updateEntries(

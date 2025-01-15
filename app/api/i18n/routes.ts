@@ -201,7 +201,7 @@ export default (app: Application) => {
       required: ['body'],
     }),
     async (req, res) => {
-      await upsertTranslationEntries(req.body);
+      await translations.v2StructureSave(req.body);
       req.sockets.emitToCurrentTenant('translationKeysChange', req.body);
       res.status(200);
       res.json({ success: true });
