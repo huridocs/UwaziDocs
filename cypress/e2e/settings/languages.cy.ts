@@ -19,7 +19,7 @@ const addLanguages = () => {
       cy.contains('span', '* Spanish (es)').should('be.visible');
     });
   cy.get('[data-testid=modal]').within(() => {
-    cy.contains('button', 'Install').realClick();
+    cy.contains('button', 'Install (2)').realClick();
   });
   cy.get('[data-testid=modal]').should('not.exist');
 };
