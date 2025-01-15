@@ -204,8 +204,8 @@ export class SyncedCollection<TSchema extends Document = Document>
   }
 
   async countDocuments(
-    filter?: Document | undefined,
-    options?: CountDocumentsOptions | undefined
+    filter?: Filter<Document>,
+    options?: CountDocumentsOptions
   ): Promise<number> {
     return this.collection.countDocuments(filter, options);
   }

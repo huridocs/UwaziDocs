@@ -9,11 +9,19 @@ function getTenant(): Tenant {
 }
 
 function getConnection(): Db {
-  return DB.connectionForDB(getTenant().dbName).db;
+  const { db } = DB.connectionForDB(getTenant().dbName);
+  if (!db) {
+    throw new Error();
+  }
+  return db;
 }
 
 function getSharedConnection(): Db {
-  return DB.connectionForDB(config.SHARED_DB).db;
+  const { db } = DB.connectionForDB(config.SHARED_DB);
+  if (!db) {
+    throw new Error();
+  }
+  return db;
 }
 
 function getClient(): MongoClient {
