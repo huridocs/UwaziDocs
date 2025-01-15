@@ -64,7 +64,11 @@ socket.on('translationsChange', languageTranslations => {
   const modifiedLanguage = translations.find(
     translation => translation.locale === languageTranslations.locale
   );
-  modifiedLanguage.contexts = languageTranslations.contexts;
+  if (modifiedLanguage) {
+    modifiedLanguage.contexts = languageTranslations.contexts;
+  } else {
+    translations.push(languageTranslations);
+  }
   atomStore.set(translationsAtom, translations);
 });
 
