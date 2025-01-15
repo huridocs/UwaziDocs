@@ -2,7 +2,7 @@ import { convertToPDFService } from 'api/services/convertToPDF/convertToPdfServi
 import settings from 'api/settings';
 import { FileType } from 'shared/types/fileType';
 
-import { files } from './files';
+import { files, UpdateFileError } from './files';
 import { PDF } from './PDF';
 
 export const processPDF = async (
@@ -10,6 +10,7 @@ export const processPDF = async (
   file: FileType & { destination?: string },
   detectLanguage = true
 ) => {
+  let thumbnail;
   const pdf = new PDF(file);
   const upload = await files.save({
     ...file,
@@ -24,7 +25,7 @@ export const processPDF = async (
       conversion.language = file.language;
     }
 
-    const thumbnail = await pdf.createThumbnail(upload._id.toString());
+    thumbnail = await pdf.createThumbnail(upload._id.toString());
 
     await files.save({
       entity: entitySharedId,
@@ -42,10 +43,15 @@ export const processPDF = async (
 
     return saved;
   } catch (e) {
+    if (e.constructor === UpdateFileError) {
+      await pdf.deleteThumbnail(thumbnail);
+    }
+
     await files.save({
       ...upload,
       status: 'failed',
     });
+
     throw e;
   }
 };

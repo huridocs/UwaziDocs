@@ -80,6 +80,10 @@ class PDF extends EventEmitter {
     return Promise.resolve(response);
   }
 
+  async deleteThumbnail(filename: string) {
+    await storage.removeFile(filename, 'thumbnail');
+  }
+
   async convert() {
     return this.extractText().then(conversion => ({
       ...conversion,
