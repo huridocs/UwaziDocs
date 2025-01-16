@@ -88,7 +88,9 @@ describe('processDocument', () => {
 
     await expect(promise).rejects.toEqual(new UpdateFileError());
     const [file] = await files.get({ _id });
+    const [thumbnail] = await files.get({ entity: _id, type: 'thumbnail' });
 
     expect(file).toBeUndefined();
+    expect(thumbnail).toBeUndefined();
   });
 });
