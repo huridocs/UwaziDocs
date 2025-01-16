@@ -10,7 +10,7 @@ import {
   useLoaderData,
   useNavigate,
   useRevalidator,
-} from 'react-router-dom';
+} from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useSetAtom } from 'jotai';
 import { debounce } from 'lodash';

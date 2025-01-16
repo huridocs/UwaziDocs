@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useRevalidator } from 'react-router-dom';
+import { useRevalidator } from 'react-router';
 import { useSetAtom } from 'jotai';
 import { FileType } from 'shared/types/fileType';
 import { Translate } from 'app/I18N';

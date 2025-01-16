@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useMemo, useState } from 'react';
-import { Location, useBlocker, useLoaderData, useNavigate } from 'react-router-dom';
+import { Location, useBlocker, useLoaderData, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Row } from '@tanstack/react-table';

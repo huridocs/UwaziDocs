@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router';
 import { omit } from 'lodash';
 
 const defaultProps = {

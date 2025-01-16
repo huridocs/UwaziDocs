@@ -8,7 +8,7 @@ import {
   matchRoutes,
   useLocation,
   useNavigationType,
-} from 'react-router-dom';
+} from 'react-router';
 import { Provider } from 'jotai';
 import { Provider as ReduxProvider } from 'react-redux';
 import type { RequestError } from 'V2/shared/errorUtils';

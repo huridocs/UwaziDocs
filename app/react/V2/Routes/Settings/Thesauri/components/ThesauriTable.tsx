@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Row } from '@tanstack/react-table';
 import { Translate } from 'app/I18N';
 import { Table } from 'app/V2/Components/UI';

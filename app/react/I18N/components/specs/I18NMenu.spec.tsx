@@ -5,7 +5,7 @@ import React from 'react';
 import { act, fireEvent, RenderResult, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MockStoreEnhanced } from 'redux-mock-store';
-import { Location, MemoryRouter } from 'react-router-dom';
+import { Location, MemoryRouter } from 'react-router';
 import Immutable from 'immutable';
 import { defaultState, renderConnectedContainer } from 'app/utils/test/renderConnected';
 import { i18NMenuComponent as I18NMenu } from '../I18NMenu';

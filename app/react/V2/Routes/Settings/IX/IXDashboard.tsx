@@ -1,7 +1,7 @@
 /* eslint-disable max-statements */
 import React, { useMemo, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
-import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom';
+import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router';
 import { useSetAtom } from 'jotai';
 import * as extractorsAPI from 'app/V2/api/ix/extractors';
 import * as templatesAPI from 'V2/api/templates';

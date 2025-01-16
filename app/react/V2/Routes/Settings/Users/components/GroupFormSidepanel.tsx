@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useFetcher } from 'react-router-dom';
+import { useFetcher } from 'react-router';
 import { Translate } from 'app/I18N';
 import { Button, Card, Sidepanel } from 'V2/Components/UI';
 import { InputField, MultiSelect } from 'V2/Components/Forms';

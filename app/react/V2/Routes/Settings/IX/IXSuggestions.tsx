@@ -9,7 +9,7 @@ import {
   useNavigate,
   useRevalidator,
   useSearchParams,
-} from 'react-router-dom';
+} from 'react-router';
 import { SortingState } from '@tanstack/react-table';
 import { useSetAtom } from 'jotai';
 import * as extractorsAPI from 'app/V2/api/ix/extractors';

@@ -2,7 +2,7 @@
 /* eslint-disable no-spaced-func */
 /* eslint-disable max-statements */
 import React, { useEffect, useState } from 'react';
-import { LoaderFunction, useBlocker, useLoaderData, useRevalidator } from 'react-router-dom';
+import { LoaderFunction, useBlocker, useLoaderData, useRevalidator } from 'react-router';
 import { IncomingHttpHeaders } from 'http';
 import { useSetAtom } from 'jotai';
 import { Translate } from 'app/I18N';

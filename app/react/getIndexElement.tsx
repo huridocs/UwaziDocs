@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { ClientSettings } from 'app/apiResponseTypes';
 import { validateHomePageRoute } from './utils/routeHelpers';
 import { PageView } from './Pages/PageView';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRevalidator } from 'react-router-dom';
+import { useRevalidator } from 'react-router';
 import { useSetAtom } from 'jotai';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { Translate } from 'app/I18N';

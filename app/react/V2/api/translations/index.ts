@@ -1,4 +1,4 @@
-import { Params } from 'react-router-dom';
+import { Params } from 'react-router';
 import { IncomingHttpHeaders } from 'http';
 import { I18NApi } from 'app/I18N';
 import { ClientTranslationSchema } from 'app/istore';

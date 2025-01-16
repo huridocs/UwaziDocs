@@ -3,8 +3,13 @@
 import { Request as ExpressRequest, Response } from 'express';
 // eslint-disable-next-line node/no-restricted-import
 import fs from 'fs';
-import { AgnosticDataRouteObject, createStaticHandler } from '@remix-run/router';
-import { matchRoutes, RouteObject } from 'react-router-dom';
+import {
+  createStaticHandler,
+  createStaticRouter,
+  matchRoutes,
+  RouteObject,
+  StaticRouterProvider,
+} from 'react-router';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Helmet } from 'react-helmet';
@@ -13,7 +18,6 @@ import { omit, isEmpty } from 'lodash';
 import { Provider as ReduxProvider } from 'react-redux';
 import api from 'app/utils/api';
 import { RequestParams } from 'app/utils/RequestParams';
-import { createStaticRouter, StaticRouterProvider } from 'react-router-dom/server';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { ClientSettings } from 'app/apiResponseTypes';
 import translationsApi, { IndexedTranslations } from '../api/i18n/translations';
@@ -253,7 +257,7 @@ const getSSRProperties = async (
   language?: string
 ) => {
   const { reduxStore, atomStoreData } = await prepareStores(req, settings, language);
-  const { query } = createStaticHandler(routes as AgnosticDataRouteObject[]);
+  const { query } = createStaticHandler(routes);
   const { fetchRequest, ssrError } = createFetchRequest(req);
   const staticHandleContext = await query(fetchRequest);
   const router = createStaticRouter(routes, staticHandleContext as any);

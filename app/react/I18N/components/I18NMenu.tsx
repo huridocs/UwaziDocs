@@ -9,7 +9,7 @@ import { actions, Translate, t } from 'app/I18N';
 import { IStore } from 'app/istore';
 import { NeedAuthorization } from 'app/Auth';
 import { useOnClickOutsideElement } from 'app/utils/useOnClickOutsideElementHook';
-import { Location, useLocation } from 'react-router-dom';
+import { Location, useLocation } from 'react-router';
 
 const locationSearch = (location: Location) => {
   const cleanSearch = location.search.split(/page=\d+|&page=\d+/).join('');

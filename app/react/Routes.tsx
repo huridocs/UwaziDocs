@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import React from 'react';
-import { createRoutesFromElements, Route } from 'react-router-dom';
+import { createRoutesFromElements, Route } from 'react-router';
 import { IncomingHttpHeaders } from 'http';
 import { App } from 'app/App/App';
 import { LibraryCards } from 'app/Library/Library';

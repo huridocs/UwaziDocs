@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { IncomingHttpHeaders } from 'http';
-import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom';
+import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useSetAtom } from 'jotai';
 import { isUndefined } from 'lodash';

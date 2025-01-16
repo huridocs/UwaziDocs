@@ -13,7 +13,7 @@ import {
   render,
   cleanup,
 } from '@testing-library/react/pure';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { Provider } from 'react-redux';
 import { has } from 'lodash';
 import { fromJS } from 'immutable';

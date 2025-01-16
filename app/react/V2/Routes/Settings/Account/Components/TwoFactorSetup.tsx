@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from 'app/utils/api';
-import { useRevalidator } from 'react-router-dom';
+import { useRevalidator } from 'react-router';
 import { useSetAtom } from 'jotai';
 
 import { RequestParams } from 'app/utils/RequestParams';

@@ -1,6 +1,6 @@
 /* eslint-disable max-statements */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { LoaderFunction, useBlocker, useLoaderData, useRevalidator } from 'react-router-dom';
+import { LoaderFunction, useBlocker, useLoaderData, useRevalidator } from 'react-router';
 import { useSetAtom } from 'jotai';
 import { IncomingHttpHeaders } from 'http';
 import { RowSelectionState } from '@tanstack/react-table';

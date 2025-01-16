@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { useNavigate, useRevalidator } from 'react-router-dom';
+import { useNavigate, useRevalidator } from 'react-router';
 import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { useAtom, useSetAtom } from 'jotai';
 import { isEqual, remove } from 'lodash';

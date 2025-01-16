@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import React, { useRef, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
-import { ActionFunction, LoaderFunction, useFetcher, useLoaderData } from 'react-router-dom';
+import { ActionFunction, LoaderFunction, useFetcher, useLoaderData } from 'react-router';
 import { Translate } from 'app/I18N';
 import { Button, ConfirmationModal, Table, Tabs } from 'V2/Components/UI';
 import * as usersAPI from 'V2/api/users';

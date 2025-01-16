@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFetcher } from 'react-router-dom';
+import { useFetcher } from 'react-router';
 import { FetchResponseError } from 'shared/JSONRequest';
 import { t, Translate } from 'app/I18N';
 import { InputField, Select, MultiSelect } from 'V2/Components/Forms';
