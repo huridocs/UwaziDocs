@@ -23,9 +23,9 @@ describe('ODM Model multi-tenant', () => {
 
   beforeAll(async () => {
     await testingDB.connect({ defaultTenant: false });
-    defaultDB = DB.connectionForDB(config.defaultTenant.dbName).db;
-    db1 = DB.connectionForDB('db1').db;
-    db2 = DB.connectionForDB('db2').db;
+    defaultDB = DB.getConnection().getClient().db(config.defaultTenant.dbName);
+    db1 = DB.getConnection().getClient().db('db1');
+    db2 = DB.getConnection().getClient().db('db2');
   });
 
   beforeEach(async () => {

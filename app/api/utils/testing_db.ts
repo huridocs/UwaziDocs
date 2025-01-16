@@ -108,7 +108,7 @@ const testingDB: {
         .basename(expect.getState().testPath || '')
         .replace(/[.-]/g, '_')}`.substring(0, 63);
       await initMongoServer(this.dbName);
-      mongodb = mongooseConnection.db;
+      mongodb = mongooseConnection.getClient().db();
       this.mongodb = mongodb;
 
       if (options.defaultTenant) {
@@ -148,7 +148,7 @@ const testingDB: {
     await this.connect();
     let optionalMongo: Db | null = null;
     if (dbName) {
-      optionalMongo = DB.connectionForDB(dbName).db;
+      optionalMongo = DB.connectionForDB(dbName).getClient().db(dbName);
     }
     await fixturer.clearAllAndLoad(optionalMongo || mongodb, fixtures);
     await this.createIndices();

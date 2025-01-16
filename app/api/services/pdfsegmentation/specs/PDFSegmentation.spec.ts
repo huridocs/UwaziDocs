@@ -79,8 +79,8 @@ describe('PDFSegmentation', () => {
 
   beforeEach(async () => {
     segmentPdfs = new PDFSegmentation();
-    dbOne = DB.connectionForDB(tenantOne.dbName).db;
-    dbTwo = DB.connectionForDB(tenantTwo.dbName).db;
+    dbOne = DB.getConnection().getClient().db(tenantOne.dbName);
+    dbTwo = DB.getConnection().getClient().db(tenantTwo.dbName);
 
     tenants.tenants = { tenantOne };
     fileA = await fs.readFile(`app/api/services/pdfsegmentation/specs/uploads/${fixturesPdfNameA}`);

@@ -26,7 +26,7 @@ describe('tenantsContext', () => {
     beforeAll(async () => {
       await testingDB.connect();
       testingEnvironment.setRequestId();
-      db = DB.connectionForDB(config.SHARED_DB).db;
+      db = DB.getConnection().getClient().db(config.SHARED_DB);
 
       await db.collection('tenants').deleteMany({});
       await db.collection('tenants').insertMany([

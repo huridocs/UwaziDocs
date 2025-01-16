@@ -27,8 +27,8 @@ describe('DB', () => {
   beforeEach(async () => {
     const uri = config.DBHOST;
     await DB.connect(`${uri}_DB_spec_ts`);
-    db1 = DB.getConnection().useDb('db1').db;
-    db2 = DB.getConnection().useDb('db2').db;
+    db1 = DB.getConnection().getClient().db('db1');
+    db2 = DB.getConnection().getClient().db('db2');
   });
 
   afterAll(async () => {
