@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React, { act } from 'react';
-import { fireEvent, render, RenderResult, waitFor } from '@testing-library/react';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { settingsAtom, translationsAtom, inlineEditAtom } from 'V2/atoms';
 import * as translationsAPI from 'V2/api/translations';
@@ -13,9 +13,7 @@ describe('TranslateModal', () => {
   let renderResult: RenderResult;
 
   beforeAll(() => {
-    jest
-      .spyOn(translationsAPI, 'postV2')
-      .mockImplementationOnce(async () => Promise.resolve(translations));
+    jest.spyOn(translationsAPI, 'postV2').mockImplementationOnce(async () => Promise.resolve([]));
   });
 
   afterEach(() => {
@@ -61,16 +59,19 @@ describe('TranslateModal', () => {
     const saveButton = renderResult.getByTestId('save-button');
     const inputFields = renderResult.queryAllByRole('textbox');
 
-    fireEvent.change(inputFields[1], { target: { value: 'Busqueda' } });
+    await act(() => {
+      fireEvent.change(inputFields[1], { target: { value: 'Busqueda' } });
+      fireEvent.click(saveButton);
+    });
 
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(translationsAPI.postV2).toHaveBeenCalledWith([
+    expect(translationsAPI.postV2).toHaveBeenCalledWith(
+      [
         { language: 'en', value: 'Search', key: 'Search' },
         { language: 'es', value: 'Busqueda', key: 'Search' },
-      ]);
-    });
+      ],
+      translations[0].contexts[0]
+    );
+    expect(renderResult.queryByText('Translate')).not.toBeInTheDocument();
   });
 
   it('should not allow sending empty fields', () => {});

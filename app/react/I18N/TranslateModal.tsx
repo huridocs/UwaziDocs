@@ -41,7 +41,7 @@ const TranslateModal = () => {
   };
 
   const submit = async ({ data }: { data: TranslationValue[] }) => {
-    await postV2(data, context!);
+    await postV2(data, context);
     closeModal();
   };
 
