@@ -190,13 +190,17 @@ describe('sockets', () => {
   });
 
   describe('translationsDelete', () => {
+    beforeEach(() => {
+      atomStore.set(
+        translationsAtom,
+        currentTranslations.map(t => ({ ...t }))
+      );
+      spyOn(atomStore, 'set');
+    });
+
     it('should emit a translationsDelete event', () => {
-      socket._callbacks.$translationsDelete[0]('localeString');
-      expect(store.dispatch).toHaveBeenCalledWith({
-        customIndex: 'locale',
-        type: 'translations/REMOVE',
-        value: { locale: 'localeString' },
-      });
+      socket._callbacks.$translationsDelete[0]('es');
+      expect(atomStore.set).toHaveBeenCalledWith(expect.any(Object), [currentTranslations[0]]);
     });
   });
 

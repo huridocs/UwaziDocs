@@ -107,7 +107,9 @@ socket.on('translationsInstallError', errorMessage => {
 });
 
 socket.on('translationsDelete', locale => {
-  store.dispatch(actions.remove('translations', { locale }, 'locale'));
+  const translations = atomStore.get(translationsAtom);
+  const updatedTranslations = translations.filter(language => language.locale !== locale);
+  atomStore.set(translationsAtom, updatedTranslations);
 });
 
 socket.on('translationsDeleteDone', () => {
