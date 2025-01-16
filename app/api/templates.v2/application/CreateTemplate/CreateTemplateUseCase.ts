@@ -49,31 +49,32 @@ export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, Creat
   ) {
     return property.map(item => {
       if (item.isCommonProperty) {
-        return new CommonProperty(
-          this.templatesDS.generateNextId(),
-          item.type,
-          item.name ||
+        return new CommonProperty({
+          id: this.templatesDS.generateNextId(),
+          type: item.type,
+          name:
+            item.name ||
             PropertyNameFactory.create({
               value: item.label,
               generateRandomName,
               type: item.type,
             }),
-          item.label,
-          templateId
-        );
+          label: item.label,
+          templateId,
+        });
       }
 
-      return new Property(
-        this.templatesDS.generateNextId(),
-        item.type,
-        PropertyNameFactory.create({
+      return new Property({
+        id: this.templatesDS.generateNextId(),
+        type: item.type,
+        name: PropertyNameFactory.create({
           value: item.label,
           generateRandomName,
           type: item.type,
         }),
-        item.label,
-        templateId
-      );
+        label: item.label,
+        templateId,
+      });
     });
   }
 }

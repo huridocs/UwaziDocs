@@ -13,7 +13,7 @@ class V1RelationshipProperty extends Property {
     template: string,
     content?: string
   ) {
-    super(id, 'relationship', name, label, template);
+    super({ id, type: 'relationship', name, label, templateId: template });
     this.content = content;
     this.relationType = relationType;
   }

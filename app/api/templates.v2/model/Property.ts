@@ -1,3 +1,4 @@
+import { DomainObject, DomainObjectProps } from 'api/common.v2/domain/DomainObject';
 import { PropertyType } from './PropertyType';
 
 type PropertyUpdateInfo = {
@@ -7,9 +8,14 @@ type PropertyUpdateInfo = {
   newProperty: Property;
 };
 
-class Property {
-  readonly id: string;
+type PropertyProps = {
+  type: PropertyType;
+  name: string;
+  label: string;
+  templateId: string;
+} & DomainObjectProps;
 
+class Property extends DomainObject {
   readonly type: PropertyType;
 
   readonly name: string;
@@ -18,12 +24,13 @@ class Property {
 
   readonly template: string;
 
-  constructor(id: string, type: PropertyType, name: string, label: string, template: string) {
-    this.id = id;
+  constructor({ type, name, label, templateId, ...rest }: PropertyProps) {
+    super(rest);
+
     this.type = type;
     this.name = name;
     this.label = label;
-    this.template = template;
+    this.template = templateId;
   }
 
   isSame(other: Property) {
@@ -48,20 +55,10 @@ class Property {
     return updateInfo;
   }
 
-  toObject() {
-    return {
-      id: this.id,
-      type: this.type,
-      name: this.name,
-      label: this.label,
-      template: this.template,
-    };
-  }
-
   isCommonProperty() {
     return false;
   }
 }
 
 export { Property };
-export type { PropertyUpdateInfo };
+export type { PropertyUpdateInfo, PropertyProps };

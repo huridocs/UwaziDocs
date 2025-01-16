@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 import { TranslationDBO } from 'api/i18n.v2/schemas/TranslationDBO';
-import { Property, PropertyTypes } from 'api/templates.v2/model/Property';
+import { Property } from 'api/templates.v2/model/Property';
 import { RelationshipProperty } from 'api/templates.v2/model/RelationshipProperty';
 import { RelationshipDBOType } from 'api/relationships.v2/database/schemas/relationshipTypes';
 import { MatchQueryNode } from 'api/relationships.v2/model/MatchQueryNode';
@@ -13,6 +13,7 @@ import {
 } from 'api/relationships.v2/model/Relationship';
 import { LanguageISO6391 } from 'shared/types/commonTypes';
 import { EntityPermissions, Entry } from 'api/authorization.v2/model/EntityPermissions';
+import { PropertyType } from 'api/templates.v2/model/PropertyType';
 
 type idMapperFunction = (id: string) => ObjectId;
 
@@ -34,8 +35,14 @@ const nestedTranslationContextDBO =
 
 const getV2FixturesFactoryElements = (idMapper: idMapperFunction) => ({
   application: {
-    property: (name: string, type: PropertyTypes, template: string): Property =>
-      new Property(idMapper(name).toString(), type, name, name, idMapper(template).toString()),
+    property: (name: string, type: PropertyType, template: string): Property =>
+      new Property({
+        id: idMapper(name).toString(),
+        type,
+        name,
+        label: name,
+        templateId: idMapper(template).toString(),
+      }),
 
     relationshipProperty: (
       name: string,

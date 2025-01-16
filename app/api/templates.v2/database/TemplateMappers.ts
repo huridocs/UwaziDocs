@@ -32,7 +32,13 @@ function propertyToApp(property: PropertyDBO, _templateId: TemplateDBO['_id']): 
   const templateId = MongoIdHandler.mapToApp(_templateId);
   const propertyId = property._id?.toString() || MongoIdHandler.generate();
   if ('isCommonProperty' in property && property.isCommonProperty) {
-    return new CommonProperty(propertyId, property.type, property.name, property.label, templateId);
+    return new CommonProperty({
+      id: propertyId,
+      type: property.type,
+      name: property.name,
+      label: property.label,
+      templateId,
+    });
   }
   switch (property.type) {
     case propertyTypes.newRelationship:
@@ -55,7 +61,13 @@ function propertyToApp(property: PropertyDBO, _templateId: TemplateDBO['_id']): 
         property.content
       );
     default:
-      return new Property(propertyId, property.type, property.name, property.label, templateId);
+      return new Property({
+        id: propertyId,
+        type: property.type,
+        name: property.name,
+        label: property.label,
+        templateId,
+      });
   }
 }
 

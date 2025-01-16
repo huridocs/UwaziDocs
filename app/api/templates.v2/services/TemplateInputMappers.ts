@@ -40,7 +40,13 @@ const propertyToApp = (property: PropertySchema, templateId: string): Property =
       property.denormalizedProperty
     );
   }
-  return new Property(propertyId, property.type, property.name, property.label, templateId);
+  return new Property({
+    id: propertyId,
+    type: property.type,
+    name: property.name,
+    label: property.label,
+    templateId,
+  });
 };
 
 const TemplateInputMappers = {
