@@ -229,37 +229,6 @@ describe('i18n translations routes', () => {
       });
     });
 
-    describe('api/translationsV2', () => {
-      it('should update the translations', async () => {
-        const response = await request(app)
-          .post('/api/translationsV2')
-          .send([
-            {
-              language: 'es',
-              key: 'Search',
-              value: 'Búsqueda',
-              context: {
-                id: 'System',
-                label: 'User Interface',
-                type: 'Uwazi UI',
-              },
-            },
-          ]);
-        expect(response.status).toEqual(200);
-        expect(iosocket.emit).toHaveBeenCalledWith(
-          'translationKeysChange',
-          TestEmitSources.currentTenant,
-          [
-            {
-              context: { id: 'System', label: 'User Interface', type: 'Uwazi UI' },
-              key: 'Search',
-              language: 'es',
-              value: 'Búsqueda',
-            },
-          ]
-        );
-      });
-    });
 
     describe('api/translations/languages', () => {
       describe('when successful', () => {

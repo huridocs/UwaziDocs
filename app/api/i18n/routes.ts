@@ -12,7 +12,7 @@ import { Application, Request } from 'express';
 import { UITranslationNotAvailable } from 'api/i18n/defaultTranslations';
 import needsAuthorization from '../auth/authMiddleware';
 import translations from './translations';
-import { getTranslationsEntriesV2, upsertTranslationEntries } from './v2_support';
+import { getTranslationsEntriesV2 } from './v2_support';
 
 const addLanguage = async (language: LanguageSchema) => {
   const newSettings = await settings.addLanguage(language);
