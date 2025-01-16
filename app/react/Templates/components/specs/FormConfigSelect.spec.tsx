@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import Immutable from 'immutable';
-import { screen, RenderResult } from '@testing-library/react';
+import { screen, RenderResult, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { Provider as AtomProvider } from 'jotai';
 import { MockStoreEnhanced } from 'redux-mock-store';
@@ -108,18 +108,17 @@ describe('FormConfigSelect', () => {
   });
 
   describe('validation', () => {
-    it('should show a warning when changing the select thesaurus', () => {
+    it('should show a warning when changing the select thesaurus', async () => {
       render();
 
       state = { ...state, template: { ...defineTemplateInStore('2', 'id1') } };
 
-      renderResult.rerender(
-        <AtomProvider store={atomStore}>
-          <Provider store={reduxStore}>
-            <FormConfigSelect type="select" index={0} />
-          </Provider>
-        </AtomProvider>
-      );
+      await act(() => {
+        reduxStore.dispatch({
+          type: 'rrf/change',
+          value: 'id1',
+        });
+      });
 
       const warning = screen.queryByText(
         'By making this change, any values from the previous thesaurus',
