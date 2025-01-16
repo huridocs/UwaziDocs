@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react';
+import React, { act } from 'react';
 import { fireEvent, render, RenderResult, waitFor } from '@testing-library/react';
 import { TestAtomStoreProvider } from 'V2/testing';
 import { settingsAtom, translationsAtom, inlineEditAtom } from 'V2/atoms';
@@ -11,6 +11,16 @@ import { languages, translations } from './fixtures';
 
 describe('TranslateModal', () => {
   let renderResult: RenderResult;
+
+  beforeAll(() => {
+    jest
+      .spyOn(translationsAPI, 'postV2')
+      .mockImplementationOnce(async () => Promise.resolve(translations));
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   const renderComponent = (inlineEdit: boolean, context: string, translationKey: string) => {
     renderResult = render(
@@ -36,11 +46,17 @@ describe('TranslateModal', () => {
     expect(renderResult.getByText('ES'));
   });
 
-  it('submits the form with updated values and closes the modal', async () => {
-    jest
-      .spyOn(translationsAPI, 'postV2')
-      .mockImplementationOnce(async () => Promise.resolve(translations));
+  it('should close the modal without saving', async () => {
+    renderComponent(true, 'System', 'Search');
+    expect(renderResult.getByText('Translate'));
+    await act(() => {
+      fireEvent.click(renderResult.getByText('Cancel'));
+    });
+    expect(renderResult.queryByText('Translate')).not.toBeInTheDocument();
+    expect(translationsAPI.postV2).not.toHaveBeenCalled();
+  });
 
+  it('submits the form with updated values and closes the modal', async () => {
     renderComponent(true, 'System', 'Search');
     const saveButton = renderResult.getByTestId('save-button');
     const inputFields = renderResult.queryAllByRole('textbox');
