@@ -1,4 +1,19 @@
 import { ClientTranslationSchema } from 'app/istore';
+import { LanguagesListSchema } from 'shared/types/commonTypes';
+
+const languages: LanguagesListSchema = [
+  {
+    _id: '1',
+    label: 'English',
+    key: 'en',
+    default: true,
+  },
+  {
+    _id: '1',
+    label: 'Spanish',
+    key: 'es',
+  },
+];
 
 const translations: ClientTranslationSchema[] = [
   {
@@ -46,4 +61,4 @@ const updatedTranslations: ClientTranslationSchema[] = [
   },
 ];
 
-export { translations, updatedTranslations };
+export { translations, updatedTranslations, languages };

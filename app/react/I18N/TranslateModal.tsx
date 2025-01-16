@@ -25,8 +25,8 @@ const TranslateModal = () => {
   React.useEffect(() => {
     const initialValues = translations.map(translation => {
       const language = languages.find(lang => lang.key === translation.locale)!;
-      const languageContext = translation.contexts.find(c => c.id === context.id)!;
-      const value = languageContext.values[inlineEditState.translationKey];
+      const languageContext = translation.contexts.find(c => c.id === context?.id);
+      const value = languageContext?.values[inlineEditState.translationKey];
       return {
         language: language.key,
         value,
@@ -34,7 +34,7 @@ const TranslateModal = () => {
       };
     });
     reset({ data: initialValues });
-  }, [context.id, context.values, inlineEditState.translationKey, languages, reset, translations]);
+  }, [context, inlineEditState.translationKey, languages, reset, translations]);
 
   const closeModal = () => {
     setInlineEditState({ inlineEdit: true, translationKey: '', context: '' });
