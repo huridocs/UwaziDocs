@@ -250,7 +250,7 @@ describe('PDF display', () => {
         cy.contains('td', 'Entity with pdf (es)');
       });
 
-      it('should open the pdf sidepanel and show the correct page', () => {
+      it('should open the pdf sidepanel, show the correct page, and check page rendering', () => {
         cy.contains('button', 'Open PDF').scrollIntoView();
         cy.contains('button', 'Open PDF').realTouch();
         cy.contains('Loading').should('not.exist');
