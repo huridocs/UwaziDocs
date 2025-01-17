@@ -57,15 +57,23 @@ describe('TranslateModal', () => {
     expect(translationsAPI.postV2).not.toHaveBeenCalled();
   });
 
-  it('submits the form with updated values and closes the modal', async () => {
+  // eslint-disable-next-line max-statements
+  it('submits the form with updated values, disables while saving, and closes the modal', async () => {
     renderComponent(true, 'System', 'Search');
+
     const saveButton = renderResult.getByTestId('save-button');
     const inputFields = renderResult.queryAllByRole('textbox');
+    const cancelButton = renderResult.getByText('Cancel');
 
     await act(() => {
       fireEvent.change(inputFields[1], { target: { value: 'Busqueda' } });
       fireEvent.click(saveButton);
     });
+
+    expect(saveButton).toBeDisabled();
+    expect(inputFields[0]).toBeDisabled();
+    expect(inputFields[1]).toBeDisabled();
+    expect(cancelButton).toBeDisabled();
 
     expect(translationsAPI.postV2).toHaveBeenCalledWith(
       [

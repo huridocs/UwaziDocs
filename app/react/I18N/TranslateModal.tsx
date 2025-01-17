@@ -23,7 +23,7 @@ const TranslateModal = () => {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm<{ data: TranslationValue[] }>({
     mode: 'onSubmit',
   });
@@ -80,7 +80,7 @@ const TranslateModal = () => {
             <form onSubmit={handleSubmit(submit)}>
               <Modal.Header>
                 {t('System', 'Translate', 'Translate', false)}
-                <Modal.CloseButton onClick={closeModal}>
+                <Modal.CloseButton onClick={closeModal} disabled={isSubmitting}>
                   {t('System', 'Close', 'Close', false)}
                 </Modal.CloseButton>
               </Modal.Header>
@@ -96,6 +96,7 @@ const TranslateModal = () => {
                     key={field.id}
                     {...register(`data.${index}.value`, { required: true })}
                     hasErrors={errors.data && errors.data[index] !== undefined}
+                    disabled={isSubmitting}
                   />
                 ))}
               </Modal.Body>
@@ -105,10 +106,17 @@ const TranslateModal = () => {
                   onClick={closeModal}
                   className="grow"
                   data-testid="cancel-button"
+                  disabled={isSubmitting}
                 >
                   {t('System', 'Cancel', 'Cancel', false)}
                 </Button>
-                <Button type="submit" color="primary" className="grow" data-testid="save-button">
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="grow"
+                  data-testid="save-button"
+                  disabled={isSubmitting}
+                >
                   {t('System', 'Save', 'Save', false)}
                 </Button>
               </Modal.Footer>
