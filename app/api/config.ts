@@ -93,4 +93,7 @@ export const config = {
   },
   githubToken: process.env.GITHUB_TOKEN || '',
   queueName: QUEUE_NAME || 'uwazi_jobs',
+  env_feature_flags: {
+    use_mongodb_instead_of_mongoose: process.env.MONGO_NOT_MONGOOSE || false,
+  },
 };
