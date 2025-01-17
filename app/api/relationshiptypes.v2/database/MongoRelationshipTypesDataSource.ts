@@ -7,9 +7,8 @@ import { mapRelationshipTypeToApp } from './mappings/RelationshipTypeMappers';
 import { RelationshipType } from '../model/RelationshipType';
 
 export class MongoRelationshipTypesDataSource
-  extends MongoDataSource<RelationshipTypeDBO>
-  implements RelationshipTypesDataSource
-{
+  extends MongoDataSource
+  implements RelationshipTypesDataSource { // eslint-disable-line
   protected collectionName = 'relationtypes';
 
   async typesExist(ids: string[]): Promise<boolean> {

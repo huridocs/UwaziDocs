@@ -1,3 +1,4 @@
+import { DB } from 'api/odm/DB';
 import { Db } from 'mongodb';
 import testingDB from 'api/utils/testing_db';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
@@ -25,7 +26,7 @@ describe('tenantsContext', () => {
     beforeAll(async () => {
       await testingDB.connect();
       testingEnvironment.setRequestId();
-      db = testingDB.db(config.SHARED_DB);
+      db = DB.connectionForDB(config.SHARED_DB).db;
 
       await db.collection('tenants').deleteMany({});
       await db.collection('tenants').insertMany([

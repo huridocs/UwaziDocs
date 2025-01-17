@@ -1,5 +1,5 @@
 import { BulkWriteOptions } from 'mongodb';
-import mongoose, { ProjectionType, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import {
   DataType,
   UwaziFilterQuery,
@@ -36,11 +36,7 @@ class MultiTenantMongooseModel<T> {
     return this.dbForCurrentTenant().findById(id, select, { lean: true });
   }
 
-  find(
-    query: UwaziFilterQuery<DataType<T>>,
-    select: ProjectionType<DataType<T>> = {},
-    options = {}
-  ) {
+  find(query: UwaziFilterQuery<DataType<T>>, select = '', options = {}) {
     return this.dbForCurrentTenant().find(query, select, options);
   }
 
