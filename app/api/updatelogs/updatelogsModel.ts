@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { MultiTenantMongooseModel } from 'api/odm/MultiTenantMongooseModel';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
-import { ObjectId } from 'mongodb';
 
 const updateLogSchema = new mongoose.Schema({
   timestamp: { type: Number, index: true },
@@ -12,7 +11,6 @@ const updateLogSchema = new mongoose.Schema({
 
 updateLogSchema.index({ namespace: 1, timestamp: 1 });
 export interface UpdateLog extends mongoose.Document {
-  _id: ObjectId;
   timestamp: number;
   namespace: string;
   mongoId: ObjectIdSchema;

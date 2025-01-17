@@ -18,6 +18,7 @@ export default function (req, res, next) {
   if (req.user || req.url.match(allowedRoutesMatch)) {
     return next();
   }
+
   return settings
     .get()
     .then(result => {
