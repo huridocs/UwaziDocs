@@ -2,6 +2,7 @@ import { Params } from 'react-router-dom';
 import { IncomingHttpHeaders } from 'http';
 import api from 'app/utils/api';
 import { I18NApi } from 'app/I18N';
+import { FetchResponseError } from 'shared/JSONRequest';
 import { ClientTranslationSchema, ClientTranslationContextSchema } from 'app/istore';
 import { RequestParams } from 'app/utils/RequestParams';
 import { TranslationValue } from 'V2/shared/types';
@@ -53,7 +54,7 @@ const postV2 = async (
   updatedTranslations: TranslationValue[],
   context: ClientTranslationContextSchema,
   headers?: IncomingHttpHeaders
-): Promise<ClientTranslationSchema[]> => {
+): Promise<number | FetchResponseError> => {
   try {
     const translations = updatedTranslations.map(ut => ({
       ...ut,
@@ -61,7 +62,7 @@ const postV2 = async (
     }));
     const params = new RequestParams(translations, headers);
     const response = await api.post('translationsV2', params);
-    return response.status.ok;
+    return response.status;
   } catch (e) {
     return e;
   }
