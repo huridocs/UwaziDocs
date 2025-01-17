@@ -3,6 +3,8 @@ import { handleError } from 'api/utils';
 import { appContext } from 'api/utils/AppContext';
 import { TenantDocument, TenantsModel, DBTenant, tenantsModel } from './tenantsModel';
 
+type TenantFeatureFlags = keyof NonNullable<Required<Tenant>['featureFlags']>;
+
 type Tenant = {
   name: string;
   dbName: string;
@@ -86,8 +88,12 @@ class Tenants {
   add(tenant: DBTenant) {
     this.tenants[tenant.name] = { ...this.defaultTenant, ...tenant };
   }
+
+  getTenantsForFeatureFlag(featureFlag: TenantFeatureFlags) {
+    return Object.values(this.tenants).filter(tenant => tenant?.featureFlags?.[featureFlag]);
+  }
 }
 
 const tenants = new Tenants(config.defaultTenant);
 export { tenants };
-export type { Tenant };
+export type { Tenant, TenantFeatureFlags };
