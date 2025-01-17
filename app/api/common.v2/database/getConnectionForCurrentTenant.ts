@@ -9,11 +9,25 @@ function getTenant(): Tenant {
 }
 
 function getConnection(): Db {
-  return DB.connectionForDB(getTenant().dbName).db;
+  if (config.env_feature_flags.use_mongodb_instead_of_mongoose) {
+    return DB.mongodb_Db(getTenant().dbName);
+  }
+  const { db } = DB.connectionForDB(getTenant().dbName);
+  if (!db) {
+    throw new Error('DB object is undefined');
+  }
+  return db;
 }
 
 function getSharedConnection(): Db {
-  return DB.connectionForDB(config.SHARED_DB).db;
+  if (config.env_feature_flags.use_mongodb_instead_of_mongoose) {
+    return DB.mongodb_Db(getTenant().dbName);
+  }
+  const { db } = DB.connectionForDB(config.SHARED_DB);
+  if (!db) {
+    throw new Error('DB object is undefined');
+  }
+  return db;
 }
 
 function getClient(): MongoClient {
