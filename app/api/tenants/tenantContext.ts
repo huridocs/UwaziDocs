@@ -15,6 +15,7 @@ type Tenant = {
   activityLogs: string;
   featureFlags?: {
     s3Storage?: boolean;
+    sync?: boolean;
   };
   globalMatomo?: { id: string; url: string };
   ciMatomoActive?: boolean;
