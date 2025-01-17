@@ -229,7 +229,6 @@ describe('i18n translations routes', () => {
       });
     });
 
-
     describe('api/translations/languages', () => {
       describe('when successful', () => {
         let response: request.Response;
