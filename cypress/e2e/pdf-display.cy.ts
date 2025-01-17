@@ -250,7 +250,8 @@ describe('PDF display', () => {
         cy.contains('td', 'Entity with pdf (es)');
       });
 
-      it('should open the pdf sidepanel and show in the correct page', () => {
+      it('should open the pdf sidepanel and show the correct page', () => {
+        cy.contains('button', 'Open PDF').scrollIntoView();
         cy.contains('button', 'Open PDF').realTouch();
         cy.contains('Loading').should('not.exist');
         cy.get('#pdf-container').within(() => {
@@ -260,9 +261,6 @@ describe('PDF display', () => {
           cy.get('.highlight-rectangle').should('be.visible');
         });
         cy.get('#root').toMatchImageSnapshot();
-      });
-
-      it('should only show visible pages', () => {
         cy.get('#pdf-container').within(() => {
           cy.get('#page-1-container .page').should('be.empty');
           cy.get('#page-2-container .page').should('not.be.empty');
