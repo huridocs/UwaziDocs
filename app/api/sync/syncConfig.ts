@@ -1,3 +1,4 @@
+import { DataType } from 'api/odm';
 import { SyncConfig } from 'api/sync/syncWorker';
 import templatesModel from 'api/templates/templatesModel';
 import { model as updateLog, UpdateLog } from 'api/updatelogs';
@@ -162,7 +163,7 @@ export const createSyncConfig = async (
       return changes;
     },
 
-    async shouldSync(change: UpdateLog) {
+    async shouldSync(change: DataType<UpdateLog>) {
       if (change.deleted) return { skip: true };
       const templatesConfig = this.config.templates || {};
 
