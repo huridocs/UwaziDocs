@@ -48,7 +48,12 @@ if (window.SENTRY_APP_DSN) {
 }
 
 const router = createBrowserRouter(
-  getRoutes(atomStore.get(settingsAtom), atomStore.get(userAtom)?._id)
+  getRoutes(atomStore.get(settingsAtom), atomStore.get(userAtom)?._id),
+  {
+    future: {
+      v7_relativeSplatPath: true,
+    },
+  }
 );
 
 const App = () => (
@@ -56,7 +61,7 @@ const App = () => (
     <CustomProvider>
       <Provider store={atomStore}>
         <ErrorBoundary>
-          <RouterProvider router={router} fallbackElement={null} />
+          <RouterProvider router={router} />
         </ErrorBoundary>
       </Provider>
     </CustomProvider>
