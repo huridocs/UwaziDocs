@@ -73,6 +73,21 @@ const LMap = ({
     markerGroup.addTo(map);
   };
 
+  const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
+  const enableMapGestures = () => {
+    if (shouldScroll) {
+      map.scrollWheelZoom.enable();
+    }
+    map.dragging.enable();
+  };
+
+  const disableMapGestures = (event: MouseEvent) => {
+    if (event.target && !map.getContainer().contains(event.target as Node)) {
+      map.scrollWheelZoom.disable();
+    }
+    map.dragging.disable();
+  };
+
   const initMap = () => {
     const baseMaps = getMapProvider(props.tilesProvider, props.mapApiKey);
     const mapLayers: { [k: string]: L.TileLayer } = {};
@@ -84,7 +99,6 @@ const LMap = ({
       mapLayers[key] = baseMaps[key].layer;
     });
 
-    const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
     map = L.map(containerId, {
       center: [props.startingPoint[0].lat, props.startingPoint[0].lon],
       zoom,
@@ -92,9 +106,13 @@ const LMap = ({
       minZoom: 2,
       zoomControl: false,
       preferCanvas: true,
-      scrollWheelZoom: shouldScroll,
+      scrollWheelZoom: false,
+      wheelDebounceTime: 100,
+      dragging: false,
     });
 
+    map.on('click', enableMapGestures);
+    document.addEventListener('click', disableMapGestures);
     map.getPanes().mapPane.style.zIndex = '0';
     markerGroup = L.markerClusterGroup();
 
@@ -121,9 +139,10 @@ const LMap = ({
       checkMapInitialization(map, containerId);
       initMap();
     }
-
     return () => {
       if (map && reRender) {
+        map.off('click', enableMapGestures);
+        document.removeEventListener('click', disableMapGestures);
         map.remove();
       }
     };
