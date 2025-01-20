@@ -78,13 +78,14 @@ const LMap = ({
     if (shouldScroll) {
       map.scrollWheelZoom.enable();
     }
-    map.dragging.disable();
+    map.dragging.enable();
   };
 
   const disableMapGestures = (event: MouseEvent) => {
     if (event.target && !map.getContainer().contains(event.target as Node)) {
       map.scrollWheelZoom.disable();
     }
+    map.dragging.disable();
   };
 
   const initMap = () => {
