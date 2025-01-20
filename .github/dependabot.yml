@@ -18,7 +18,7 @@ updates:
         versions: ['>= 8.4.3']
       - dependency-name: cookie
       - dependency-name: '@socket.io*'
-      - dependency-name: bootstrap
+      - dependency-name: bootstrap #we have decided to dont update bootstrap #7489
       - dependency-name: express-prom-bundle
       - dependency-name: immutable
       - dependency-name: otplib
