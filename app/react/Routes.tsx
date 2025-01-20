@@ -83,10 +83,10 @@ const getRoutesLayout = (
     <Route path="library" element={privateRoute(<LibraryCards />, settings)} />
     <Route path="library/map" element={privateRoute(<LibraryMap />, settings)} />
     <Route path="library/table" element={privateRoute(<LibraryTable />, settings)} />
-    <Route path="document/:sharedId">
+    <Route path="document/:sharedId" element={privateRoute(<ViewerRoute />, settings)}>
       <Route path="*" element={privateRoute(<ViewerRoute />, settings)} />
     </Route>
-    <Route path="entity/:sharedId">
+    <Route path="entity/:sharedId" element={privateRoute(<ViewerRoute />, settings)}>
       <Route path="*" element={privateRoute(<ViewerRoute />, settings)} />
     </Route>
     <Route path="entity/:sharedId/:tabView" element={privateRoute(<ViewerRoute />, settings)} />
