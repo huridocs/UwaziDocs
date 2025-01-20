@@ -1,7 +1,13 @@
+/* eslint-disable max-statements */
 /* eslint-disable max-lines */
 import { clearCookiesAndLogin } from './helpers/login';
 import { changeLanguage } from './helpers/language';
-import { clickOnCreateEntity, clickOnEditEntity } from './helpers/entities';
+import {
+  clickOnCreateEntity,
+  clickOnEditEntity,
+  saveEntity,
+  selectRestrictedEntities,
+} from './helpers';
 
 const filesAttachments = ['./cypress/test_files/valid.pdf', './cypress/test_files/batman.jpg'];
 
@@ -24,35 +30,12 @@ const webAttachments = {
   url: 'https://fonts.googleapis.com/icon?family=Material+Icons',
 };
 
-const goToRestrictedEntities = () => {
-  cy.contains('a', 'Library').click();
-  cy.get('#publishedStatuspublished').then(element => {
-    const publishedStatus = element.val();
-    cy.get('#publishedStatusrestricted').then(restrictedElement => {
-      const restrictedStatis = restrictedElement.val();
-
-      if (publishedStatus) {
-        cy.get('[title="Published"]').click();
-      }
-
-      if (!restrictedStatis) {
-        cy.get('[title="Restricted"]').click();
-      }
-    });
-  });
-};
-
 describe('Entities', () => {
   before(() => {
     const env = { DATABASE_NAME: 'uwazi_e2e', INDEX_NAME: 'uwazi_e2e' };
     cy.exec('yarn e2e-fixtures', { env });
     clearCookiesAndLogin();
   });
-
-  const saveEntity = (message = 'Entity created') => {
-    cy.contains('button', 'Save').click();
-    cy.contains(message);
-  };
 
   it('Should create new entity', () => {
     clickOnCreateEntity();
@@ -87,7 +70,8 @@ describe('Entities', () => {
 
   describe('Entity with files in metadata fields', () => {
     it('should create and entity with and image in a metadata field', () => {
-      goToRestrictedEntities();
+      cy.contains('a', 'Library').click();
+      selectRestrictedEntities();
       clickOnCreateEntity();
       cy.get('[name="library.sidepanel.metadata.title"]').click();
       cy.get('[name="library.sidepanel.metadata.title"]').type('Entity with media files', {
@@ -115,28 +99,28 @@ describe('Entities', () => {
         .first()
         .selectFile('./cypress/test_files/short-video.webm', {
           force: true,
-          timeout: 100,
+          timeout: 1000,
         });
       saveEntity('Entity updated');
+      cy.get('.sidepanel-body.scrollable').scrollTo('top');
+      cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
     });
 
     it('should check the entity', () => {
-      cy.get('.sidepanel-body.scrollable').scrollTo('top');
-      cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-      goToRestrictedEntities();
       cy.contains('.item-name span', 'Entity with media files').click();
       cy.get('.metadata-name-descripci_n > dd > div > p').should(
         'contain.text',
         'A description of the report'
       );
-
       cy.get('.metadata-name-fotograf_a > dd > img')
         .should('have.prop', 'src')
         .and('match', /\w+\/api\/files\/\w+\.jpg$/);
       cy.get('.metadata-sidepanel .sidepanel-body').scrollTo('bottom');
-      cy.get('.metadata-name-video > dd > div > div > div > div:nth-child(1) > div > video')
-        .should('have.prop', 'src')
-        .and('match', /^blob:http:\/\/localhost:3000\/[\w-]+$/);
+      cy.contains('.metadata-name-video', 'Video').within(() => {
+        cy.get('video')
+          .should('have.prop', 'src')
+          .and('match', /^blob:http:\/\/localhost:3000\/[\w-]+$/);
+      });
       const expectedNewEntityFiles = ['batman.jpg', 'short-video.webm'];
       cy.get('.attachment-name span:not(.attachment-size)').each((element, index) => {
         const content = element.text();
@@ -149,7 +133,8 @@ describe('Entities', () => {
     describe('Entity with supporting files', () => {
       it('Should create a new entity with supporting files', () => {
         cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-        goToRestrictedEntities();
+        cy.contains('a', 'Library').click();
+        selectRestrictedEntities();
         clickOnCreateEntity();
         cy.contains('button', 'Add file').click();
         cy.get('#tab-uploadComputer').click();
@@ -227,7 +212,8 @@ describe('Entities', () => {
     describe('Entity with main documents', () => {
       it('Should create a new entity with a main documents', () => {
         cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
-        goToRestrictedEntities();
+        cy.contains('a', 'Library').click();
+        selectRestrictedEntities();
         clickOnCreateEntity();
         cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
         cy.get('textarea[name="library.sidepanel.metadata.title"]').type(
@@ -257,19 +243,17 @@ describe('Entities', () => {
         cy.get('.fa-file', { timeout: 5000 }).then(() => {
           cy.get('.fa-file').realClick();
         });
-        cy.contains('.create-reference li:nth-child(1) span:nth-child(2)', 'Relacionado a').click({
-          timeout: 5000,
-        });
+        cy.contains('.create-reference', 'Relacionado a').should('be.visible');
+        cy.contains('li.multiselectItem', 'Relacionado a').realClick();
         cy.get('aside.create-reference input').type('Patrick Robinson', { timeout: 5000 });
         cy.contains('Tracy Robinson', { timeout: 5000 });
-        cy.contains('.item-name', 'Patrick Robinson', { timeout: 5000 }).click();
+        cy.contains('.item-name', 'Patrick Robinson', { timeout: 5000 }).realClick();
         cy.contains('aside.create-reference .btn-success', 'Save', { timeout: 5000 }).click({
           timeout: 5000,
         });
         cy.contains('Saved successfully.');
         cy.get('#p3R_mc0').scrollIntoView();
-        cy.get('#p3R_mc24 > span:nth-child(2)').toMatchImageSnapshot();
-        cy.get('.relationship-active').toMatchImageSnapshot();
+        cy.get('.row').toMatchImageSnapshot();
       });
 
       it('should edit the entity and the documents', () => {
