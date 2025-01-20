@@ -3,7 +3,7 @@ import { convertToPDFService } from 'api/services/convertToPDF/convertToPdfServi
 import settings from 'api/settings';
 import { FileType } from 'shared/types/fileType';
 
-import { files, UpdateFileError } from './files';
+import { files } from './files';
 import { PDF } from './PDF';
 
 export const processPDF = async (
