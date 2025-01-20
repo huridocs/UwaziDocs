@@ -74,8 +74,14 @@ const LMap = ({
   };
 
   const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
-  const enableScrollWheelZoom = () => shouldScroll && map.scrollWheelZoom.enable();
-  const disableScrollWheelZoom = (event: MouseEvent) => {
+  const enableMapGestures = () => {
+    if (shouldScroll) {
+      map.scrollWheelZoom.enable();
+    }
+    map.dragging.disable();
+  };
+
+  const disableMapGestures = (event: MouseEvent) => {
     if (event.target && !map.getContainer().contains(event.target as Node)) {
       map.scrollWheelZoom.disable();
     }
@@ -101,11 +107,11 @@ const LMap = ({
       preferCanvas: true,
       scrollWheelZoom: false,
       wheelDebounceTime: 100,
+      dragging: false,
     });
 
-    map.on('click', enableScrollWheelZoom);
-    document.addEventListener('click', disableScrollWheelZoom);
-
+    map.on('click', enableMapGestures);
+    document.addEventListener('click', disableMapGestures);
     map.getPanes().mapPane.style.zIndex = '0';
     markerGroup = L.markerClusterGroup();
 
@@ -134,8 +140,8 @@ const LMap = ({
     }
     return () => {
       if (map && reRender) {
-        map.off('click', enableScrollWheelZoom);
-        document.removeEventListener('click', disableScrollWheelZoom);
+        map.off('click', enableMapGestures);
+        document.removeEventListener('click', disableMapGestures);
         map.remove();
       }
     };
