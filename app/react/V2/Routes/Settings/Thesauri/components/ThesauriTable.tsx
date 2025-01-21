@@ -21,8 +21,8 @@ interface ThesauriTableProps {
 
 const ThesauriTable = ({ currentThesauri, setSelectedThesauri }: ThesauriTableProps) => {
   const navigate = useNavigate();
-  const navigateToEditThesaurus = (thesaurus: Row<ThesauriRow>) => {
-    navigate(`./edit/${thesaurus.original._id}`);
+  const navigateToEditThesaurus = async (thesaurus: Row<ThesauriRow>) => {
+    await navigate(`./edit/${thesaurus.original._id}`);
   };
 
   return (

@@ -11,8 +11,8 @@ import { SearchTipsContent } from 'app/App/SearchTipsContent';
 const SearchBox = ({ placeholder, classname }) => {
   const navigate = useNavigate();
 
-  const search = ({ searchTerm }) => {
-    navigate(`/library/?q=${rison.encode({ searchTerm })}`);
+  const search = async ({ searchTerm }) => {
+    await navigate(`/library/?q=${rison.encode({ searchTerm })}`);
   };
 
   return (

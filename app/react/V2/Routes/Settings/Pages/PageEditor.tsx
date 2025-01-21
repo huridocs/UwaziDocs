@@ -83,13 +83,13 @@ const PageEditor = () => {
     });
   };
 
-  const handleRevalidate = (response: Page) => {
+  const handleRevalidate = async (response: Page) => {
     if (!page.sharedId) {
-      navigate(`/${response.language}/settings/pages/page/${response.sharedId}`, {
+      await navigate(`/${response.language}/settings/pages/page/${response.sharedId}`, {
         replace: true,
       });
     } else {
-      revalidator.revalidate();
+      await revalidator.revalidate();
     }
   };
 
@@ -106,7 +106,7 @@ const PageEditor = () => {
     notify(response);
 
     if (!hasErrors) {
-      handleRevalidate(response);
+      await handleRevalidate(response);
     }
   };
 
@@ -119,7 +119,7 @@ const PageEditor = () => {
     if (!hasErrors) {
       const pageUrl = getPageUrl(response.sharedId!, response.title);
       window.open(`${window.location.origin}/${pageUrl}`);
-      handleRevalidate(response);
+      await handleRevalidate(response);
     }
   };
 

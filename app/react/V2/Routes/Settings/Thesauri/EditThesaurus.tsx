@@ -168,13 +168,13 @@ const EditThesaurus = () => {
                   }}
                   disabled={isEmpty(getValues().name)}
                   getThesaurus={getCurrentStatus}
-                  onSuccess={(savedThesaurus: ThesaurusSchema) => {
+                  onSuccess={async (savedThesaurus: ThesaurusSchema) => {
                     setValue('_id', savedThesaurus._id);
                     setNotifications({
                       type: 'success',
                       text: <Translate>Thesauri updated.</Translate>,
                     });
-                    navigate(`../edit/${savedThesaurus._id}`);
+                    await navigate(`../edit/${savedThesaurus._id}`);
                     setIsImporting(false);
                   }}
                   onFailure={() => {
