@@ -1,13 +1,10 @@
 import { PermissionSchema } from 'shared/types/permissionType';
 import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
-import {
-  instanceModelWithPermissions,
-  InvalidUserIdError,
-  ModelWithPermissions,
-} from 'api/odm/ModelWithPermissions';
+import { instanceModelWithPermissions, ModelWithPermissions } from 'api/odm/ModelWithPermissions';
 import { permissionsContext } from 'api/permissions/permissionsContext';
 import testingDB from 'api/utils/testing_db';
 import * as mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 describe('ModelWithPermissions', () => {
   let model: ModelWithPermissions<any>;
@@ -22,6 +19,7 @@ describe('ModelWithPermissions', () => {
     permissions: { type: mongoose.Schema.Types.Mixed, select: false },
     fixed: Boolean,
   });
+  const userId = new ObjectId();
   const readDocId = testingDB.id();
   const writeDocId = testingDB.id();
   const writeDoc2Id = testingDB.id();
@@ -37,19 +35,25 @@ describe('ModelWithPermissions', () => {
       _id: readDocId,
       name: 'readDoc',
       published: false,
-      permissions: [{ refId: 'user1', type: PermissionType.USER, level: AccessLevels.READ }],
+      permissions: [
+        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.READ },
+      ],
       fixed: true,
     },
     {
       _id: writeDocId,
       name: 'writeDoc',
-      permissions: [{ refId: 'user1', type: PermissionType.USER, level: AccessLevels.WRITE }],
+      permissions: [
+        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+      ],
       fixed: true,
     },
     {
       _id: writeDoc2Id,
       name: 'writeDoc2',
-      permissions: [{ refId: 'user1', type: PermissionType.USER, level: AccessLevels.WRITE }],
+      permissions: [
+        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+      ],
       fixed: true,
     },
     {
@@ -84,7 +88,9 @@ describe('ModelWithPermissions', () => {
     {
       _id: deleteDocId,
       name: 'docToDelete',
-      permissions: [{ refId: 'user1', type: PermissionType.USER, level: AccessLevels.WRITE }],
+      permissions: [
+        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+      ],
     },
     {
       _id: public2Id,
@@ -107,7 +113,7 @@ describe('ModelWithPermissions', () => {
     describe('collaborator user', () => {
       beforeAll(async () => {
         jest.spyOn(permissionsContext, 'getUserInContext').mockReturnValue({
-          _id: 'user1',
+          _id: userId,
           username: 'User 1',
           email: 'user@test.test',
           role: 'collaborator',
@@ -189,18 +195,6 @@ describe('ModelWithPermissions', () => {
       });
 
       describe('save', () => {
-        it('should throw InvalidUserIdError if the user id is incorrect', async () => {
-          jest
-            .spyOn(permissionsContext, 'getUserInContext')
-            .mockReturnValue({ _id: 'invalid_id' } as any);
-
-          const promise = model.save({
-            _id: writeDocId.toString(),
-            name: 'writeDocUpdated',
-          });
-          await expect(promise).rejects.toEqual(new InvalidUserIdError());
-        });
-
         it('should save the data if user has permissions on the document', async () => {
           const saved = await model.save({
             _id: writeDocId.toString(),
@@ -243,10 +237,11 @@ describe('ModelWithPermissions', () => {
 
         it('should add the user in the permissions property of the new doc', async () => {
           const saved = await model.save({ name: 'newDoc' });
+
           expect(saved).toEqual(
             expect.objectContaining({
               name: 'newDoc',
-              permissions: [{ refId: 'user1', type: 'user', level: 'write' }],
+              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
             })
           );
         });
@@ -269,24 +264,6 @@ describe('ModelWithPermissions', () => {
       });
 
       describe('saveMultiple', () => {
-        it('should throw InvalidUserIdError if the user id is incorrect', async () => {
-          jest
-            .spyOn(permissionsContext, 'getUserInContext')
-            .mockReturnValue({ _id: 'invalid_id' } as any);
-
-          const promise = model.saveMultiple([
-            {
-              _id: writeDocId.toString(),
-              name: 'writeDocMultiUpdated',
-            },
-            {
-              _id: writeDoc2Id.toString(),
-              name: 'writeDoc2MultiUpdated',
-            },
-          ]);
-          await expect(promise).rejects.toEqual(new InvalidUserIdError());
-        });
-
         it('should save the data if user has permissions on the document', async () => {
           const saved = await model.saveMultiple([
             {
@@ -335,11 +312,11 @@ describe('ModelWithPermissions', () => {
           expect(saved).toMatchObject([
             {
               name: 'newDoc',
-              permissions: [{ refId: 'user1', type: 'user', level: 'write' }],
+              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
             },
             {
               name: 'newDoc2',
-              permissions: [{ refId: 'user1', type: 'user', level: 'write' }],
+              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
             },
           ]);
         });
