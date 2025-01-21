@@ -62,7 +62,7 @@ const Account = () => {
         type: 'success',
         text: <Translate>Account updated</Translate>,
       });
-      revalidator.revalidate();
+      await revalidator.revalidate();
     }
 
     resetField('password');

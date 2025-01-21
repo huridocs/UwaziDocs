@@ -55,7 +55,7 @@ const PagesList = () => {
     );
     const hasErrors = result.find(res => res instanceof FetchResponseError) !== undefined;
     setNotifications(deletionNotification(hasErrors));
-    revalidator.revalidate();
+    await revalidator.revalidate();
   };
 
   const columns = [

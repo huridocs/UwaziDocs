@@ -114,7 +114,7 @@ const FiltersTable = () => {
     setSettings(response);
     setDisabled(false);
     setHasChanges(false);
-    revalidator.revalidate();
+    await revalidator.revalidate();
     return setNotifications({ type: 'success', text: <Translate>Filters saved</Translate> });
   };
 

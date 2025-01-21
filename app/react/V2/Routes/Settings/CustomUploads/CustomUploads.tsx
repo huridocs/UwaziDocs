@@ -93,7 +93,7 @@ const CustomUploads = () => {
         setConfirmationModal(false);
         const response = await remove(file._id);
         notify([response], <Translate>Deleted custom file</Translate>);
-        revalidator.revalidate();
+        await revalidator.revalidate();
       },
     });
   };
@@ -104,7 +104,7 @@ const CustomUploads = () => {
     setSelectedRows([]);
     const responses = await Promise.all(filesToDelete.map(async fileId => remove(fileId)));
     notify(responses, <Translate>Deleted custom file</Translate>);
-    revalidator.revalidate();
+    await revalidator.revalidate();
   };
 
   return (

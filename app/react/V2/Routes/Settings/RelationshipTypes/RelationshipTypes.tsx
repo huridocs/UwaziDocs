@@ -86,7 +86,7 @@ const RelationshipTypes = () => {
       });
       setIsSidepanelOpen(false);
     }
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setRelationshipTypes(relationshipTypes);
   };
 
@@ -106,7 +106,7 @@ const RelationshipTypes = () => {
       });
       setShowConfirmationModal(false);
     }
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setRelationshipTypes(relationshipTypes);
   };
 

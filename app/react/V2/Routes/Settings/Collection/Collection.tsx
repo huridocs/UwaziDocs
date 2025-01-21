@@ -112,7 +112,7 @@ const Collection = () => {
         text: <Translate>Settings updated</Translate>,
       });
     }
-    revalidator.revalidate();
+    await revalidator.revalidate();
   };
 
   const labelWithTip = (label: string, tip: React.ReactNode) => (

@@ -71,7 +71,7 @@ const IXDashboard = () => {
 
     try {
       await extractorsAPI.remove(extractorIds);
-      revalidator.revalidate();
+      await revalidator.revalidate();
       setNotifications({
         type: 'success',
         text: <Translate>Extractor/s deleted</Translate>,
@@ -92,7 +92,7 @@ const IXDashboard = () => {
 
     try {
       await extractorsAPI.save(extractor);
-      revalidator.revalidate();
+      await revalidator.revalidate();
       setNotifications({
         type: 'success',
         text: <Translate>Saved successfully.</Translate>,

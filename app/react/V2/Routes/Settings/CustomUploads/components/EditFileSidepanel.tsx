@@ -58,7 +58,7 @@ const EditFileSidepanel = ({ showSidepanel, closeSidepanel, file }: EditFileSide
     const response = await update(updatedFile);
     closeSidepanel();
     notify(response);
-    revalidator.revalidate();
+    await revalidator.revalidate();
   };
 
   return (

@@ -62,7 +62,7 @@ const ThesauriList = () => {
         text: e.message,
       });
     } finally {
-      revalidator.revalidate();
+      await revalidator.revalidate();
       setShowConfirmationModal(false);
     }
   };

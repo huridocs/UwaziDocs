@@ -69,7 +69,7 @@ const MenuConfig = () => {
   const save = async () => {
     const settings = await SettingsAPI.saveLinks(linkState.map(sanitizeIds));
     setSettings(settings);
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setNotifications({
       type: 'success',
       text: <Translate>Updated</Translate>,

@@ -57,7 +57,7 @@ const TwoFactorSetup = ({ closePanel, isOpen }: TwoFactorSetupProps) => {
   const enable2fa = async () => {
     try {
       await api.post('auth2fa-enable', new RequestParams({ token }));
-      revalidator.revalidate();
+      await revalidator.revalidate();
       closePanel();
       setNotifications({
         type: 'success',

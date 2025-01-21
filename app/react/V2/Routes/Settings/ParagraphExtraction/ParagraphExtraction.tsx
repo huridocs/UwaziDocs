@@ -52,7 +52,7 @@ const ParagraphExtractorDashboard = () => {
 
     try {
       await extractorsAPI.remove(extractorIds);
-      revalidator.revalidate();
+      await revalidator.revalidate();
       setNotifications({
         type: 'success',
         text: <Translate>Extractor/s deleted</Translate>,
@@ -69,7 +69,7 @@ const ParagraphExtractorDashboard = () => {
   };
 
   const handleSave = async () => {
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setNotifications({
       type: 'success',
       text: <Translate>Paragraph Extractor added</Translate>,
