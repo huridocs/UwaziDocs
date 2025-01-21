@@ -13,6 +13,7 @@ import {
   UwaziQueryOptions,
   EnforcedWithId,
 } from './model';
+import { ObjectId } from 'mongodb';
 
 type WithPermissions<T> = T & { published?: boolean; permissions?: PermissionSchema[] };
 type WithPermissionsDataType<T> = DataType<WithPermissions<T>>;
@@ -127,9 +128,27 @@ const controlPermissionsData = <T>(
   return { ...data, permissions: undefined };
 };
 
+export class InvalidUserIdError extends Error {
+  constructor() {
+    super('You are trying to persist a userId that is invalid');
+    this.name = 'InvalidUserIdError';
+  }
+}
+
 export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
+  private validateUser(user: DataType<UserSchema> | undefined) {
+    try {
+      // eslint-disable-next-line no-new
+      new ObjectId(user?._id?.toString());
+    } catch (e) {
+      throw new InvalidUserIdError();
+    }
+  }
+
   async save(data: WithPermissionsDataType<T>) {
     const user = permissionsContext.getUserInContext();
+    this.validateUser(user);
+
     const query = { _id: data._id };
     return data._id || data.permissions
       ? super.save(data, appendPermissionQuery(query, AccessLevels.WRITE, user))
@@ -138,6 +157,8 @@ export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
 
   async saveMultiple(dataArray: WithPermissionsDataType<T>[]) {
     const user = permissionsContext.getUserInContext();
+    this.validateUser(user);
+
     const dataArrayWithPermissions = dataArray.map(data =>
       data._id || data.permissions ? data : appendPermissionData(data, user)
     );

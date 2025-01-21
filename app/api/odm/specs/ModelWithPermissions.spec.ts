@@ -1,6 +1,10 @@
 import { PermissionSchema } from 'shared/types/permissionType';
 import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
-import { instanceModelWithPermissions, ModelWithPermissions } from 'api/odm/ModelWithPermissions';
+import {
+  instanceModelWithPermissions,
+  InvalidUserIdError,
+  ModelWithPermissions,
+} from 'api/odm/ModelWithPermissions';
 import { permissionsContext } from 'api/permissions/permissionsContext';
 import testingDB from 'api/utils/testing_db';
 import * as mongoose from 'mongoose';
@@ -185,6 +189,18 @@ describe('ModelWithPermissions', () => {
       });
 
       describe('save', () => {
+        it('should throw InvalidUserIdError if the user id is incorrect', async () => {
+          jest
+            .spyOn(permissionsContext, 'getUserInContext')
+            .mockReturnValue({ _id: 'invalid_id' } as any);
+
+          const promise = model.save({
+            _id: writeDocId.toString(),
+            name: 'writeDocUpdated',
+          });
+          await expect(promise).rejects.toEqual(new InvalidUserIdError());
+        });
+
         it('should save the data if user has permissions on the document', async () => {
           const saved = await model.save({
             _id: writeDocId.toString(),
@@ -253,6 +269,24 @@ describe('ModelWithPermissions', () => {
       });
 
       describe('saveMultiple', () => {
+        it('should throw InvalidUserIdError if the user id is incorrect', async () => {
+          jest
+            .spyOn(permissionsContext, 'getUserInContext')
+            .mockReturnValue({ _id: 'invalid_id' } as any);
+
+          const promise = model.saveMultiple([
+            {
+              _id: writeDocId.toString(),
+              name: 'writeDocMultiUpdated',
+            },
+            {
+              _id: writeDoc2Id.toString(),
+              name: 'writeDoc2MultiUpdated',
+            },
+          ]);
+          await expect(promise).rejects.toEqual(new InvalidUserIdError());
+        });
+
         it('should save the data if user has permissions on the document', async () => {
           const saved = await model.saveMultiple([
             {
