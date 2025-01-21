@@ -4,7 +4,6 @@ import { instanceModelWithPermissions, ModelWithPermissions } from 'api/odm/Mode
 import { permissionsContext } from 'api/permissions/permissionsContext';
 import testingDB from 'api/utils/testing_db';
 import * as mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 
 describe('ModelWithPermissions', () => {
   let model: ModelWithPermissions<any>;
@@ -19,7 +18,7 @@ describe('ModelWithPermissions', () => {
     permissions: { type: mongoose.Schema.Types.Mixed, select: false },
     fixed: Boolean,
   });
-  const userId = new ObjectId();
+  const userId = testingDB.id();
   const readDocId = testingDB.id();
   const writeDocId = testingDB.id();
   const writeDoc2Id = testingDB.id();
