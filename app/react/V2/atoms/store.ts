@@ -11,6 +11,7 @@ import { templatesAtom } from './templatesAtom';
 import { translationsAtom } from './translationsAtom';
 import { userAtom } from './userAtom';
 import { thesauriAtom } from './thesauriAtom';
+import { pdfScaleAtom } from './pdfScaleAtom';
 
 type AtomStoreData = {
   globalMatomo?: { url: string; id: string };
@@ -59,6 +60,10 @@ if (isClient && window.__atomStoreData__) {
   atomStore.sub(thesauriAtom, () => {
     const value = atomStore.get(thesauriAtom);
     store?.dispatch({ type: 'dictionaries/SET', value });
+  });
+  atomStore.sub(pdfScaleAtom, () => {
+    const value = atomStore.get(pdfScaleAtom);
+    store?.dispatch({ type: 'viewer/documentScale/SET', value });
   });
 }
 
