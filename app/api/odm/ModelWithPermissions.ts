@@ -159,7 +159,6 @@ export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
 
   async saveMultiple(dataArray: WithPermissionsDataType<T>[]) {
     const user = permissionsContext.getUserInContext();
-    this.validateUser(user);
 
     const dataArrayWithPermissions = dataArray.map(data => {
       if (data._id || data.permissions) return data;
