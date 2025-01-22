@@ -79,12 +79,12 @@ class PDFViewComponent extends Component {
     }
   }
 
-  changePage(nextPage) {
+  changePage(nextPage, force = false) {
     const { raw = 'false' } = searchParamsFromSearchParams(this.props.searchParams);
 
     const notRaw = String(raw).toLowerCase() === 'false';
     if (notRaw) {
-      return scrollToPage(nextPage, 50, true);
+      return scrollToPage(nextPage, 50, force);
     }
 
     return this.changeBrowserHistoryPage(nextPage, notRaw);

@@ -260,7 +260,7 @@ describe('PDFView', () => {
     });
 
     describe('when not raw', () => {
-      it('should scrollToPage forcing navigation for partially visible pages', () => {
+      it('should scrollToPage', () => {
         raw = 'false';
         page = 15;
         anotherProp = 'test';
@@ -271,7 +271,7 @@ describe('PDFView', () => {
         render();
         component.find({ page: 15 }).at(0).props().changePage(16);
         expect(mockNavigate).not.toHaveBeenCalled();
-        expect(uiActions.scrollToPage).toHaveBeenCalledWith(16, 50, true);
+        expect(uiActions.scrollToPage).toHaveBeenCalledWith(16, 50, false);
       });
     });
   });
