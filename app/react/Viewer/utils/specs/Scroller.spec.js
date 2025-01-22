@@ -66,6 +66,12 @@ describe('scroller', () => {
       cleanDom();
     });
 
+    it('should return false when the element is partially visible', () => {
+      secondLi.getBoundingClientRect = () => ({ top: 90, bottom: 190 });
+      expect(scroller.isVisible('li:nth-child(2)', 'ul')).toBe(false);
+      cleanDom();
+    });
+
     it('should return true when the top part of the element is hidden but the bottom is visible', () => {
       secondLi.getBoundingClientRect = () => ({ top: -10, bottom: 100 });
       expect(scroller.isVisible('li:nth-child(2)', 'ul')).toBe(true);

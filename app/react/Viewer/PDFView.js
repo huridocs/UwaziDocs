@@ -84,7 +84,7 @@ class PDFViewComponent extends Component {
 
     const notRaw = String(raw).toLowerCase() === 'false';
     if (notRaw) {
-      return scrollToPage(nextPage);
+      return scrollToPage(nextPage, 50, true);
     }
 
     return this.changeBrowserHistoryPage(nextPage, notRaw);
