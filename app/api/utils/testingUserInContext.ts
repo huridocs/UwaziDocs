@@ -12,12 +12,14 @@ export class UserInContextMockFactory {
   }
 
   mockEditorUser() {
-    this.mock({
+    const user = {
       _id: new ObjectId(),
       role: UserRole.EDITOR,
       username: 'editorUser',
       email: 'editor@test.com',
-    });
+    };
+    this.mock(user);
+    return user;
   }
 
   restore() {
