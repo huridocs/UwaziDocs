@@ -18,6 +18,7 @@ import { getRoutes } from './Routes';
 import CustomProvider from './App/Provider';
 import { settingsAtom, atomStore, userAtom } from './V2/atoms';
 import { store } from './store';
+import { options } from './reactRouterConfig';
 
 declare global {
   interface Window {
@@ -49,13 +50,7 @@ if (window.SENTRY_APP_DSN) {
 
 const router = createBrowserRouter(
   getRoutes(atomStore.get(settingsAtom), atomStore.get(userAtom)?._id),
-  {
-    future: {
-      v7_relativeSplatPath: true,
-      v7_partialHydration: true,
-      v7_startTransition: true,
-    },
-  }
+  options
 );
 
 const App = () => (

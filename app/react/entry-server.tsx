@@ -8,6 +8,7 @@ import {
   createStaticRouter,
   matchRoutes,
   RouteObject,
+  StaticHandlerContext,
   StaticRouterProvider,
 } from 'react-router';
 import React from 'react';
@@ -32,6 +33,7 @@ import { I18NUtils, t, Translate } from './I18N';
 import { IStore } from './istore';
 import { getRoutes } from './Routes';
 import createReduxStore from './store';
+import { options } from './reactRouterConfig';
 
 api.APIURL(`http://localhost:${process.env.PORT || 3000}/api/`);
 
@@ -257,10 +259,10 @@ const getSSRProperties = async (
   language?: string
 ) => {
   const { reduxStore, atomStoreData } = await prepareStores(req, settings, language);
-  const { query } = createStaticHandler(routes);
   const { fetchRequest, ssrError } = createFetchRequest(req);
+  const { query } = createStaticHandler(routes);
   const staticHandleContext = await query(fetchRequest);
-  const router = createStaticRouter(routes, staticHandleContext as any);
+  const router = createStaticRouter(routes, staticHandleContext as StaticHandlerContext, options);
   const reduxState = reduxStore.getState();
 
   return {
