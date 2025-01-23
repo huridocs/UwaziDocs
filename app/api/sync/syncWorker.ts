@@ -29,6 +29,7 @@ class InvalidSyncConfig extends Error {
 interface SyncConfig {
   url: string;
   username: string;
+  active?: boolean;
   password: string;
   name: string;
   config: {
@@ -69,6 +70,8 @@ export const syncWorker = {
     await syncSettings.reduce(async (previousSync, config) => {
       await previousSync;
       const syncConfig = validateConfig(config);
+      if (!syncConfig?.active) return;
+
       await this.syncronizeConfig(syncConfig);
     }, Promise.resolve());
   },

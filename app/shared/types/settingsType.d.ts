@@ -146,6 +146,7 @@ export interface SettingsSyncSchema {
   url: string;
   username: string;
   password: string;
+  active?: boolean;
   name: string;
   config: {
     templates?: {

@@ -227,6 +227,7 @@ const settingsSyncSchema = {
     url: { type: 'string' },
     username: { type: 'string' },
     password: { type: 'string' },
+    active: { type: 'boolean' },
     name: { type: 'string' },
     config: {
       type: 'object',

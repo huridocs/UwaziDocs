@@ -799,6 +799,7 @@ const host1Fixtures: DBFixture = {
         {
           url: 'http://localhost:6667',
           name: 'target1',
+          active: true,
           username: 'user',
           password: 'password',
           config: {
@@ -818,6 +819,7 @@ const host1Fixtures: DBFixture = {
         {
           url: 'http://localhost:6668',
           name: 'target2',
+          active: true,
           username: 'user2',
           password: 'password2',
           config: {
@@ -859,6 +861,7 @@ const host2Fixtures: DBFixture = {
         {
           url: 'http://localhost:6668',
           name: 'target2',
+          active: true,
           username: 'user2',
           password: 'password2',
           config: {
@@ -897,6 +900,7 @@ const orderedHostFixtures: DBFixture = {
         {
           url: 'http://localhost:6667',
           name: 'target1',
+          active: true,
           username: 'user',
           password: 'password',
           config: {
