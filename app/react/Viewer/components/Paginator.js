@@ -20,7 +20,7 @@ const Paginator = ({ page = 1, totalPages = 1, onPageChange = () => {} }) => {
         queryParams={{ page: prevPage }}
         onClick={e => {
           e.preventDefault();
-          onPageChange(prevPage);
+          onPageChange(prevPage, true);
         }}
         {...disableButton(page, 1)}
       >
@@ -31,7 +31,7 @@ const Paginator = ({ page = 1, totalPages = 1, onPageChange = () => {} }) => {
         queryParams={{ page: nextPage }}
         onClick={e => {
           e.preventDefault();
-          onPageChange(nextPage);
+          onPageChange(nextPage, true);
         }}
         {...disableButton(page, totalPages)}
       >

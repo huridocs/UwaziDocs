@@ -271,7 +271,7 @@ describe('PDFView', () => {
         render();
         component.find({ page: 15 }).at(0).props().changePage(16);
         expect(mockNavigate).not.toHaveBeenCalled();
-        expect(uiActions.scrollToPage).toHaveBeenCalledWith(16);
+        expect(uiActions.scrollToPage).toHaveBeenCalledWith(16, 50, false);
       });
     });
   });
