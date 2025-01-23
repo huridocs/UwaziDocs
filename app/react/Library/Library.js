@@ -32,9 +32,10 @@ class Library extends RouteHandler {
     return nextSearchParams.get('q') !== currentSearchParams.get('q');
   }
 
-  componentWillUnmount() {
-    this.emptyState();
-  }
+  //TODO: Commented until we find a way to avoid the emptyState call during loading
+  // componentWillUnmount() {
+  //   this.emptyState();
+  // }
 
   componentDidUpdate(prevProps) {
     if (this.urlHasChanged(prevProps)) {
