@@ -12,7 +12,8 @@ class LibraryCardsComponent extends LibraryRootComponent {
   }
 
   componentWillUnmount() {
-    // this is empty to avoid clearing the store after the new state is fetch
+    // override unmount behavior to avoid race condition with requestState.
+    // the race condition is a conflict with react-router and our RouterHandler class components.
   }
 
   render() {

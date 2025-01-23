@@ -49,6 +49,10 @@ class LibraryRootComponent extends RouteHandler {
   }
 
   render() {
+    if (this.props.children) {
+      return this.props.children;
+    }
+
     return <Outlet />;
   }
 }

@@ -3,9 +3,10 @@ import { Navigate } from 'react-router';
 import { ClientSettings } from 'app/apiResponseTypes';
 import { validateHomePageRoute } from './utils/routeHelpers';
 import { PageView } from './Pages/PageView';
+import LibraryRoot from './Library/Library';
 import { LibraryTable } from './Library/LibraryTable';
 import { LibraryMap } from './Library/LibraryMap';
-import { LibraryRootComponent } from './Library/Library';
+import { LibraryCards } from './Library/LibraryCards';
 import { Login } from './Users/Login';
 import { ViewerRoute } from './Viewer/ViewerRoute';
 
@@ -23,14 +24,26 @@ const getCustomLibraryPage = (customHomePage: string[]) => {
   const queryString = query ? searchQuery : '';
 
   if (customHomePage.includes('map')) {
-    return <LibraryMap params={{ q: queryString }} />;
+    return (
+      <LibraryRoot>
+        <LibraryMap params={{ q: queryString }} />
+      </LibraryRoot>
+    );
   }
 
   if (customHomePage.includes('table')) {
-    return <LibraryTable params={{ q: queryString }} />;
+    return (
+      <LibraryRoot>
+        <LibraryTable params={{ q: queryString }} />
+      </LibraryRoot>
+    );
   }
 
-  return <LibraryRootComponent params={{ q: queryString }} />;
+  return (
+    <LibraryRoot>
+      <LibraryRoot params={{ q: queryString }} />
+    </LibraryRoot>
+  );
 };
 
 const getLibraryDefault = (
@@ -48,14 +61,26 @@ const getLibraryDefault = (
 
   switch (defaultLibraryView) {
     case 'table':
-      return <LibraryTable />;
+      return (
+        <LibraryRoot>
+          <LibraryTable />
+        </LibraryRoot>
+      );
 
     case 'map':
-      return <LibraryMap />;
+      return (
+        <LibraryRoot>
+          <LibraryMap />
+        </LibraryRoot>
+      );
 
     case 'cards':
     default:
-      return <LibraryRootComponent />;
+      return (
+        <LibraryRoot>
+          <LibraryCards />
+        </LibraryRoot>
+      );
   }
 };
 
