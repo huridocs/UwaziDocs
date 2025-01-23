@@ -634,6 +634,7 @@ const fixtures: DBFixture = {
           password: 'password1',
           url: 'url1',
           name: 'target1',
+          active: true,
           config: {},
         },
         {
@@ -641,6 +642,7 @@ const fixtures: DBFixture = {
           password: 'password2',
           url: 'url2',
           name: 'target2',
+          active: false,
           config: {},
         },
         {
@@ -648,6 +650,7 @@ const fixtures: DBFixture = {
           password: 'password3',
           url: 'url3',
           name: 'target3',
+          active: true,
           config: {},
         },
       ],
