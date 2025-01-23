@@ -3,15 +3,16 @@ import React from 'react';
 import { createRoutesFromElements, Route } from 'react-router';
 import { IncomingHttpHeaders } from 'http';
 import { App } from 'app/App/App';
-import { LibraryCards } from 'app/Library/Library';
+import LibraryRoot from 'app/Library/Library';
 import { LibraryMap } from 'app/Library/LibraryMap';
+import { LibraryCards } from 'app/Library/LibraryCards';
+import { LibraryTable } from 'app/Library/LibraryTable';
 import { PreserveSettings, EntityTypesList, Settings } from 'app/Settings';
 import { EditTemplate } from 'app/Templates/EditTemplate';
 import NewTemplate from 'app/Templates/NewTemplate';
 import { Login } from 'app/Users/Login';
 import { Users, usersLoader, userAction } from 'V2/Routes/Settings/Users/Users';
 import { Collection, collectionLoader } from 'V2/Routes/Settings/Collection/Collection';
-import { LibraryTable } from 'app/Library/LibraryTable';
 import ViewerRoute from 'app/Viewer/ViewerRoute';
 import { ClientSettings } from 'app/apiResponseTypes';
 import {
@@ -80,9 +81,11 @@ const getRoutesLayout = (
   <Route errorElement={<RouteErrorBoundary />}>
     <Route index element={indexElement} />
     <Route path="login" element={<Login />} />
-    <Route path="library" element={privateRoute(<LibraryCards />, settings)} />
-    <Route path="library/map" element={privateRoute(<LibraryMap />, settings)} />
-    <Route path="library/table" element={privateRoute(<LibraryTable />, settings)} />
+    <Route path="library" element={privateRoute(<LibraryRoot />, settings)}>
+      <Route index element={privateRoute(<LibraryCards />, settings)} />
+      <Route path="map" element={privateRoute(<LibraryMap />, settings)} />
+      <Route path="table" element={privateRoute(<LibraryTable />, settings)} />
+    </Route>
     <Route path="document/:sharedId" element={privateRoute(<ViewerRoute />, settings)}>
       <Route path="*" element={privateRoute(<ViewerRoute />, settings)} />
     </Route>

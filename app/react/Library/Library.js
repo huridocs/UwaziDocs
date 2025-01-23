@@ -1,15 +1,12 @@
 import React from 'react';
+import { Outlet } from 'react-router';
 import RouteHandler from 'app/App/RouteHandler';
 import { actions } from 'app/BasicReducer';
 import { enterLibrary, unsetDocuments, zoomIn, zoomOut } from 'app/Library/actions/libraryActions';
-import DocumentsList from 'app/Library/components/DocumentsList';
-import { requestState } from 'app/Library/helpers/requestState';
-import LibraryLayout from 'app/Library/LibraryLayout';
 import { wrapDispatch } from 'app/Multireducer';
 import { withRouter } from 'app/componentWrappers';
-import { trackPage } from 'app/App/GoogleAnalytics';
 
-class Library extends RouteHandler {
+class LibraryRootComponent extends RouteHandler {
   constructor(props, context) {
     super(props, context);
     this.superComponentWillReceiveProps = super.componentWillReceiveProps;
@@ -22,25 +19,20 @@ class Library extends RouteHandler {
     this.state = { scrollCount: 0 };
   }
 
-  static async requestState(requestParams, globalResources) {
-    return requestState(requestParams, globalResources);
-  }
-
   urlHasChanged(nextProps) {
     const nextSearchParams = new URLSearchParams(nextProps.location.search);
     const currentSearchParams = new URLSearchParams(this.props.location.search);
     return nextSearchParams.get('q') !== currentSearchParams.get('q');
   }
 
-  //TODO: Commented until we find a way to avoid the emptyState call during loading
-  // componentWillUnmount() {
-  //   this.emptyState();
-  // }
-
   componentDidUpdate(prevProps) {
     if (this.urlHasChanged(prevProps)) {
       this.getClientState(this.props);
     }
+  }
+
+  componentWillUnmount() {
+    this.emptyState();
   }
 
   emptyState() {
@@ -57,26 +49,15 @@ class Library extends RouteHandler {
   }
 
   render() {
-    trackPage();
-    return (
-      <LibraryLayout
-        sidePanelMode={this.props.sidePanelMode}
-        scrollCallback={this.scrollCallback}
-        scrollCount={this.state.scrollCount}
-      >
-        <DocumentsList
-          storeKey="library"
-          CollectionViewer={this.props.viewer}
-          zoomIn={this.zoomIn}
-          zoomOut={this.zoomOut}
-          scrollCount={this.state.scrollCount}
-        />
-      </LibraryLayout>
-    );
+    return <Outlet />;
   }
 }
 
-const SSRLibrary = withRouter(Library);
+const SSRLibrary = withRouter(LibraryRootComponent);
 
-export const LibraryCards = Object.assign(SSRLibrary, { requestState: Library.requestState });
-export default Library;
+export const LibraryRoot = Object.assign(SSRLibrary, {
+  requestState: LibraryRootComponent.requestState,
+});
+
+export { LibraryRootComponent };
+export default LibraryRoot;

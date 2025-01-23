@@ -5,7 +5,7 @@ import { validateHomePageRoute } from './utils/routeHelpers';
 import { PageView } from './Pages/PageView';
 import { LibraryTable } from './Library/LibraryTable';
 import { LibraryMap } from './Library/LibraryMap';
-import { LibraryCards } from './Library/Library';
+import { LibraryRootComponent } from './Library/Library';
 import { Login } from './Users/Login';
 import { ViewerRoute } from './Viewer/ViewerRoute';
 
@@ -30,7 +30,7 @@ const getCustomLibraryPage = (customHomePage: string[]) => {
     return <LibraryTable params={{ q: queryString }} />;
   }
 
-  return <LibraryCards params={{ q: queryString }} />;
+  return <LibraryRootComponent params={{ q: queryString }} />;
 };
 
 const getLibraryDefault = (
@@ -55,7 +55,7 @@ const getLibraryDefault = (
 
     case 'cards':
     default:
-      return <LibraryCards />;
+      return <LibraryRootComponent />;
   }
 };
 

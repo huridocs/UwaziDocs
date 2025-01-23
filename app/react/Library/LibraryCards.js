@@ -1,15 +1,14 @@
 import React from 'react';
-import { TableViewer } from 'app/Layout/TableViewer';
 import { LibraryRootComponent } from 'app/Library/Library';
 import LibraryLayout from 'app/Library/LibraryLayout';
 import DocumentsList from 'app/Library/components/DocumentsList';
-import { requestState } from 'app/Library/helpers/requestState';
 import { withRouter } from 'app/componentWrappers';
 import { trackPage } from 'app/App/GoogleAnalytics';
+import { requestState } from 'app/Library/helpers/requestState';
 
-class LibraryTableComponent extends LibraryRootComponent {
+class LibraryCardsComponent extends LibraryRootComponent {
   static async requestState(requestParams, globalResources) {
-    return requestState(requestParams, globalResources, { calculateTableColumns: true });
+    return requestState(requestParams, globalResources);
   }
 
   componentWillUnmount() {
@@ -19,25 +18,28 @@ class LibraryTableComponent extends LibraryRootComponent {
   render() {
     trackPage();
     return (
-      <LibraryLayout sidePanelMode="unpinned-mode">
+      <LibraryLayout
+        sidePanelMode={this.props.sidePanelMode}
+        scrollCallback={this.scrollCallback}
+        scrollCount={this.state.scrollCount}
+      >
         <DocumentsList
           storeKey="library"
-          CollectionViewer={TableViewer}
+          CollectionViewer={this.props.viewer}
           zoomIn={this.zoomIn}
           zoomOut={this.zoomOut}
           scrollCount={this.state.scrollCount}
-          tableViewMode
         />
       </LibraryLayout>
     );
   }
 }
 
-const SSRLibraryComponent = withRouter(LibraryTableComponent);
+const SSRLibraryComponent = withRouter(LibraryCardsComponent);
 
-const LibraryTable = Object.assign(SSRLibraryComponent, {
-  requestState: LibraryTableComponent.requestState,
+const LibraryCards = Object.assign(SSRLibraryComponent, {
+  requestState: LibraryCardsComponent.requestState,
 });
 
-export { LibraryTableComponent };
-export { LibraryTable };
+export { LibraryCardsComponent };
+export { LibraryCards };
