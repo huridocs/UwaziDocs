@@ -13,46 +13,61 @@ const saveEntity = async (
     socketEmiter,
   }: { user: UserSchema; language: string; socketEmiter?: Function; files?: FileAttachment[] }
 ) => {
-  const { attachments, documents } = (reqFiles || []).reduce(
-    (acum, file) => set(acum, file.fieldname, file),
-    {
-      attachments: [] as FileAttachment[],
-      documents: [] as FileAttachment[],
-    }
-  );
+  const session = await entities.startSession();
 
-  const entity = handleAttachmentInMetadataProperties(_entity, attachments);
+  try {
+    await session.startTransaction();
 
-  const updatedEntity = await entities.save(
-    entity,
-    { user, language },
-    { includeDocuments: false }
-  );
-
-  const { proccessedAttachments, proccessedDocuments } = await processFiles(
-    entity,
-    updatedEntity,
-    attachments,
-    documents
-  );
-
-  const fileSaveErrors = await saveFiles(
-    proccessedAttachments,
-    proccessedDocuments,
-    updatedEntity,
-    socketEmiter
-  );
-
-  const [entityWithAttachments]: EntityWithFilesSchema[] =
-    await entities.getUnrestrictedWithDocuments(
+    const { attachments, documents } = (reqFiles || []).reduce(
+      (acum, file) => set(acum, file.fieldname, file),
       {
-        sharedId: updatedEntity.sharedId,
-        language: updatedEntity.language,
-      },
-      '+permissions'
+        attachments: [] as FileAttachment[],
+        documents: [] as FileAttachment[],
+      }
     );
 
-  return { entity: entityWithAttachments, errors: fileSaveErrors };
+    const entity = handleAttachmentInMetadataProperties(_entity, attachments);
+
+    const updatedEntity = await entities.save(
+      entity,
+      { user, language },
+      { includeDocuments: false, session }
+    );
+
+    const { proccessedAttachments, proccessedDocuments } = await processFiles(
+      entity,
+      updatedEntity,
+      attachments,
+      documents,
+      session
+    );
+
+    const fileSaveErrors = await saveFiles(
+      proccessedAttachments,
+      proccessedDocuments,
+      updatedEntity,
+      socketEmiter,
+      session
+    );
+
+    const [entityWithAttachments]: EntityWithFilesSchema[] =
+      await entities.getUnrestrictedWithDocuments(
+        {
+          sharedId: updatedEntity.sharedId,
+          language: updatedEntity.language,
+        },
+        '+permissions',
+        { session }
+      );
+
+    await session.commitTransaction();
+    return { entity: entityWithAttachments, errors: fileSaveErrors };
+  } catch (e) {
+    await session.abortTransaction();
+    throw e;
+  } finally {
+    await session.endSession();
+  }
 };
 
 export type FileAttachment = {

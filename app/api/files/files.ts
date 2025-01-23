@@ -5,15 +5,16 @@ import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import connections from 'api/relationships';
 import { search } from 'api/search';
 import { cleanupRecordsOfFiles } from 'api/services/ocr/ocrRecords';
+import { ClientSession } from 'mongodb';
 import { validateFile } from 'shared/types/fileSchema';
 import { FileType } from 'shared/types/fileType';
+import { inspect } from 'util';
 import { FileCreatedEvent } from './events/FileCreatedEvent';
 import { FilesDeletedEvent } from './events/FilesDeletedEvent';
 import { FileUpdatedEvent } from './events/FileUpdatedEvent';
 import { filesModel } from './filesModel';
 import { storage } from './storage';
 import { V2 } from './v2_support';
-import { inspect } from 'util';
 
 const deduceMimeType = (_file: FileType) => {
   const file = { ..._file };
@@ -26,11 +27,11 @@ const deduceMimeType = (_file: FileType) => {
 };
 
 export const files = {
-  async save(_file: FileType, index = true) {
+  async save(_file: FileType, index = true, session?: ClientSession) {
     const file = deduceMimeType(_file);
 
     const existingFile = file._id ? await filesModel.getById(file._id) : undefined;
-    const savedFile = await filesModel.save(await validateFile(file));
+    const savedFile = await filesModel.save(await validateFile(file), undefined, session);
     if (index) {
       await search.indexEntities({ sharedId: savedFile.entity }, '+fullText');
     }
@@ -52,17 +53,18 @@ export const files = {
     return savedFile;
   },
 
-  get: filesModel.get.bind(filesModel),
+  get: (query: any, select?: any, options?: { session?: ClientSession }) => 
+    filesModel.get(query, select, options),
 
-  async delete(query: any = {}) {
+  async delete(query: any = {}, options: { session?: ClientSession } = {}) {
     const hasFileName = (file: FileType): file is FileType & { filename: string } =>
       !!file.filename;
 
     const toDeleteFiles: FileType[] = await filesModel.get(query);
-    await filesModel.delete(query);
+    await filesModel.delete(query, options);
     if (toDeleteFiles.length > 0) {
       const idsToDelete = toDeleteFiles.map(f => f._id!.toString());
-      await connections.delete({ file: { $in: idsToDelete } });
+      await connections.delete({ file: { $in: idsToDelete } }, null, false, options);
       await V2.deleteTextReferencesToFiles(idsToDelete);
 
       await Promise.all(

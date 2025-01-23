@@ -45,8 +45,8 @@ const FIELD_TYPES_TO_SYNC = [
   propertyTypes.numeric,
 ];
 
-async function updateEntity(entity, _template, unrestricted = false) {
-  const docLanguages = await this.getAllLanguages(entity.sharedId);
+async function updateEntity(entity, _template, unrestricted = false, session) {
+  const docLanguages = await this.getAllLanguages(entity.sharedId, { session });
 
   if (
     docLanguages[0].template &&
@@ -55,7 +55,7 @@ async function updateEntity(entity, _template, unrestricted = false) {
   ) {
     await Promise.all([
       this.deleteRelatedEntityFromMetadata(docLanguages[0]),
-      relationships.delete({ entity: entity.sharedId }, null, false),
+      relationships.delete({ entity: entity.sharedId }, null, false, { session }),
     ]);
   }
   const template = _template || { properties: [] };
@@ -156,7 +156,7 @@ async function updateEntity(entity, _template, unrestricted = false) {
   return result;
 }
 
-async function createEntity(doc, [currentLanguage, languages], sharedId, docTemplate) {
+async function createEntity(doc, [currentLanguage, languages], sharedId, docTemplate, session) {
   if (!docTemplate) docTemplate = await templates.getById(doc.template);
   const thesauriByKey = await templates.getRelatedThesauri(docTemplate);
 
@@ -331,11 +331,12 @@ const validateWritePermissions = (ids, entitiesToUpdate) => {
   }
 };
 
-const withDocuments = async (entities, documentsFullText) => {
+const withDocuments = async (entities, documentsFullText, options = {}) => {
   const sharedIds = entities.map(entity => entity.sharedId);
   const allFiles = await files.get(
     { entity: { $in: sharedIds } },
-    documentsFullText ? '+fullText ' : ' '
+    documentsFullText ? '+fullText ' : ' ',
+    options
   );
   const idFileMap = new Map();
   allFiles.forEach(file => {
@@ -389,7 +390,7 @@ export default {
   createEntity,
   getEntityTemplate,
   async save(_doc, { user, language }, options = {}) {
-    const { updateRelationships = true, index = true, includeDocuments = true } = options;
+    const { updateRelationships = true, index = true, includeDocuments = true, session } = options;
     await validateEntity(_doc);
     await saveSelections(_doc);
     const doc = _doc;
@@ -405,7 +406,7 @@ export default {
     doc.editDate = date.currentUTC();
 
     if (doc.sharedId) {
-      await this.updateEntity(this.sanitize(doc, template), template);
+      await this.updateEntity(this.sanitize(doc, template), template, false, session);
     } else {
       const [{ languages }, [defaultTemplate]] = await Promise.all([
         settings.get(),
@@ -421,12 +422,13 @@ export default {
         this.sanitize(doc, docTemplate),
         [language, languages],
         sharedId,
-        docTemplate
+        docTemplate,
+        session
       );
     }
 
     const [entity] = includeDocuments
-      ? await this.getUnrestrictedWithDocuments({ sharedId, language }, '+permissions')
+      ? await this.getUnrestrictedWithDocuments({ sharedId, language }, '+permissions', { session })
       : await this.getUnrestricted({ sharedId, language }, '+permissions');
 
     if (updateRelationships) {
@@ -503,7 +505,7 @@ export default {
   async getUnrestrictedWithDocuments(query, select, options = {}) {
     const { documentsFullText, ...restOfOptions } = options;
     const entities = await this.getUnrestricted(query, select, restOfOptions);
-    return withDocuments(entities, documentsFullText);
+    return withDocuments(entities, documentsFullText, restOfOptions);
   },
 
   async get(query, select, options = {}) {
@@ -511,7 +513,7 @@ export default {
     const extendedSelect = withoutDocuments ? select : extendSelect(select);
     const entities = await model.get(query, extendedSelect, restOfOptions);
 
-    return withoutDocuments ? entities : withDocuments(entities, documentsFullText);
+    return withoutDocuments ? entities : withDocuments(entities, documentsFullText, options);
   },
 
   async getWithRelationships(query, select, pagination) {
@@ -575,8 +577,8 @@ export default {
     return this.get({ sharedId: { $in: ids }, language: params.language });
   },
 
-  async getAllLanguages(sharedId) {
-    const entities = await model.get({ sharedId });
+  async getAllLanguages(sharedId, options = {}) {
+    const entities = await model.get({ sharedId }, null, options);
     return entities;
   },
 
@@ -915,4 +917,8 @@ export default {
   },
 
   count: model.count.bind(model),
+
+  async startSession() {
+    return model.db.startSession();
+  },
 };

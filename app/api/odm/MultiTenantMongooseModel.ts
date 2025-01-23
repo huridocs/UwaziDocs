@@ -1,4 +1,4 @@
-import { BulkWriteOptions } from 'mongodb';
+import { BulkWriteOptions, ClientSession } from 'mongodb';
 import mongoose, { Schema } from 'mongoose';
 import {
   DataType,
@@ -11,7 +11,7 @@ import {
 import { tenants } from '../tenants/tenantContext';
 import { DB } from './DB';
 
-class MultiTenantMongooseModel<T> {
+export class MultiTenantMongooseModel<T> {
   dbs: { [k: string]: mongoose.Model<DataType<T>> };
 
   collectionName: string;
@@ -43,13 +43,13 @@ class MultiTenantMongooseModel<T> {
   async findOneAndUpdate(
     query: UwaziFilterQuery<DataType<T>>,
     update: UwaziUpdateQuery<DataType<T>>,
-    options: UwaziQueryOptions
+    options: UwaziQueryOptions & { session?: ClientSession }
   ) {
     return this.dbForCurrentTenant().findOneAndUpdate(query, update, options);
   }
 
-  async create(data: Partial<DataType<T>>) {
-    return this.dbForCurrentTenant().create(data);
+  async create(data: Partial<DataType<T>>[], options?: any) {
+    return this.dbForCurrentTenant().create(data, options);
   }
 
   async createMany(dataArray: Partial<DataType<T>>[]) {
@@ -81,8 +81,8 @@ class MultiTenantMongooseModel<T> {
     return this.dbForCurrentTenant().distinct(field, query);
   }
 
-  async deleteMany(query: UwaziFilterQuery<DataType<T>>) {
-    return this.dbForCurrentTenant().deleteMany(query);
+  async deleteMany(query: UwaziFilterQuery<DataType<T>>, options?: { session?: ClientSession }) {
+    return this.dbForCurrentTenant().deleteMany(query, options);
   }
 
   async aggregate(aggregations?: any[]) {
@@ -108,6 +108,8 @@ class MultiTenantMongooseModel<T> {
   async ensureIndexes() {
     return this.dbForCurrentTenant().ensureIndexes();
   }
-}
 
-export { MultiTenantMongooseModel };
+  async startSession() {
+    return this.dbForCurrentTenant().db.startSession();
+  }
+}

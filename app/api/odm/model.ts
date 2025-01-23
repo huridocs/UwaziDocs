@@ -13,6 +13,7 @@ import { inspect } from 'util';
 import { MultiTenantMongooseModel } from './MultiTenantMongooseModel';
 import { UpdateLogger, createUpdateLogHelper } from './logHelper';
 import { ModelBulkWriteStream } from './modelBulkWriteStream';
+import { ClientSession } from 'mongodb';
 
 /** Ideas!
  *  T is the actual model-specific document Schema!
@@ -84,18 +85,24 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     }
   }
 
-  async save(data: Partial<DataType<T>>, _query?: any) {
+  async startSession(): Promise<ClientSession> {
+    return this.db.startSession();
+  }
+
+  async save(
+    data: Partial<DataType<T>>, 
+    _query?: any,
+    session?: ClientSession
+  ) {
     if (await this.documentExists(data)) {
-      // @ts-ignore
       const { __v: version, ...toSaveData } = data;
-      const query =
-        _query && (await this.documentExistsByQuery(_query)) ? _query : { _id: data._id };
+      const query = _query && (await this.documentExistsByQuery(_query)) ? _query : { _id: data._id };
 
       await this.checkVersion(query, version, data);
       const saved = await this.db.findOneAndUpdate(
         query,
         { $set: toSaveData as UwaziUpdateQuery<DataType<T>>, $inc: { __v: 1 } },
-        { new: true }
+        { new: true, session }
       );
 
       if (saved === null) {
@@ -105,13 +112,13 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       await this.logHelper.upsertLogOne(saved);
       return saved.toObject<WithId<T>>();
     }
-    return this.create(data);
+    return this.create(data, session);
   }
 
-  async create(data: Partial<DataType<T>>) {
-    const saved = await this.db.create(data);
-    await this.logHelper.upsertLogOne(saved);
-    return saved.toObject<WithId<T>>();
+  async create(data: Partial<DataType<T>>, session?: ClientSession) {
+    const saved = await this.db.create([data], { session });
+    await this.logHelper.upsertLogOne(saved[0]);
+    return saved[0].toObject<WithId<T>>();
   }
 
   async saveMultiple(
@@ -208,13 +215,13 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     return results as EnforcedWithId<T> | null;
   }
 
-  async delete(condition: any) {
+  async delete(condition: any, options: { session?: ClientSession } = {}) {
     let cond = condition;
     if (mongoose.Types.ObjectId.isValid(condition)) {
       cond = { _id: condition };
     }
     await this.logHelper.upsertLogMany(cond, true);
-    return this.db.deleteMany(cond);
+    return this.db.deleteMany(cond, options);
   }
 
   async facet(aggregations: any[], pipelines: any, project: any) {
