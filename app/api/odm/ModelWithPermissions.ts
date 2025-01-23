@@ -136,10 +136,10 @@ export class InvalidUserIdError extends Error {
 }
 
 export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
-  private validateUser(user: DataType<UserSchema> | undefined) {
+  private static validateUser(user: DataType<UserSchema> | undefined) {
     try {
-      // eslint-disable-next-line no-new
-      new ObjectId(user?._id?.toString());
+      if (typeof user === 'undefined') return;
+      ObjectId.createFromHexString(user?._id?.toString()!);
     } catch (e) {
       throw new InvalidUserIdError();
     }
@@ -153,7 +153,7 @@ export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
       return super.save(data, appendPermissionQuery(query, AccessLevels.WRITE, user));
     }
 
-    this.validateUser(user);
+    ModelWithPermissions.validateUser(user);
     return super.save(appendPermissionData(data, user));
   }
 
@@ -162,7 +162,8 @@ export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
 
     const dataArrayWithPermissions = dataArray.map(data => {
       if (data._id || data.permissions) return data;
-      this.validateUser(user);
+
+      ModelWithPermissions.validateUser(user);
       return appendPermissionData(data, user);
     });
     const query = appendPermissionQuery({}, AccessLevels.WRITE, user);
