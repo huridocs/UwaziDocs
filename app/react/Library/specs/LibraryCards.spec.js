@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { LibraryRootComponent } from 'app/Library/Library';
+import { LibraryCardsComponent } from 'app/Library/LibraryCards';
 import RouteHandler from 'app/App/RouteHandler';
 import createStore from 'app/store';
 import DocumentsList from 'app/Library/components/DocumentsList';
@@ -35,11 +35,14 @@ describe('Library', () => {
       },
     };
 
-    component = shallow(<LibraryRootComponent {...props} />, { context });
+    component = shallow(<LibraryCardsComponent {...props} />, { context });
     instance = component.instance();
   });
 
-  it('should render an outlet', () => {});
+  it('should render the DocumentsList (by default)', () => {
+    expect(component.find(DocumentsList).length).toBe(1);
+    expect(component.find(DocumentsList).props().storeKey).toBe('library');
+  });
 
   describe('urlHasChanged', () => {
     it('return true when q has changed', () => {
