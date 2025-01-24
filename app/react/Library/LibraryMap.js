@@ -12,11 +12,6 @@ class LibraryMapComponent extends LibraryRootComponent {
     return requestState(requestParams, globalResources, { geolocation: true });
   }
 
-  componentWillUnmount() {
-    // override unmount behavior to avoid race condition with requestState.
-    // the race condition is a conflict with react-router and our RouterHandler class components.
-  }
-
   render() {
     trackPage();
     return (

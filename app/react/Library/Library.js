@@ -32,7 +32,10 @@ class LibraryRootComponent extends RouteHandler {
   }
 
   componentWillUnmount() {
-    this.emptyState();
+    const nextLocation = window?.location?.pathname;
+    if (!nextLocation.includes('library')) {
+      this.emptyState();
+    }
   }
 
   emptyState() {
