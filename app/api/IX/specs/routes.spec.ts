@@ -1,9 +1,13 @@
 /* eslint-disable max-statements */
-import request from 'supertest';
 import { Application, NextFunction, Request, Response } from 'express';
+import request from 'supertest';
 
 import entities from 'api/entities';
 import { search } from 'api/search';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
+import { setUpApp } from 'api/utils/testingRoutes';
+import { suggestionsRoutes } from '../routes';
+import { Suggestions } from '../suggestions';
 import {
   factory,
   fixtures,
@@ -12,11 +16,7 @@ import {
   shared6enId,
   stateFilterFixtures,
   suggestionSharedId6Title,
-} from 'api/suggestions/specs/fixtures';
-import { suggestionsRoutes } from 'api/suggestions/routes';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
-import { setUpApp } from 'api/utils/testingRoutes';
-import { Suggestions } from '../suggestions';
+} from './fixtures';
 
 jest.mock(
   '../../utils/languageMiddleware.ts',

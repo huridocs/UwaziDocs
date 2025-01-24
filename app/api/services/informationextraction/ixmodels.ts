@@ -1,4 +1,4 @@
-import { Suggestions } from 'api/suggestions/suggestions';
+import { Suggestions } from 'api/IX/suggestions';
 import { ModelStatus } from 'shared/types/IXModelSchema';
 import { IXModelType } from 'shared/types/IXModelType';
 import { IXModelsModel as model } from './IXModelsModel';

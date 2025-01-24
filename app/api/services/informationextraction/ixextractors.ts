@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
 
-import { Suggestions } from 'api/suggestions/suggestions';
+import { Suggestions } from 'api/IX/suggestions';
 import templates from 'api/templates';
 import { objectIndex } from 'shared/data_utils/objectIndex';
 import { IXExtractorType } from 'shared/types/extractorType';
 import {
   createBlankSuggestionsForExtractor,
   createBlankSuggestionsForPartialExtractor,
-} from 'api/suggestions/blankSuggestions';
+} from 'api/IX/blankSuggestions';
 import { Subset } from 'shared/tsUtils';
 import { PropertyTypeSchema } from 'shared/types/commonTypes';
 import { IXExtractorModel as model } from './IXExtractorModel';

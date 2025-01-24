@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 
 import { storage } from 'api/files';
 import { TaskManager } from 'api/services/tasksmanager/TaskManager';
-import { IXSuggestionsModel } from 'api/suggestions/IXSuggestionsModel';
+import { IXSuggestionsModel } from 'api/IX/IXSuggestionsModel';
 import { SegmentationModel } from 'api/services/pdfsegmentation/segmentationModel';
 import { EnforcedWithId } from 'api/odm';
 import { tenants } from 'api/tenants/tenantContext';
@@ -33,7 +33,7 @@ import {
   NoSegmentedFiles,
   NoLabeledFiles,
 } from 'api/services/informationextraction/getFiles';
-import { Suggestions } from 'api/suggestions/suggestions';
+import { Suggestions } from 'api/IX/suggestions';
 import { IXExtractorType } from 'shared/types/extractorType';
 import { LanguageUtils } from 'shared/language';
 import { IXModelType } from 'shared/types/IXModelType';

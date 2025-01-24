@@ -10,7 +10,7 @@ import { filesModel } from 'api/files/filesModel';
 import { SegmentationType } from 'shared/types/segmentationType';
 import entitiesModel from 'api/entities/entitiesModel';
 import { SegmentationModel } from 'api/services/pdfsegmentation/segmentationModel';
-import { IXSuggestionsModel } from 'api/suggestions/IXSuggestionsModel';
+import { IXSuggestionsModel } from 'api/IX/IXSuggestionsModel';
 import ixmodels from 'api/services/informationextraction/ixmodels';
 import { FileType } from 'shared/types/fileType';
 import { objectIndex } from 'shared/data_utils/objectIndex';

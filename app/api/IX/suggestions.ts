@@ -3,9 +3,14 @@ import { ObjectId } from 'mongodb';
 
 import { files } from 'api/files/files';
 import { EnforcedWithId } from 'api/odm';
+import {
+  getSegmentedFilesIds,
+  propertyTypeIsWithoutExtractedMetadata,
+} from 'api/services/informationextraction/getFiles';
+import { Extractors } from 'api/services/informationextraction/ixextractors';
 import settings from 'api/settings/settings';
-import { IXSuggestionsModel } from 'api/suggestions/IXSuggestionsModel';
 import templates from 'api/templates';
+import { objectIndex } from 'shared/data_utils/objectIndex';
 import { syncedPromiseLoop } from 'shared/data_utils/promiseUtils';
 import {
   ExtractedMetadataSchema,
@@ -21,13 +26,8 @@ import {
   IXSuggestionType,
   SuggestionCustomFilter,
 } from 'shared/types/suggestionType';
-import { objectIndex } from 'shared/data_utils/objectIndex';
-import {
-  getSegmentedFilesIds,
-  propertyTypeIsWithoutExtractedMetadata,
-} from 'api/services/informationextraction/getFiles';
-import { Extractors } from 'api/services/informationextraction/ixextractors';
 import { registerEventListeners } from './eventListeners';
+import { IXSuggestionsModel } from './IXSuggestionsModel';
 import {
   getCurrentValueStage,
   getEntityStage,
@@ -35,12 +35,12 @@ import {
   getLabeledValueStage,
   getMatchStage,
 } from './pipelineStages';
-import { postProcessCurrentValues, updateStates } from './updateState';
 import {
   AcceptedSuggestion,
   SuggestionAcceptanceError,
   updateEntitiesWithSuggestion,
 } from './updateEntities';
+import { postProcessCurrentValues, updateStates } from './updateState';
 
 const DEFAULT_LIMIT = 30;
 

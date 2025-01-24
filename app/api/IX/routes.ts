@@ -2,20 +2,20 @@
 import { Application, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 
-import { Suggestions } from 'api/suggestions/suggestions';
-import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
-import { validateAndCoerceRequest } from 'api/utils/validateRequest';
 import { needsAuthorization } from 'api/auth';
+import { InformationExtraction } from 'api/services/informationextraction/InformationExtraction';
 import { parseQuery } from 'api/utils/parseQueryMiddleware';
+import { validateAndCoerceRequest } from 'api/utils/validateRequest';
+import { objectIdSchema } from 'shared/types/commonSchemas';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { SuggestionsQueryFilterSchema } from 'shared/types/suggestionSchema';
-import { objectIdSchema } from 'shared/types/commonSchemas';
 import {
   IXAggregationQuery,
   IXSuggestionAggregation,
   IXSuggestionsQuery,
 } from 'shared/types/suggestionType';
 import { serviceMiddleware } from './serviceMiddleware';
+import { Suggestions } from './suggestions';
 
 const IX = new InformationExtraction();
 

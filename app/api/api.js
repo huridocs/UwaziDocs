@@ -37,8 +37,8 @@ export default (app, server) => {
   require('./tasks/routes').default(app);
   require('./usergroups/routes').default(app);
   require('./permissions/routes').permissionRoutes(app);
-  require('./suggestions/routes').suggestionsRoutes(app);
-  require('./suggestions/extractorsRoutes').extractorsRoutes(app);
+  require('./IX/routes').suggestionsRoutes(app);
+  require('./IX/extractorsRoutes').extractorsRoutes(app);
   require('./preserve/routes').PreserveRoutes(app);
   require('./relationships.v2/routes/routes').default(app);
   require('./stats/routes').default(app);
