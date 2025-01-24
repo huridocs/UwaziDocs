@@ -1,13 +1,13 @@
+import { ClientSettings } from 'app/apiResponseTypes';
 import React from 'react';
 import { Navigate } from 'react-router';
-import { ClientSettings } from 'app/apiResponseTypes';
-import { validateHomePageRoute } from './utils/routeHelpers';
-import { PageView } from './Pages/PageView';
 import LibraryRoot from './Library/Library';
-import { LibraryTable } from './Library/LibraryTable';
-import { LibraryMap } from './Library/LibraryMap';
 import { LibraryCards } from './Library/LibraryCards';
+import { LibraryMap } from './Library/LibraryMap';
+import { LibraryTable } from './Library/LibraryTable';
+import { PageView } from './Pages/PageView';
 import { Login } from './Users/Login';
+import { validateHomePageRoute } from './utils/routeHelpers';
 import { ViewerRoute } from './Viewer/ViewerRoute';
 
 const deconstructSearchQuery = (query?: string) => {
@@ -41,7 +41,7 @@ const getCustomLibraryPage = (customHomePage: string[]) => {
 
   return (
     <LibraryRoot>
-      <LibraryRoot params={{ q: queryString }} />
+      <LibraryCards params={{ q: queryString }} />
     </LibraryRoot>
   );
 };
