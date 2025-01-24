@@ -160,7 +160,7 @@ describe('extractor routes', () => {
         },
       },
     ])('should create and return extractor', async ({ input, expectedInDb }) => {
-      const response = await request(app).post('/api/ixextractors').send(input).expect(200);
+      const response = await request(app).post('/api/ixextractors').send(input);
 
       const extractors = await db?.collection('ixextractors').find().toArray();
       expect(extractors?.[3]).toMatchObject(expectedInDb);

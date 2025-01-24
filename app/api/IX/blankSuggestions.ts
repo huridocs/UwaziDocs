@@ -1,15 +1,21 @@
 import entitiesModel from 'api/entities/entitiesModel';
 import { files } from 'api/files';
 import { EnforcedWithId } from 'api/odm';
-import settings from 'api/settings';
 import { propertyTypeIsMultiValued } from 'api/services/informationextraction/getFiles';
+import settings from 'api/settings';
+import templates from 'api/templates';
+import { LanguageUtils } from 'shared/language';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { IXExtractorType } from 'shared/types/extractorType';
 import { FileType } from 'shared/types/fileType';
 import { IXSuggestionType } from 'shared/types/suggestionType';
 import { Suggestions } from './suggestions';
-import templates from 'api/templates';
-import { LanguageUtils } from 'shared/language';
+import { BlankSuggestionsCreator } from './application/BlankSuggestionsCreator';
+import { database } from 'api/utils/database';
+import { MongoTransactionManager } from 'api/common.v2/database/MongoTransactionManager';
+import { SuggestionRepository } from './infrastructure/repositories/SuggestionRepository';
+import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
+import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
 
 const fetchEntitiesBatch = async (query: any, limit: number = 100) =>
   entitiesModel.db.find(query).select('sharedId').limit(limit).sort({ _id: 1 }).lean();
@@ -68,6 +74,10 @@ export const createBlankSuggestionsForPartialExtractor = async (
   selectedTemplates: ObjectIdSchema[],
   batchSize?: number
 ) => {
+  const transactionManager = DefaultTransactionManager();
+  const suggestionRepository = new SuggestionRepository(getConnection(), transactionManager);
+  const blankSuggestionsCreator = new BlankSuggestionsCreator(suggestionRepository);
+
   const defaultLanguage = (await settings.getDefaultLanguage()).key;
   const extractorTemplates = new Set(extractor.templates.map(t => t.toString()));
   const exampleProperty = await templates.getPropertyByName(extractor.property);
@@ -77,17 +87,13 @@ export const createBlankSuggestionsForPartialExtractor = async (
     .map(async template => {
       const entitiesSharedIds = await fetchEntitiesSharedIds(template, defaultLanguage, batchSize);
 
-      const fetchedFiles = await files.get(
-        { entity: { $in: entitiesSharedIds }, type: 'document' },
-        '_id entity language extractedMetadata'
+      await blankSuggestionsCreator.createForTemplates(
+        extractor,
+        [template],
+        defaultLanguage,
+        exampleProperty.type,
+        entitiesSharedIds
       );
-
-      const suggestionsToSave: IXSuggestionType[] = fetchedFiles
-        .filter(file => file.entity)
-        .map(file =>
-          getBlankSuggestion(file, extractor, template, exampleProperty.type, defaultLanguage)
-        );
-      await Suggestions.saveMultiple(suggestionsToSave);
     });
 
   await Promise.all(templatesPromises);
