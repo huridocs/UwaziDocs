@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { ClientSession } from 'mongodb';
 
 import entities from 'api/entities';
 import { populateGeneratedIdByTemplate } from 'api/entities/generatedIdPropertyAutoFiller';
@@ -137,16 +138,17 @@ const checkAndFillGeneratedIdProperties = async (
   return newGeneratedIdProps.length > 0;
 };
 
-const _save = async (template: TemplateSchema) => {
-  const newTemplate = await model.save(template);
+const _save = async (template: TemplateSchema, session?: ClientSession) => {
+  const newTemplate = await model.save(template, undefined, session);
   await addTemplateTranslation(newTemplate);
-
   return newTemplate;
 };
 
-const getRelatedThesauri = async (template: TemplateSchema) => {
+const getRelatedThesauri = async (template: TemplateSchema, session?: ClientSession) => {
   const thesauriIds = (template.properties || []).map(p => p.content).filter(p => p);
-  const thesauri = await dictionariesModel.get({ _id: { $in: thesauriIds } });
+  const thesauri = await dictionariesModel.get({ _id: { $in: thesauriIds } }, undefined, {
+    session,
+  });
   const thesauriByKey: Record<any, TemplateSchema> = {};
   thesauri.forEach(t => {
     thesauriByKey[t._id.toString()] = t;
@@ -156,11 +158,9 @@ const getRelatedThesauri = async (template: TemplateSchema) => {
 
 export default {
   async save(template: TemplateSchema, language: string, reindex = true) {
-    /* eslint-disable no-param-reassign */
     template.properties = template.properties || [];
     template.properties = await generateNames(template.properties);
     template.properties = await denormalizeInheritedProperties(template);
-    /* eslint-enable no-param-reassign */
 
     await validateTemplate(template);
     const mappedTemplate = await v2.processNewRelationshipProperties(template);
@@ -176,11 +176,11 @@ export default {
       : _save(mappedTemplate);
   },
 
-  async swapNamesValidation(template: TemplateSchema) {
+  async swapNamesValidation(template: TemplateSchema, session?: ClientSession) {
     if (!template._id) {
       return;
     }
-    const current = await this.getById(ensure(template._id));
+    const current = await this.getById(ensure(template._id), session);
 
     const currentTemplate = ensure<TemplateSchema>(current);
     currentTemplate.properties = currentTemplate.properties || [];
@@ -194,11 +194,16 @@ export default {
     });
   },
 
-  async _update(template: TemplateSchema, language: string, _reindex = true) {
+  async _update(
+    template: TemplateSchema,
+    language: string,
+    _reindex = true,
+    session?: ClientSession
+  ) {
     const reindex = _reindex && !template.synced;
     const templateStructureChanges = await checkIfReindex(template);
     const currentTemplate = ensure<WithId<TemplateSchema>>(
-      await this.getById(ensure(template._id))
+      await this.getById(ensure(template._id), session)
     );
     if (templateStructureChanges || currentTemplate.name !== template.name) {
       await updateTranslation(currentTemplate, template);
@@ -209,13 +214,14 @@ export default {
     }
 
     const generatedIdAdded = await checkAndFillGeneratedIdProperties(currentTemplate, template);
-    const savedTemplate = await model.save(template);
+    const savedTemplate = await model.save(template, undefined, session);
     if (templateStructureChanges) {
       await v2.processNewRelationshipPropertiesOnUpdate(currentTemplate, savedTemplate);
 
       await entities.updateMetadataProperties(template, currentTemplate, language, {
         reindex,
         generatedIdAdded,
+        session,
       });
     }
 
@@ -229,8 +235,12 @@ export default {
     return savedTemplate;
   },
 
-  async canDeleteProperty(template: ObjectId, property: ObjectId | string | undefined) {
-    const tmps = await model.get();
+  async canDeleteProperty(
+    template: ObjectId,
+    property: ObjectId | string | undefined,
+    session?: ClientSession
+  ) {
+    const tmps = await model.get({}, undefined, { session });
     return tmps.every(iteratedTemplate =>
       (iteratedTemplate.properties || []).every(
         iteratedProperty =>
@@ -253,14 +263,20 @@ export default {
     return property;
   },
 
-  async getPropertiesByName(propertyNames: string[]): Promise<PropertySchema[]> {
+  async getPropertiesByName(
+    propertyNames: string[],
+    session?: ClientSession
+  ): Promise<PropertySchema[]> {
     const nameSet = new Set(propertyNames);
-    const templates = await this.get({
-      $or: [
-        { 'properties.name': { $in: propertyNames } },
-        { 'commonProperties.name': { $in: propertyNames } },
-      ],
-    });
+    const templates = await this.get(
+      {
+        $or: [
+          { 'properties.name': { $in: propertyNames } },
+          { 'commonProperties.name': { $in: propertyNames } },
+        ],
+      },
+      session
+    );
     const allProperties = templates
       .map(template => [template.properties || [], template.commonProperties || []])
       .flat()
@@ -278,30 +294,39 @@ export default {
     return Array.from(Object.values(propertiesByName));
   },
 
-  async setAsDefault(_id: string) {
-    const [templateToBeDefault] = await this.get({ _id });
-    const [currentDefault] = await this.get({ _id: { $nin: [_id] }, default: true });
+  async setAsDefault(_id: string, session?: ClientSession) {
+    const [templateToBeDefault] = await this.get({ _id }, session);
+    const [currentDefault] = await this.get({ _id: { $nin: [_id] }, default: true }, session);
 
     if (templateToBeDefault) {
       let saveCurrentDefault = Promise.resolve({});
       if (currentDefault) {
-        saveCurrentDefault = model.save({
-          _id: currentDefault._id,
-          default: false,
-        });
+        saveCurrentDefault = model.save(
+          {
+            _id: currentDefault._id,
+            default: false,
+          },
+          undefined,
+          session
+        );
       }
-      return Promise.all([model.save({ _id, default: true }), saveCurrentDefault]);
+      return Promise.all([
+        model.save({ _id, default: true }, undefined, session),
+        saveCurrentDefault,
+      ]);
     }
 
     throw createError('Invalid ID');
   },
 
-  async getById(templateId: ObjectId | string) {
-    return model.getById(templateId);
+  async getById(templateId: ObjectId | string, session?: ClientSession) {
+    return model.getById(templateId, undefined, { session });
   },
 
-  async removePropsWithNonexistentId(nonexistentId: string) {
-    const relatedTemplates = await model.get({ 'properties.content': nonexistentId });
+  async removePropsWithNonexistentId(nonexistentId: string, session?: ClientSession) {
+    const relatedTemplates = await model.get({ 'properties.content': nonexistentId }, undefined, {
+      session,
+    });
     const defaultLanguage = (await settings.getDefaultLanguage())?.key;
     if (!defaultLanguage) {
       throw Error('Missing default language.');
@@ -313,40 +338,42 @@ export default {
             ...t,
             properties: (t.properties || []).filter(prop => prop.content !== nonexistentId),
           },
-          defaultLanguage
+          defaultLanguage,
+          false,
+          session
         )
       )
     );
   },
 
-  async delete(template: Partial<TemplateSchema>) {
-    const count = await this.countByTemplate(ensure(template._id));
+  async delete(template: Partial<TemplateSchema>, session?: ClientSession) {
+    const count = await this.countByTemplate(ensure(template._id), session);
     if (count > 0) {
-      return Promise.reject({ key: 'documents_using_template', value: count }); // eslint-disable-line prefer-promise-reject-errors
+      return Promise.reject({ key: 'documents_using_template', value: count });
     }
 
     await v2.processNewRelationshipPropertiesOnDelete(template._id);
 
     const _id = ensure<string>(template._id);
     await translations.deleteContext(_id);
-    await this.removePropsWithNonexistentId(_id);
-    await model.delete(_id);
+    await this.removePropsWithNonexistentId(_id, session);
+    await model.delete(_id, { session });
 
     await applicationEventsBus.emit(new TemplateDeletedEvent({ templateId: _id }));
 
     return template;
   },
 
-  async countByTemplate(template: string) {
-    return entities.countByTemplate(template);
+  async countByTemplate(template: string, session?: ClientSession) {
+    return entities.countByTemplate(template, session);
   },
 
-  async countByThesauri(thesauriId: string) {
-    return model.count({ 'properties.content': thesauriId });
+  async countByThesauri(thesauriId: string, session?: ClientSession) {
+    return model.count({ 'properties.content': thesauriId }, { session });
   },
 
-  async findUsingRelationTypeInProp(relationTypeId: string) {
-    return model.get({ 'properties.relationType': relationTypeId }, 'name');
+  async findUsingRelationTypeInProp(relationTypeId: string, session?: ClientSession) {
+    return model.get({ 'properties.relationType': relationTypeId }, 'name', { session });
   },
 
   getRelatedThesauri,

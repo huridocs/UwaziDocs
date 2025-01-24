@@ -68,8 +68,7 @@ const prepareNewFiles = async (
 const updateDeletedFiles = async (
   entityFiles: WithId<FileType>[],
   entity: EntityWithFilesSchema,
-  type: TypeOfFile.attachment | TypeOfFile.document,
-  session?: ClientSession
+  type: TypeOfFile.attachment | TypeOfFile.document
 ) => {
   const deletedFiles = entityFiles.filter(
     existingFile =>
@@ -81,12 +80,9 @@ const updateDeletedFiles = async (
   );
   const fileIdList = deletedFiles.map(file => file._id.toString());
   const fileNameList = fileIdList.map(fileId => `${fileId}.jpg`);
-  await filesAPI.delete(
-    {
-      $or: [{ _id: { $in: fileIdList } }, { filename: { $in: fileNameList } }],
-    },
-    { session }
-  );
+  await filesAPI.delete({
+    $or: [{ _id: { $in: fileIdList } }, { filename: { $in: fileNameList } }],
+  });
 };
 
 const filterRenamedFiles = (entity: EntityWithFilesSchema, entityFiles: WithId<FileType>[]) => {
@@ -117,8 +113,7 @@ const processFiles = async (
   entity: EntityWithFilesSchema,
   updatedEntity: EntityWithFilesSchema,
   attachments: FileAttachment[] = [],
-  documents: FileAttachment[] = [],
-  session?: ClientSession
+  documents: FileAttachment[] = []
 ) => {
   const { attachments: newAttachments, documents: newDocuments } = await prepareNewFiles(
     entity,
@@ -130,12 +125,11 @@ const processFiles = async (
   if (entity._id && (entity.attachments || entity.documents)) {
     const entityFiles: WithId<FileType>[] = await filesAPI.get(
       { entity: entity.sharedId, type: { $in: [TypeOfFile.attachment, TypeOfFile.document] } },
-      '_id, originalname, type',
-      { session }
+      '_id, originalname, type'
     );
 
-    await updateDeletedFiles(entityFiles, entity, TypeOfFile.attachment, session);
-    await updateDeletedFiles(entityFiles, entity, TypeOfFile.document, session);
+    await updateDeletedFiles(entityFiles, entity, TypeOfFile.attachment);
+    await updateDeletedFiles(entityFiles, entity, TypeOfFile.document);
 
     const { renamedAttachments, renamedDocuments } = filterRenamedFiles(entity, entityFiles);
 
@@ -182,8 +176,7 @@ const saveFiles = async (
   attachments: FileType[],
   documents: FileType[],
   entity: ClientEntitySchema,
-  socketEmiter?: Function,
-  session?: ClientSession
+  socketEmiter?: Function
 ) => {
   const saveResults: string[] = [];
 
@@ -196,7 +189,7 @@ const saveFiles = async (
   await Promise.all(
     filesToSave.map(async file => {
       try {
-        await filesAPI.save(file, false, session);
+        await filesAPI.save(file, false);
       } catch (e) {
         legacyLogger.error(prettifyError(e));
         saveResults.push(`Could not save file/s: ${file.originalname}`);

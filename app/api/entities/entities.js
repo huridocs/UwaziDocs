@@ -47,14 +47,13 @@ const FIELD_TYPES_TO_SYNC = [
 
 async function updateEntity(entity, _template, unrestricted = false, session) {
   const docLanguages = await this.getAllLanguages(entity.sharedId, { session });
-
   if (
     docLanguages[0].template &&
     entity.template &&
     docLanguages[0].template.toString() !== entity.template.toString()
   ) {
     await Promise.all([
-      this.deleteRelatedEntityFromMetadata(docLanguages[0]),
+      this.deleteRelatedEntityFromMetadata(docLanguages[0], session),
       relationships.delete({ entity: entity.sharedId }, null, false, { session }),
     ]);
   }
@@ -100,9 +99,9 @@ async function updateEntity(entity, _template, unrestricted = false, session) {
         if (template._id) {
           await denormalizeRelated(fullEntity, template, currentDoc);
         }
-        const saveResult = await saveFunc(toSave);
+        const saveResult = await saveFunc(toSave, undefined, session);
 
-        await updateNewRelationships(v2RelationshipsUpdates);
+        await updateNewRelationships(v2RelationshipsUpdates, session);
 
         return saveResult;
       }
@@ -139,16 +138,17 @@ async function updateEntity(entity, _template, unrestricted = false, session) {
         await denormalizeRelated(toSave, template, d);
       }
 
-      return saveFunc(toSave);
+      return saveFunc(toSave, undefined, session);
     })
   );
 
-  await denormalizeAfterEntityUpdate(entity);
+  await denormalizeAfterEntityUpdate(entity, session);
 
+  const afterEntities = await model.get({ sharedId: entity.sharedId }, null, { session });
   await applicationEventsBus.emit(
     new EntityUpdatedEvent({
       before: docLanguages,
-      after: await model.get({ sharedId: entity.sharedId }),
+      after: afterEntities,
       targetLanguageKey: entity.language,
     })
   );
@@ -195,17 +195,18 @@ async function createEntity(doc, [currentLanguage, languages], sharedId, docTemp
         { thesauriByKey }
       );
 
-      return model.save(langDoc);
+      return model.save(langDoc, undefined, session);
     })
   );
 
-  await updateNewRelationships(v2RelationshipsUpdates);
+  await updateNewRelationships(v2RelationshipsUpdates, session);
 
-  await Promise.all(result.map(r => denormalizeAfterEntityCreation(r)));
+  await Promise.all(result.map(r => denormalizeAfterEntityCreation(r, session)));
 
+  const createdEntities = await model.get({ sharedId }, null, { session });
   await applicationEventsBus.emit(
     new EntityCreatedEvent({
-      entities: await model.get({ sharedId }),
+      entities: createdEntities,
       targetLanguageKey: currentLanguage,
     })
   );
@@ -390,7 +391,8 @@ export default {
   createEntity,
   getEntityTemplate,
   async save(_doc, { user, language }, options = {}) {
-    const { updateRelationships = true, index = true, includeDocuments = true, session } = options;
+    const { updateRelationships = true, index = true, includeDocuments = true } = options;
+
     await validateEntity(_doc);
     await saveSelections(_doc);
     const doc = _doc;
@@ -406,7 +408,7 @@ export default {
     doc.editDate = date.currentUTC();
 
     if (doc.sharedId) {
-      await this.updateEntity(this.sanitize(doc, template), template, false, session);
+      await this.updateEntity(this.sanitize(doc, template), template);
     } else {
       const [{ languages }, [defaultTemplate]] = await Promise.all([
         settings.get(),
@@ -422,13 +424,12 @@ export default {
         this.sanitize(doc, docTemplate),
         [language, languages],
         sharedId,
-        docTemplate,
-        session
+        docTemplate
       );
     }
 
     const [entity] = includeDocuments
-      ? await this.getUnrestrictedWithDocuments({ sharedId, language }, '+permissions', { session })
+      ? await this.getUnrestrictedWithDocuments({ sharedId, language }, '+permissions')
       : await this.getUnrestricted({ sharedId, language }, '+permissions');
 
     if (updateRelationships) {
@@ -582,7 +583,7 @@ export default {
     return entities;
   },
 
-  countByTemplate(template, language) {
+  async countByTemplate(template, language) {
     const query = language ? { template, language } : { template };
     return model.count(query);
   },

@@ -56,15 +56,15 @@ export const files = {
   get: (query: any, select?: any, options?: { session?: ClientSession }) => 
     filesModel.get(query, select, options),
 
-  async delete(query: any = {}, options: { session?: ClientSession } = {}) {
+  async delete(query: any = {}) {
     const hasFileName = (file: FileType): file is FileType & { filename: string } =>
       !!file.filename;
 
     const toDeleteFiles: FileType[] = await filesModel.get(query);
-    await filesModel.delete(query, options);
+    await filesModel.delete(query);
     if (toDeleteFiles.length > 0) {
       const idsToDelete = toDeleteFiles.map(f => f._id!.toString());
-      await connections.delete({ file: { $in: idsToDelete } }, null, false, options);
+      await connections.delete({ file: { $in: idsToDelete } }, null, false);
       await V2.deleteTextReferencesToFiles(idsToDelete);
 
       await Promise.all(

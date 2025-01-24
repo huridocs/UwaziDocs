@@ -19,6 +19,9 @@ import { config } from 'api/config';
 import { UserSchema } from '../../shared/types/userType';
 import { elasticTesting } from './elastic_testing';
 import { testingTenants } from './testingTenants';
+import { appContext } from './AppContext';
+
+const originalAppContextGet = appContext.get.bind(appContext);
 
 mongoose.Promise = Promise;
 let connected = false;
@@ -154,6 +157,15 @@ const testingDB: {
     await this.createIndices();
 
     this.UserInContextMockFactory.mockEditorUser();
+
+    jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
+      if (key === 'mongoSession') {
+        return undefined;
+      }
+      return originalAppContextGet(key);
+    });
+
+    jest.spyOn(appContext, 'set').mockImplementation(() => { });
 
     if (elasticIndex) {
       testingTenants.changeCurrentTenant({ indexName: elasticIndex });

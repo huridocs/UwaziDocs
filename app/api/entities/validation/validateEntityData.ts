@@ -8,6 +8,8 @@ import ValidationError from 'ajv/dist/runtime/validation_error';
 
 import { validateMetadataField } from './validateMetadataField';
 import { customErrorMessages, validators } from './metadataValidators';
+import { tenants } from 'api/tenants';
+import templates from 'api/templates';
 
 const ajv = new Ajv({ allErrors: true });
 ajv.addVocabulary(['tsType']);
@@ -86,6 +88,7 @@ ajv.addKeyword({
     if (!entity.template) {
       return true;
     }
+
     const [template] = await templatesModel.get({ _id: entity.template });
     if (!template) {
       throw new Ajv.ValidationError([

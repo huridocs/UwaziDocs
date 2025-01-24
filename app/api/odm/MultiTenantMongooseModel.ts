@@ -32,11 +32,15 @@ export class MultiTenantMongooseModel<T> {
     );
   }
 
-  findById(id: any, select?: any) {
-    return this.dbForCurrentTenant().findById(id, select, { lean: true });
+  findById(id: any, select?: any, options: { session?: ClientSession } = {}) {
+    return this.dbForCurrentTenant().findById(id, select, { ...options, lean: true });
   }
 
-  find(query: UwaziFilterQuery<DataType<T>>, select = '', options = {}) {
+  find(
+    query: UwaziFilterQuery<DataType<T>>,
+    select = '',
+    options: { session?: ClientSession } = {}
+  ) {
     return this.dbForCurrentTenant().find(query, select, options);
   }
 
@@ -52,14 +56,14 @@ export class MultiTenantMongooseModel<T> {
     return this.dbForCurrentTenant().create(data, options);
   }
 
-  async createMany(dataArray: Partial<DataType<T>>[]) {
-    return this.dbForCurrentTenant().create(dataArray);
+  async createMany(dataArray: Partial<DataType<T>>[], options: { session?: ClientSession } = {}) {
+    return this.dbForCurrentTenant().create(dataArray, options);
   }
 
   async _updateMany(
     conditions: UwaziFilterQuery<DataType<T>>,
     doc: UwaziUpdateQuery<DataType<T>>,
-    options?: UwaziUpdateOptions<DataType<T>>
+    options: UwaziUpdateOptions<DataType<T>> & { session?: ClientSession } = {}
   ) {
     return this.dbForCurrentTenant().updateMany(conditions, doc, options);
   }
@@ -73,8 +77,11 @@ export class MultiTenantMongooseModel<T> {
     return this.dbForCurrentTenant().replaceOne(conditions, replacement);
   }
 
-  async countDocuments(query: UwaziFilterQuery<DataType<T>> = {}) {
-    return this.dbForCurrentTenant().countDocuments(query);
+  async countDocuments(
+    query: UwaziFilterQuery<DataType<T>> = {},
+    options: { session?: ClientSession } = {}
+  ) {
+    return this.dbForCurrentTenant().countDocuments(query, options);
   }
 
   async distinct(field: string, query: UwaziFilterQuery<DataType<T>> = {}) {
