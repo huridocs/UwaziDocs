@@ -49,7 +49,6 @@ export class CreateTemplateController extends AbstractController {
       commonProperties: properties.filter(item => item.isCommonProperty),
     };
 
-    this.res.json(response);
-    this.next();
+    this.jsonResponse(response);
   }
 }
