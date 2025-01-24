@@ -588,4 +588,21 @@ describe('syncWorker', () => {
       }, 'target1');
     }, 10000);
   });
+
+  it('should only sync on targeted tenants', async () => {
+    await applyFixtures();
+    const _fixtures = { ...host1Fixtures };
+
+    //@ts-ignore
+    _fixtures.settings[0].sync[0].active = false;
+
+    await db.setupFixturesAndContext(_fixtures, undefined, 'host1');
+
+    await runAllTenants();
+
+    await tenants.run(async () => {
+      const syncedTemplates = await templates.get();
+      expect(syncedTemplates).toHaveLength(0);
+    }, 'target1');
+  }, 10000);
 });
