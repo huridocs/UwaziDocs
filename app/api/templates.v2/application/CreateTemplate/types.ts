@@ -3,6 +3,7 @@ import { SettingsDataSource } from 'api/settings.v2/contracts/SettingsDataSource
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
 import { PropertyTypeSchema } from 'api/templates.v2/model/PropertyType';
 import { Template } from 'api/templates.v2/model/Template';
+import { EventEmitter } from 'api/common.v2/domain/event/event-emitter';
 
 type CreateTemplateInput = z.infer<typeof CreateTemplateInputSchema>;
 
@@ -11,6 +12,7 @@ type CreateTemplateOutput = Template;
 type Dependencies = {
   templatesDS: TemplatesDataSource;
   settingsDS: SettingsDataSource;
+  eventEmitter: EventEmitter;
 };
 
 type CreatePropertyInput = z.infer<typeof CreatePropertyInputSchema>;
