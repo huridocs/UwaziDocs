@@ -81,10 +81,10 @@ const getRoutesLayout = (
   <Route errorElement={<RouteErrorBoundary />}>
     <Route index element={indexElement} />
     <Route path="login" element={<Login />} />
-    <Route path="library" element={privateRoute(<LibraryRoot />, settings)}>
-      <Route index element={privateRoute(<LibraryCards />, settings)} />
-      <Route path="map" element={privateRoute(<LibraryMap />, settings)} />
-      <Route path="table" element={privateRoute(<LibraryTable />, settings)} />
+    <Route path="library/*" element={privateRoute(<LibraryRoot />, settings)}>
+      <Route index element={privateRoute(<LibraryCards />, settings)} handle={{ library: true }} />
+      <Route path="map" element={privateRoute(<LibraryMap />, settings)} handle={{ library: true }} />
+      <Route path="table" element={privateRoute(<LibraryTable />, settings)} handle={{ library: true }} />
     </Route>
     <Route path="document/:sharedId" element={privateRoute(<ViewerRoute />, settings)}>
       <Route path="*" element={privateRoute(<ViewerRoute />, settings)} />

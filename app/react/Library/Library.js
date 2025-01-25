@@ -5,6 +5,7 @@ import { actions } from 'app/BasicReducer';
 import { enterLibrary, unsetDocuments, zoomIn, zoomOut } from 'app/Library/actions/libraryActions';
 import { wrapDispatch } from 'app/Multireducer';
 import { withRouter } from 'app/componentWrappers';
+import { LibraryState } from 'app/Library/LibraryState';
 
 class LibraryRootComponent extends RouteHandler {
   constructor(props, context) {
@@ -31,13 +32,6 @@ class LibraryRootComponent extends RouteHandler {
     }
   }
 
-  componentWillUnmount() {
-    const nextLocation = window?.location?.pathname;
-    if (!nextLocation.includes('library')) {
-      this.emptyState();
-    }
-  }
-
   emptyState() {
     wrapDispatch(this.context.store.dispatch, 'library')(unsetDocuments());
     actions.set('library.sidepanel.quickLabelState', {});
@@ -56,7 +50,8 @@ class LibraryRootComponent extends RouteHandler {
       return this.props.children;
     }
 
-    return <Outlet />;
+    return (<><Outlet /><LibraryState emptyState={this.emptyState} /></>);
+
   }
 }
 
