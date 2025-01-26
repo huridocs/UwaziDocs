@@ -90,7 +90,7 @@ const getIndexElement = (settings: ClientSettings | undefined, userId: string | 
   const isValidHomePage = validateHomePageRoute(settings?.home_page || '');
   let element = <Navigate to={customHomePage.join('/')} />;
   let parameters;
-
+  let defaultToLibrary = true;
   switch (true) {
     case !isValidHomePage || customHomePage.length === 0:
       element = getLibraryDefault(userId, settings?.defaultLibraryView, settings?.private);
@@ -101,6 +101,7 @@ const getIndexElement = (settings: ClientSettings | undefined, userId: string | 
         const pageId = customHomePage[customHomePage.indexOf('page') + 1];
         element = <PageView params={{ sharedId: pageId }} />;
         parameters = { sharedId: pageId };
+        defaultToLibrary = false;
       }
       break;
 
@@ -108,6 +109,7 @@ const getIndexElement = (settings: ClientSettings | undefined, userId: string | 
       {
         const pageId = customHomePage[customHomePage.indexOf('entity') + 1];
         element = <ViewerRoute params={{ sharedId: pageId }} />;
+        defaultToLibrary = false;
       }
       break;
 
@@ -119,7 +121,7 @@ const getIndexElement = (settings: ClientSettings | undefined, userId: string | 
       break;
   }
 
-  return { element, parameters };
+  return { element, parameters, defaultToLibrary };
 };
 
 export { getIndexElement };

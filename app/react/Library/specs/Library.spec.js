@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import React from 'react';
 import { shallow } from 'enzyme';
 import { LibraryRootComponent } from 'app/Library/Library';
@@ -5,6 +8,54 @@ import RouteHandler from 'app/App/RouteHandler';
 import createStore from 'app/store';
 import DocumentsList from 'app/Library/components/DocumentsList';
 import LibraryLayout from 'app/Library/LibraryLayout';
+
+const routes = [
+  {
+    path: '/',
+    children: [
+      {
+        children: [
+          { index: true },
+          { path: 'login' },
+          {
+            path: 'library/*',
+            children: [
+              { index: true, handle: { library: true } },
+              { path: 'map', handle: { library: true } },
+              { path: 'table', handle: { library: true } },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'en',
+        children: [
+          {
+            children: [
+              { index: true },
+              { path: 'login' },
+              {
+                path: 'library/*',
+                children: [
+                  { index: true, handle: { library: true } },
+                  { path: 'map', handle: { library: true } },
+                  { path: 'table', handle: { library: true } },
+                ],
+              },
+            ],
+          },
+          { path: '*' },
+        ],
+        handle: { library: true },
+      },
+    ],
+    handle: { library: true },
+  },
+];
+
+jest.mock('app/appRoutes', () => ({
+  routes,
+}));
 
 describe('Library', () => {
   const templates = [
@@ -86,6 +137,35 @@ describe('Library', () => {
   });
 
   describe('cleanup', () => {
-    it('should run cleanup function when navgating away from library', () => {});
+    beforeEach(() => {
+      component = shallow(<LibraryRootComponent {...props} />, { context });
+      instance = component.instance();
+      spyOn(instance, 'emptyState');
+    });
+
+    it.each([
+      ['/library/some-path', false],
+      ['/library/map', false],
+      ['/library/table', false],
+      ['/en/library/some-path', false],
+      ['/en/library/map', false],
+      ['/en/library/table', false],
+      ['/', false],
+      ['/en', false],
+      ['/some-path', true],
+      ['/no-match', true],
+    ])('should %s call emptyState when unmounting and route is %s', (pathname, shouldCall) => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { pathname },
+      });
+
+      component.unmount();
+      if (shouldCall) {
+        expect(instance.emptyState).toHaveBeenCalled();
+      } else {
+        expect(instance.emptyState).not.toHaveBeenCalled();
+      }
+    });
   });
 });

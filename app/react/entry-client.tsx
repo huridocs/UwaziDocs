@@ -48,10 +48,7 @@ if (window.SENTRY_APP_DSN) {
   });
 }
 
-const router = createBrowserRouter(
-  routes,
-  options
-);
+const router = createBrowserRouter(routes, options);
 
 const App = () => (
   <ReduxProvider store={store as any}>

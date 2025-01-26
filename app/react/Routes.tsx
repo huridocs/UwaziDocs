@@ -76,15 +76,28 @@ import { NewRelMigrationDashboard } from './Settings/components/relV2MigrationDa
 const getRoutesLayout = (
   settings: ClientSettings | undefined,
   indexElement: React.ReactNode,
-  headers?: IncomingHttpHeaders
+  headers?: IncomingHttpHeaders,
+  defaultToLibrary?: boolean
 ) => (
   <Route errorElement={<RouteErrorBoundary />}>
-    <Route index element={indexElement} />
+    <Route
+      index
+      element={indexElement}
+      {...(defaultToLibrary ? { handle: { library: true } } : {})}
+    />
     <Route path="login" element={<Login />} />
     <Route path="library/*" element={privateRoute(<LibraryRoot />, settings)}>
       <Route index element={privateRoute(<LibraryCards />, settings)} handle={{ library: true }} />
-      <Route path="map" element={privateRoute(<LibraryMap />, settings)} handle={{ library: true }} />
-      <Route path="table" element={privateRoute(<LibraryTable />, settings)} handle={{ library: true }} />
+      <Route
+        path="map"
+        element={privateRoute(<LibraryMap />, settings)}
+        handle={{ library: true }}
+      />
+      <Route
+        path="table"
+        element={privateRoute(<LibraryTable />, settings)}
+        handle={{ library: true }}
+      />
     </Route>
     <Route path="document/:sharedId" element={privateRoute(<ViewerRoute />, settings)}>
       <Route path="*" element={privateRoute(<ViewerRoute />, settings)} />
@@ -251,8 +264,8 @@ const getRoutes = (
   userId: string | undefined,
   headers?: IncomingHttpHeaders
 ) => {
-  const { element, parameters } = getIndexElement(settings, userId);
-  const layout = getRoutesLayout(settings, element, headers);
+  const { element, parameters, defaultToLibrary } = getIndexElement(settings, userId);
+  const layout = getRoutesLayout(settings, element, headers, defaultToLibrary);
   const languageKeys = settings?.languages?.map(lang => lang.key) || [];
   return createRoutesFromElements(
     <Route path="/" element={<App customParams={parameters} />}>

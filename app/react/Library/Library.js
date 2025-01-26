@@ -1,11 +1,11 @@
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, matchPath } from 'react-router';
 import RouteHandler from 'app/App/RouteHandler';
 import { actions } from 'app/BasicReducer';
 import { enterLibrary, unsetDocuments, zoomIn, zoomOut } from 'app/Library/actions/libraryActions';
 import { wrapDispatch } from 'app/Multireducer';
 import { withRouter } from 'app/componentWrappers';
-import { LibraryState } from 'app/Library/LibraryState';
+import { routes as appRoutes } from 'app/appRoutes';
 
 class LibraryRootComponent extends RouteHandler {
   constructor(props, context) {
@@ -32,6 +32,32 @@ class LibraryRootComponent extends RouteHandler {
     }
   }
 
+  findMatchingRoute = (pathname, routes, parentPath = '') => {
+    for (const route of routes) {
+      const currentPath = `${parentPath}/${route.path || ''}`.replace('//', '/');
+      const match = matchPath({ path: currentPath, end: false }, pathname);
+
+      if (match) {
+        if (currentPath === pathname && route.handle?.library) {
+          return route;
+        }
+        if (route.children) {
+          const childMatch = this.findMatchingRoute(pathname, route.children, currentPath);
+          if (childMatch) return childMatch;
+        }
+      }
+    }
+    return null;
+  };
+
+  componentWillUnmount() {
+    const nextLocation = window?.location?.pathname;
+    const matchedRoute = this.findMatchingRoute(nextLocation, appRoutes);
+    if (!matchedRoute && !nextLocation.includes('library')) {
+      this.emptyState();
+    }
+  }
+
   emptyState() {
     wrapDispatch(this.context.store.dispatch, 'library')(unsetDocuments());
     actions.set('library.sidepanel.quickLabelState', {});
@@ -50,8 +76,7 @@ class LibraryRootComponent extends RouteHandler {
       return this.props.children;
     }
 
-    return (<><Outlet /><LibraryState emptyState={this.emptyState} /></>);
-
+    return <Outlet />;
   }
 }
 
