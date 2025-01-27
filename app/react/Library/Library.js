@@ -33,21 +33,28 @@ class LibraryRootComponent extends RouteHandler {
   }
 
   findMatchingRoute = (pathname, routes, parentPath = '') => {
-    for (const route of routes) {
+    let result = null;
+
+    routes.every(route => {
+      if (result !== null) {
+        return false;
+      }
+
       const currentPath = `${parentPath}/${route.path || ''}`.replace('//', '/');
       const match = matchPath({ path: currentPath, end: false }, pathname);
 
       if (match) {
-        if (currentPath === pathname && route.handle?.library) {
-          return route;
-        }
+        if (currentPath === pathname && route.handle?.library) result = route;
+
         if (route.children) {
           const childMatch = this.findMatchingRoute(pathname, route.children, currentPath);
-          if (childMatch) return childMatch;
+          if (childMatch) result = childMatch;
         }
       }
-    }
-    return null;
+      return true;
+    });
+
+    return result;
   };
 
   componentWillUnmount() {
