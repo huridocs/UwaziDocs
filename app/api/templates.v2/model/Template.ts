@@ -20,20 +20,21 @@ class Template extends DomainObject {
 
   constructor({ id, name, color, isDefault, properties = [] }: TemplateProps) {
     super({ id });
-    this.validate(properties);
 
     this.color = color;
     this.isDefault = isDefault;
     this.name = name;
     this.properties = properties;
+
+    this.validate();
   }
 
-  private validate(properties: Property[]) {
-    const title = properties.find(item => item.isCommonProperty() && item.type === 'text');
-    const creationDate = properties.find(
+  private validate() {
+    const title = this.properties.find(item => item.isCommonProperty() && item.type === 'text');
+    const creationDate = this.properties.find(
       item => item.isCommonProperty() && item.type === 'date' && item.name === 'creationDate'
     );
-    const editDate = properties.find(
+    const editDate = this.properties.find(
       item => item.isCommonProperty() && item.type === 'date' && item.name === 'editDate'
     );
 
