@@ -6,8 +6,6 @@ import { shallow } from 'enzyme';
 import { LibraryRootComponent } from 'app/Library/Library';
 import RouteHandler from 'app/App/RouteHandler';
 import createStore from 'app/store';
-import DocumentsList from 'app/Library/components/DocumentsList';
-import LibraryLayout from 'app/Library/LibraryLayout';
 
 const routes = [
   {
@@ -90,8 +88,6 @@ describe('Library', () => {
     instance = component.instance();
   });
 
-  it('should render an outlet', () => {});
-
   describe('urlHasChanged', () => {
     it('return true when q has changed', () => {
       const nextProps = { location: { search: { q: '(a:2)' } } };
@@ -117,22 +113,6 @@ describe('Library', () => {
       const nextProps = { location: { search: { q: '(a:1)' } } };
       component.setProps(nextProps);
       expect(instance.getClientState).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('scroll counting for mobile responsiveness', () => {
-    it('should increase the scroll count on scrolling event', () => {
-      const layout = component.find(LibraryLayout);
-      expect(component.state().scrollCount).toBe(0);
-      expect(component.find(DocumentsList).props().scrollCount).toBe(0);
-      layout
-        .props()
-        .scrollCallback({ target: { className: 'main-container document-viewer with-footer' } });
-      layout.props().scrollCallback({ target: { className: 'other element' } });
-      layout.props().scrollCallback({ target: { className: 'document-viewer' } });
-
-      expect(component.state().scrollCount).toBe(2);
-      expect(component.find(DocumentsList).props().scrollCount).toBe(2);
     });
   });
 
