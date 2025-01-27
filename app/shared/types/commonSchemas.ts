@@ -356,6 +356,7 @@ export const selectionRectangleSchema = {
     height: { type: 'number' },
     page: { type: 'string' },
   },
+  required: ['top', 'left', 'width', 'height'],
 };
 
 export const selectionRectanglesSchema = {
