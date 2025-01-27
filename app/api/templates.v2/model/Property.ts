@@ -8,12 +8,26 @@ type PropertyUpdateInfo = {
   newProperty: Property;
 };
 
+type PropertyOptions = {
+  isRequired?: boolean;
+  isSortable?: boolean;
+  isPrioritySorting?: boolean;
+  isDefaultFilter?: boolean;
+  isFilter?: boolean;
+  isFullWidth?: boolean;
+
+  showLabel?: boolean;
+  showInCard?: boolean;
+};
+
 type PropertyProps = {
   type: PropertyType;
   name: string;
   label: string;
   templateId: string;
-} & DomainObjectProps;
+  isCommonProperty?: boolean;
+} & DomainObjectProps &
+  PropertyOptions;
 
 class Property extends DomainObject {
   readonly type: PropertyType;
@@ -24,13 +38,28 @@ class Property extends DomainObject {
 
   readonly template: string;
 
-  constructor({ type, name, label, templateId, ...rest }: PropertyProps) {
-    super(rest);
+  readonly options: PropertyOptions;
 
-    this.type = type;
-    this.name = name;
-    this.label = label;
-    this.template = templateId;
+  private _isCommonProperty?: boolean;
+
+  constructor({ id, ...rest }: PropertyProps) {
+    super({ id });
+
+    this.type = rest.type;
+    this.name = rest.name;
+    this.label = rest.label;
+    this.template = rest.templateId;
+    this._isCommonProperty = rest.isCommonProperty;
+    this.options = {
+      isRequired: rest.isRequired,
+      isSortable: rest.isSortable,
+      isPrioritySorting: rest.isPrioritySorting,
+      isDefaultFilter: rest.isDefaultFilter,
+      isFilter: rest.isFilter,
+      isFullWidth: rest.isFullWidth,
+      showLabel: rest.showLabel,
+      showInCard: rest.showInCard,
+    };
   }
 
   isSame(other: Property) {
@@ -55,10 +84,10 @@ class Property extends DomainObject {
     return updateInfo;
   }
 
-  isCommonProperty() {
-    return false;
+  get isCommonProperty() {
+    return !!this._isCommonProperty;
   }
 }
 
 export { Property };
-export type { PropertyUpdateInfo, PropertyProps };
+export type { PropertyUpdateInfo, PropertyProps, PropertyOptions };
