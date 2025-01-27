@@ -4,7 +4,6 @@ import { set } from 'lodash';
 import { EntityWithFilesSchema } from 'shared/types/entityType';
 import { UserSchema } from 'shared/types/userType';
 import { handleAttachmentInMetadataProperties, processFiles, saveFiles } from './managerFunctions';
-import templates from 'api/templates';
 
 const saveEntity = async (
   _entity: EntityWithFilesSchema,
@@ -65,7 +64,7 @@ const saveEntity = async (
     return { entity: entityWithAttachments, errors: fileSaveErrors };
   } catch (e) {
     await session.abortTransaction();
-    throw e;
+    return { errors: [e.message] };
   } finally {
     appContext.set('mongoSession', undefined);
     await session.endSession();

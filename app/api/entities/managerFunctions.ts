@@ -192,7 +192,7 @@ const saveFiles = async (
         await filesAPI.save(file, false);
       } catch (e) {
         legacyLogger.error(prettifyError(e));
-        saveResults.push(`Could not save file/s: ${file.originalname}`);
+        throw new Error(`Could not save file/s: ${file.originalname}`, { cause: e });
       }
     })
   );

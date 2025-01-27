@@ -19,32 +19,32 @@ const cleanupRecordsOfFiles = async (fileIds: (ObjectIdSchema | undefined)[]) =>
   const records = await OcrModel.get({
     $or: [{ sourceFile: { $in: idStrings } }, { resultFile: { $in: idStrings } }],
   });
-  // const idRecordMap = new Map();
-  // const recordsToNullSource: OcrRecord[] = [];
-  // const recordIdsToDelete: string[] = [];
-  //
-  // records.forEach(record => {
-  //   if (record.sourceFile) {
-  //     idRecordMap.set(record.sourceFile.toString(), record);
-  //   }
-  //   if (record.resultFile) {
-  //     idRecordMap.set(record.resultFile.toString(), record);
-  //   }
-  // });
-  //
-  // idStrings.forEach(fileId => {
-  //   if (idRecordMap.has(fileId)) {
-  //     const record = idRecordMap.get(fileId);
-  //     if (record.sourceFile?.toString() === fileId) {
-  //       recordsToNullSource.push({ ...record, sourceFile: null });
-  //     } else if (record.resultFile?.toString() === fileId) {
-  //       recordIdsToDelete.push(record._id.toString());
-  //     }
-  //   }
-  // });
+  const idRecordMap = new Map();
+  const recordsToNullSource: OcrRecord[] = [];
+  const recordIdsToDelete: string[] = [];
 
-  // await OcrModel.saveMultiple(recordsToNullSource);
-  // await OcrModel.delete({ _id: { $in: recordIdsToDelete } });
+  records.forEach(record => {
+    if (record.sourceFile) {
+      idRecordMap.set(record.sourceFile.toString(), record);
+    }
+    if (record.resultFile) {
+      idRecordMap.set(record.resultFile.toString(), record);
+    }
+  });
+
+  idStrings.forEach(fileId => {
+    if (idRecordMap.has(fileId)) {
+      const record = idRecordMap.get(fileId);
+      if (record.sourceFile?.toString() === fileId) {
+        recordsToNullSource.push({ ...record, sourceFile: null });
+      } else if (record.resultFile?.toString() === fileId) {
+        recordIdsToDelete.push(record._id.toString());
+      }
+    }
+  });
+
+  await OcrModel.saveMultiple(recordsToNullSource);
+  await OcrModel.delete({ _id: { $in: recordIdsToDelete } });
 };
 
 const markReady = async (record: OcrRecord, resultFile: EnforcedWithId<FileType>) =>

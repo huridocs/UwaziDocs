@@ -14,6 +14,7 @@ const testingEnvironment = {
   async setUp(fixtures?: DBFixture, elasticIndex?: string) {
     await this.setTenant();
     this.setPermissions();
+    this.setFakeContext();
     await this.setFixtures(fixtures);
     await this.setElastic(elasticIndex);
   },
@@ -34,6 +35,7 @@ const testingEnvironment = {
       }
       return originalAppContextGet(key);
     });
+    jest.spyOn(appContext, 'set').mockImplementation(() => {});
   },
 
   unsetFakeContext() {
