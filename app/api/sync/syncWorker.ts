@@ -28,8 +28,8 @@ class InvalidSyncConfig extends Error {
 
 interface SyncConfig {
   url: string;
-  active?: boolean;
   username: string;
+  active?: boolean;
   password: string;
   name: string;
   config: {
@@ -54,7 +54,7 @@ export const syncWorker = {
   UPDATE_LOG_TARGET_COUNT: 50,
 
   async runAllTenants() {
-    return Object.keys(tenants.tenants).reduce(async (previous, tenantName) => {
+    return tenants.getTenantsForFeatureFlag('sync').reduce(async (previous, tenant) => {
       await previous;
       return tenants.run(async () => {
         permissionsContext.setCommandContext();
@@ -62,7 +62,7 @@ export const syncWorker = {
         if (sync) {
           await this.syncronize(sync);
         }
-      }, tenantName);
+      }, tenant.name);
     }, Promise.resolve());
   },
 
@@ -70,9 +70,9 @@ export const syncWorker = {
     await syncSettings.reduce(async (previousSync, config) => {
       await previousSync;
       const syncConfig = validateConfig(config);
-      if (syncConfig.active) {
-        await this.syncronizeConfig(syncConfig);
-      }
+      if (!syncConfig?.active) return;
+
+      await this.syncronizeConfig(syncConfig);
     }, Promise.resolve());
   },
 
