@@ -48,7 +48,13 @@ const LMap = ({
   const containerId = uniqueID();
 
   const clickHandler = (markerPoint: any) => {
-    if (!props.onClick) return;
+    if (!map.dragging.enabled()) {
+      map.dragging.enable();
+      return;
+    }
+    if (!props.onClick) {
+      return;
+    }
     markerGroup.clearLayers();
     getClusterMarker({ ...markerPoint, properties: {} }).addTo(markerGroup);
     const event = { lngLat: [markerPoint.latlng.lng, markerPoint.latlng.lat] };
@@ -74,18 +80,19 @@ const LMap = ({
   };
 
   const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
-  const enableMapGestures = () => {
-    if (shouldScroll) {
-      map.scrollWheelZoom.enable();
+  const enableMapGestures = (e: { originalEvent: { preventDefault: () => void; }; }) => {
+    if (!map.scrollWheelZoom.enabled()) {
+      if (shouldScroll) {
+        map.scrollWheelZoom.enable();
+      }
     }
-    map.dragging.enable();
   };
 
   const disableMapGestures = (event: MouseEvent) => {
     if (event.target && !map.getContainer().contains(event.target as Node)) {
       map.scrollWheelZoom.disable();
+      map.dragging.disable();
     }
-    map.dragging.disable();
   };
 
   const initMap = () => {
