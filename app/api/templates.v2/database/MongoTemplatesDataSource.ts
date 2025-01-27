@@ -10,6 +10,7 @@ import { mapPropertyQuery } from './QueryMapper';
 import { TemplateDBO } from './schemas/TemplateDBO';
 import { Template } from '../model/Template';
 import { TemplateMappers } from './TemplateMappers';
+import { MongoTemplateMapper } from './MongoTemplateMapper';
 
 export class MongoTemplatesDataSource
   extends MongoDataSource<TemplateDBO>
@@ -154,7 +155,7 @@ export class MongoTemplatesDataSource
   }
 
   async create(template: Template) {
-    await this.getCollection().insertOne(TemplateMappers.toDB(template));
+    await this.getCollection().insertOne(MongoTemplateMapper.toMongo(template));
     return template;
   }
 }

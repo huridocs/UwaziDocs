@@ -16,7 +16,7 @@ type PropertyOptions = {
   isFilter?: boolean;
   isFullWidth?: boolean;
 
-  showLabel?: boolean;
+  noLabel?: boolean;
   showInCard?: boolean;
 };
 
@@ -57,7 +57,7 @@ class Property extends DomainObject {
       isDefaultFilter: rest.isDefaultFilter,
       isFilter: rest.isFilter,
       isFullWidth: rest.isFullWidth,
-      showLabel: rest.showLabel,
+      noLabel: rest.noLabel,
       showInCard: rest.showInCard,
     };
   }

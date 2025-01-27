@@ -1,4 +1,5 @@
 import { CommonProperty } from '../CommonProperty';
+import { Property } from '../Property';
 
 const titleCommonProperty = new CommonProperty({
   id: 'any_id',
@@ -6,6 +7,7 @@ const titleCommonProperty = new CommonProperty({
   name: 'any_title',
   label: 'any_label',
   templateId: 'any_id',
+  isCommonProperty: true,
 });
 
 const creationDateCommonProperty = new CommonProperty({
@@ -14,6 +16,7 @@ const creationDateCommonProperty = new CommonProperty({
   name: 'creationDate',
   label: 'any_label',
   templateId: 'any_id',
+  isCommonProperty: true,
 });
 
 const editDateCommonProperty = new CommonProperty({
@@ -22,6 +25,16 @@ const editDateCommonProperty = new CommonProperty({
   name: 'editDate',
   label: 'any_label',
   templateId: 'any_id',
+  isCommonProperty: true,
 });
 
-export { titleCommonProperty, creationDateCommonProperty, editDateCommonProperty };
+const property = new Property({
+  id: 'any_id',
+  type: 'text',
+  name: 'any_title',
+  label: 'any_label',
+  templateId: 'any_id',
+  isCommonProperty: false,
+});
+
+export { property, titleCommonProperty, creationDateCommonProperty, editDateCommonProperty };

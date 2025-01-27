@@ -1,22 +1,13 @@
-import { Property } from '../Property';
 import { Template } from '../Template';
 import {
   creationDateCommonProperty,
   editDateCommonProperty,
+  property,
   titleCommonProperty,
 } from './fixtures';
 
 describe('Template', () => {
   it('should create a Template', () => {
-    const property = new Property({
-      id: 'any_id',
-      type: 'text',
-      name: 'any_title',
-      label: 'any_label',
-      templateId: 'any_id',
-      isCommonProperty: false,
-    });
-
     const template = new Template({
       id: 'any_id',
       color: 'any_color',
@@ -59,15 +50,6 @@ describe('Template', () => {
   });
 
   it('should only return non common properties', () => {
-    const property = new Property({
-      id: 'any_id',
-      type: 'text',
-      name: 'any_title',
-      label: 'any_label',
-      templateId: 'any_id',
-      isCommonProperty: false,
-    });
-
     const template = new Template({
       id: 'any_id',
       color: 'any_color',
