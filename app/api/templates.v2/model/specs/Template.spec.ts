@@ -1,7 +1,89 @@
+import { Property } from '../Property';
 import { Template } from '../Template';
-import { creationDateCommonProperty, titleCommonProperty } from './fixtures';
+import {
+  creationDateCommonProperty,
+  editDateCommonProperty,
+  titleCommonProperty,
+} from './fixtures';
 
 describe('Template', () => {
+  it('should create a Template', () => {
+    const property = new Property({
+      id: 'any_id',
+      type: 'text',
+      name: 'any_title',
+      label: 'any_label',
+      templateId: 'any_id',
+      isCommonProperty: false,
+    });
+
+    const template = new Template({
+      id: 'any_id',
+      color: 'any_color',
+      isDefault: false,
+      name: 'any_name',
+      properties: [
+        titleCommonProperty,
+        creationDateCommonProperty,
+        editDateCommonProperty,
+        property,
+      ],
+    });
+
+    expect(template.id).toBe('any_id');
+    expect(template.color).toBe('any_color');
+    expect(template.isDefault).toBe(false);
+    expect(template.name).toBe('any_name');
+    expect(template.properties).toEqual([
+      titleCommonProperty,
+      creationDateCommonProperty,
+      editDateCommonProperty,
+      property,
+    ]);
+  });
+
+  it('should only return common properties', () => {
+    const template = new Template({
+      id: 'any_id',
+      color: 'any_color',
+      isDefault: false,
+      name: 'any_name',
+      properties: [titleCommonProperty, creationDateCommonProperty, editDateCommonProperty],
+    });
+
+    expect(template.getCommonProperties()).toEqual([
+      titleCommonProperty,
+      creationDateCommonProperty,
+      editDateCommonProperty,
+    ]);
+  });
+
+  it('should only return non common properties', () => {
+    const property = new Property({
+      id: 'any_id',
+      type: 'text',
+      name: 'any_title',
+      label: 'any_label',
+      templateId: 'any_id',
+      isCommonProperty: false,
+    });
+
+    const template = new Template({
+      id: 'any_id',
+      color: 'any_color',
+      isDefault: false,
+      name: 'any_name',
+      properties: [
+        titleCommonProperty,
+        creationDateCommonProperty,
+        editDateCommonProperty,
+        property,
+      ],
+    });
+
+    expect(template.getProperties()).toEqual([property]);
+  });
+
   it('should throw an error if Title common property is undefined', () => {
     expect(
       () =>

@@ -30,12 +30,12 @@ class Template extends DomainObject {
   }
 
   private validate() {
-    const title = this.properties.find(item => item.isCommonProperty() && item.type === 'text');
+    const title = this.properties.find(item => item.isCommonProperty && item.type === 'text');
     const creationDate = this.properties.find(
-      item => item.isCommonProperty() && item.type === 'date' && item.name === 'creationDate'
+      item => item.isCommonProperty && item.type === 'date' && item.name === 'creationDate'
     );
     const editDate = this.properties.find(
-      item => item.isCommonProperty() && item.type === 'date' && item.name === 'editDate'
+      item => item.isCommonProperty && item.type === 'date' && item.name === 'editDate'
     );
 
     if (!title) throw new Error('Title common property is required');
@@ -69,6 +69,14 @@ class Template extends DomainObject {
 
   getPropertyById(propertyId: string) {
     return this.properties.find(item => item.id === propertyId);
+  }
+
+  getCommonProperties() {
+    return this.properties.filter(item => item.isCommonProperty);
+  }
+
+  getProperties() {
+    return this.properties.filter(item => !item.isCommonProperty);
   }
 }
 
