@@ -4,7 +4,7 @@ import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_sourc
 import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
 import { DefaultSettingsDataSource } from 'api/settings.v2/database/data_source_defaults';
 import { CreateTemplateUseCase } from '../CreateTemplate/CreateTemplateUseCase';
-import { CreateTemplateInput } from '../CreateTemplate/types';
+import { CreateTemplateInput } from '../CreateTemplate/CreateTemplateUseCaseTypes';
 
 const createInput = (): CreateTemplateInput => ({
   name: 'test template',

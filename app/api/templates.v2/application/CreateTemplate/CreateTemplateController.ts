@@ -1,19 +1,12 @@
-import {
-  AbstractController,
-  Dependencies as AbstractControllerDependencies,
-} from 'api/common.v2/AbstractController';
 import { Request } from 'express';
-import { TemplateSchema } from 'shared/types/templateType';
-import { PropertySchema } from 'shared/types/commonTypes';
+import { AbstractController } from 'api/common.v2/AbstractController';
+
 import { CreateTemplateUseCase } from './CreateTemplateUseCase';
-
-type Dependencies = {
-  useCase: CreateTemplateUseCase;
-} & AbstractControllerDependencies;
-
-type CreateTemplateResponse = Omit<TemplateSchema, 'commonProperties'> & {
-  commonProperties: PropertySchema[];
-};
+import {
+  CreateTemplateRequestSchema,
+  CreateTemplateResponse,
+  Dependencies,
+} from './CreateTemplateControllerTypes';
 
 export class CreateTemplateController extends AbstractController {
   useCase: CreateTemplateUseCase;
@@ -24,12 +17,14 @@ export class CreateTemplateController extends AbstractController {
   }
 
   async handle(request: Request): Promise<void> {
+    const dto = CreateTemplateRequestSchema.parse(request.body);
+
     const output = await this.useCase.execute({
-      name: request.body.name,
-      color: request.body.color,
-      default: request.body.default,
-      entityViewPage: request.body.entityViewPage,
-      properties: [...(request.body?.commonProperties || []), ...(request?.body.properties || [])],
+      name: dto.name,
+      color: dto.color,
+      isDefault: dto.default,
+      isEntityViewPage: dto.entityViewPage, // Todo: Don't know what this is
+      properties: [...(dto?.commonProperties || []), ...(request?.body.properties || [])],
     });
 
     const properties = output.properties.map(p => ({
@@ -37,7 +32,7 @@ export class CreateTemplateController extends AbstractController {
       name: p.name,
       label: p.label,
       type: p.type,
-      isCommonProperty: p.isCommonProperty(),
+      isCommonProperty: p.isCommonProperty,
     }));
 
     const response: CreateTemplateResponse = {
