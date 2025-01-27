@@ -80,7 +80,7 @@ const LMap = ({
   };
 
   const shouldScroll: boolean = props.renderPopupInfo || props.onClick !== undefined;
-  const enableMapGestures = (e: { originalEvent: { preventDefault: () => void; }; }) => {
+  const enableMapGestures = () => {
     if (!map.scrollWheelZoom.enabled()) {
       if (shouldScroll) {
         map.scrollWheelZoom.enable();
