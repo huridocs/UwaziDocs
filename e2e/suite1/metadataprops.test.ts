@@ -23,6 +23,7 @@ describe('Metadata Properties', () => {
   it('should test number of available properties.', async () => {
     await expect(page).toClick('a', { text: 'Templates' });
     await expect(page).toClick('a', { text: 'Add template' });
+    await expect(page).toMatchElement('span', { text: 'Metadata creator' });
     const propertyList = await page.$$('.property-options-list li');
     expect(propertyList.length).toBe(13);
   });
