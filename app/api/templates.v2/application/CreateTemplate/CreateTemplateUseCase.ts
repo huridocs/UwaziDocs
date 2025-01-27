@@ -1,23 +1,20 @@
 import { UseCase } from 'api/common.v2/contracts/UseCase';
 import { PropertyNameFactory } from 'api/templates.v2/model/PropertyNameFactory';
-import { CommonProperty } from 'api/templates.v2/model/CommonProperty';
 import { TemplateCreatedEvent } from 'api/templates.v2/model/TemplateCreatedEvent';
 import { Property } from '../../model/Property';
 import { Template } from '../../model/Template';
 import {
   CreatePropertyInput,
   CreateTemplateInput,
-  CreateTemplateInputSchema,
   CreateTemplateOutput,
   Dependencies,
-} from './types';
+} from './CreateTemplateUseCaseTypes';
 
 export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, CreateTemplateOutput> {
   // eslint-disable-next-line no-useless-constructor, no-empty-function
   constructor(private dependencies: Dependencies) {} // Eslint rules prevent us from taking advantages of properties declaration shortcut.
 
   async execute(input: CreateTemplateInput): Promise<CreateTemplateOutput> {
-    CreateTemplateInputSchema.parse(input);
     const templateId = this.dependencies.templatesDS.generateNextId();
     const settings = await this.dependencies.settingsDS.readSettings();
     if (!settings) throw new Error('Settings not found');
@@ -25,7 +22,7 @@ export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, Creat
     const template = new Template({
       id: templateId,
       color: input.color,
-      isDefault: input.default,
+      isDefault: input.isDefault,
       name: input.name,
       properties: this.createProperty(templateId, input.properties, settings.newNameGeneration),
     });
@@ -39,35 +36,24 @@ export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, Creat
 
   private createProperty(
     templateId: string,
-    property: CreatePropertyInput[],
+    properties: CreatePropertyInput[],
     generateRandomName?: boolean
   ) {
-    return property.map(item => {
-      if (item.isCommonProperty) {
-        return new CommonProperty({
-          id: this.dependencies.templatesDS.generateNextId(),
-          type: item.type,
-          name:
-            item.name ||
-            PropertyNameFactory.create({
-              value: item.label,
-              generateRandomName,
-              type: item.type,
-            }),
-          label: item.label,
-          templateId,
+    return properties.map(property => {
+      const name =
+        property.name ||
+        PropertyNameFactory.create({
+          value: property.label,
+          generateRandomName,
+          type: property.type,
         });
-      }
+
+      const id = this.dependencies.templatesDS.generateNextId();
 
       return new Property({
-        id: this.dependencies.templatesDS.generateNextId(),
-        type: item.type,
-        name: PropertyNameFactory.create({
-          value: item.label,
-          generateRandomName,
-          type: item.type,
-        }),
-        label: item.label,
+        ...property,
+        id,
+        name,
         templateId,
       });
     });
