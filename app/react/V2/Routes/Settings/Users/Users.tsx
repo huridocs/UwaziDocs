@@ -52,7 +52,7 @@ const Users = () => {
     setSidepanelData(group);
   });
 
-  const handleBulkAction = () => {
+  const handleBulkAction = async () => {
     const formData = new FormData();
     formData.set('intent', bulkActionIntent.current || '');
 
@@ -64,7 +64,7 @@ const Users = () => {
 
     formData.set('confirmation', password.current || '');
 
-    fetcher.submit(formData, { method: 'post' });
+    await fetcher.submit(formData, { method: 'post' });
   };
 
   return (
@@ -216,9 +216,9 @@ const Users = () => {
               ['bulk-reset-2fa', 'delete-users'].includes(bulkActionIntent.current || '')) ||
             false
           }
-          onAcceptClick={value => {
+          onAcceptClick={async value => {
             password.current = value;
-            handleBulkAction();
+            await handleBulkAction();
             setShowConfirmationModal(false);
             setSelectedGroups([]);
             setSelectedUsers([]);

@@ -80,7 +80,7 @@ const GroupFormSidepanel = ({
     }
 
     formData.set('data', JSON.stringify(formattedData));
-    fetcher.submit(formData, { method: 'post' });
+    await fetcher.submit(formData, { method: 'post' });
     closeSidepanel();
   };
 
