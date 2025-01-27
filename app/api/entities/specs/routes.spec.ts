@@ -1,4 +1,5 @@
 import { Application, NextFunction, Request, Response } from 'express';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import request, { Response as SuperTestResponse } from 'supertest';
 
 import { setUpApp } from 'api/utils/testingRoutes';
@@ -37,10 +38,10 @@ describe('entities routes', () => {
 
   beforeEach(async () => {
     // @ts-ignore
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
   });
 
-  afterAll(async () => db.disconnect());
+  afterAll(async () => testingEnvironment.tearDown());
 
   describe('GET', () => {
     it('return asked entities with permissions', async () => {

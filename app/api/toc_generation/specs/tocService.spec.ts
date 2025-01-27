@@ -4,7 +4,6 @@ import { testingDB } from 'api/utils/testing_db';
 import request from 'shared/JSONRequest';
 import { tocService } from '../tocService';
 import { fixtures } from './fixtures';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 describe('tocService', () => {
   let requestMock: jest.SpyInstance;

@@ -32,11 +32,11 @@ jest.mock('api/users/generateUnlockCode.ts', () => ({
 
 describe('Users', () => {
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('save', () => {

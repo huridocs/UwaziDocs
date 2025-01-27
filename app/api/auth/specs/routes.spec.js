@@ -1,4 +1,5 @@
 import express from 'express';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import bodyParser from 'body-parser';
 import request from 'supertest';
 
@@ -18,12 +19,12 @@ describe('Auth Routes', () => {
   let app;
 
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
     routes = instrumentRoutes(authRoutes);
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('/login', () => {

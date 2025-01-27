@@ -1,4 +1,5 @@
 import * as topicClassification from 'api/config/topicClassification';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import entities from 'api/entities';
 import { search } from 'api/search';
 import db from 'api/utils/testing_db';
@@ -71,7 +72,7 @@ async function fakeTopicClassification(url: string) {
 
 describe('templates utils', () => {
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
     jest.spyOn(search, 'indexEntities').mockImplementation(async () => Promise.resolve());
     jest.spyOn(JSONRequest, 'post').mockImplementation(fakeTopicClassification);
     jest.spyOn(JSONRequest, 'get').mockImplementation(fakeTopicClassification);
@@ -80,7 +81,7 @@ describe('templates utils', () => {
       .mockReturnValue(Promise.resolve(true));
   });
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('sync one', () => {

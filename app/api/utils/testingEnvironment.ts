@@ -6,8 +6,6 @@ import { UserInContextMockFactory } from 'api/utils/testingUserInContext';
 import { setupTestUploadedPaths } from 'api/files';
 import { UserSchema } from 'shared/types/userType';
 
-const originalAppContextGet = appContext.get.bind(appContext);
-
 const testingEnvironment = {
   userInContextMockFactory: new UserInContextMockFactory(),
 
@@ -29,6 +27,8 @@ const testingEnvironment = {
   },
 
   setFakeContext() {
+    const originalAppContextGet = appContext.get.bind(appContext);
+
     jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
       if (key === 'mongoSession') {
         return undefined;

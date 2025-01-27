@@ -1,4 +1,5 @@
 /*eslint-disable max-lines*/
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import db from 'api/utils/testing_db';
 import entities from 'api/entities';
 import { settingsModel } from 'api/settings/settingsModel';
@@ -67,7 +68,7 @@ describe('upload routes', () => {
         files: [file],
       };
     });
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
     jest.spyOn(legacyLogger, 'error'); //just to avoid annoying console outpu.mockImplementation(() => {});
   });
 
@@ -190,6 +191,6 @@ describe('upload routes', () => {
 
   afterAll(async () => {
     await deleteAllFiles(() => {});
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 });

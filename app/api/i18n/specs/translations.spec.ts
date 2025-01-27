@@ -1,4 +1,5 @@
 import db from 'api/utils/testing_db';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 import entities from 'api/entities';
 import pages from 'api/pages';
@@ -15,11 +16,11 @@ import { addLanguage } from '../routes';
 
 describe('translations', () => {
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('get()', () => {

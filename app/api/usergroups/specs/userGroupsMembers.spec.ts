@@ -1,4 +1,5 @@
 import { testingDB } from 'api/utils/testing_db';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import {
   getByMemberIdList,
   updateUserMemberships,
@@ -10,11 +11,11 @@ import { fixtures, group1Id, group2Id, user1Id, user2Id, user3Id } from './fixtu
 
 describe('userGroupsMembers', () => {
   beforeEach(async () => {
-    await testingDB.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
   });
 
   afterAll(async () => {
-    await testingDB.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('getByMemberIdList', () => {

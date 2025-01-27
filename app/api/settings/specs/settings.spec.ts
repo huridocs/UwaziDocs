@@ -367,7 +367,7 @@ describe('settings', () => {
 
   describe('getLinks', () => {
     it('should return the links', async () => {
-      await db.setupFixturesAndContext(linkFixtures);
+      await testingEnvironment.setUp(linkFixtures);
       const result = await settings.getLinks();
       expect(result).toEqual(linkFixtures.settings?.[0].links);
     });
@@ -375,7 +375,7 @@ describe('settings', () => {
 
   describe('saveLinks', () => {
     it('should save the links', async () => {
-      await db.setupFixturesAndContext(linkFixtures);
+      await testingEnvironment.setUp(fixtures);
       await settings.saveLinks(newLinks);
       const result = await settings.getLinks();
       expect(result).toEqual(newLinks);

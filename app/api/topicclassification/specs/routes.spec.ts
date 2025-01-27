@@ -1,4 +1,5 @@
 import * as topicClassification from 'api/config/topicClassification';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { setUpApp } from 'api/utils/testingRoutes';
 import db from 'api/utils/testing_db';
 import { NextFunction } from 'express';
@@ -102,7 +103,7 @@ describe('topic classification routes', () => {
 
   beforeEach(async () => {
     const elasticIndex = 'tc_routes_test';
-    await db.setupFixturesAndContext(fixtures, elasticIndex);
+    await testingEnvironment.setUp(fixtures, elasticIndex);
     jest.spyOn(JSONRequest, 'post').mockImplementation(fakePost);
     jest.spyOn(JSONRequest, 'get').mockImplementation(fakeGet);
     jest
@@ -111,7 +112,7 @@ describe('topic classification routes', () => {
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('GET', () => {
