@@ -142,7 +142,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-http-proxy": "^2.1.1",
-    "express-prom-bundle": "^7.0.0",
+    "express-prom-bundle": "^8.0.0",
     "express-session": "^1.18.1",
     "filesize": "10.1.6",
     "flag-icons": "^7.3.2",
