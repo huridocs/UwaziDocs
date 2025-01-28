@@ -36,7 +36,7 @@ type CreatePropertyInput = {
     type: string;
   };
 
-  style?: string; // Only Image Preview Media type
+  style?: string;
   nestedProperties?: string[];
   query?: any[];
   denormalizedProperty?: string;

@@ -1,10 +1,8 @@
 import { UseCase } from 'api/common.v2/contracts/UseCase';
-import { PropertyNameFactory } from 'api/templates.v2/model/PropertyNameFactory';
 import { TemplateCreatedEvent } from 'api/templates.v2/model/TemplateCreatedEvent';
-import { Property } from '../../model/Property';
+import { PropertyFactory } from 'api/templates.v2/model/PropertyFactory';
 import { Template } from '../../model/Template';
 import {
-  CreatePropertyInput,
   CreateTemplateInput,
   CreateTemplateOutput,
   Dependencies,
@@ -19,12 +17,21 @@ export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, Creat
     const settings = await this.dependencies.settingsDS.readSettings();
     if (!settings) throw new Error('Settings not found');
 
+    const properties = input.properties.map(property =>
+      PropertyFactory.create({
+        ...property,
+        templateId,
+        id: this.dependencies.templatesDS.generateNextId(),
+        shouldGenerateRandomName: settings.newNameGeneration,
+      })
+    );
+
     const template = new Template({
       id: templateId,
       color: input.color,
       isDefault: input.isDefault,
       name: input.name,
-      properties: this.createProperty(templateId, input.properties, settings.newNameGeneration),
+      properties,
     });
 
     await this.dependencies.templatesDS.create(template);
@@ -32,30 +39,5 @@ export class CreateTemplateUseCase implements UseCase<CreateTemplateInput, Creat
     this.dependencies.eventEmitter.emit(new TemplateCreatedEvent(template));
 
     return template;
-  }
-
-  private createProperty(
-    templateId: string,
-    properties: CreatePropertyInput[],
-    generateRandomName?: boolean
-  ) {
-    return properties.map(property => {
-      const name =
-        property.name ||
-        PropertyNameFactory.create({
-          value: property.label,
-          generateRandomName,
-          type: property.type,
-        });
-
-      const id = this.dependencies.templatesDS.generateNextId();
-
-      return new Property({
-        ...property,
-        id,
-        name,
-        templateId,
-      });
-    });
   }
 }

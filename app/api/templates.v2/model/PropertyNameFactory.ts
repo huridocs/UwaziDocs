@@ -2,8 +2,8 @@ import { PropertyTypeSchema } from 'shared/types/commonTypes';
 
 type CreatePropertyNameProps = {
   type: PropertyTypeSchema;
-  generateRandomName?: boolean;
-  value: string;
+  shouldGenerateRandomName?: boolean;
+  label: string;
 };
 
 class PropertyNameFactory {
@@ -27,7 +27,7 @@ class PropertyNameFactory {
   }
 
   static create(props: CreatePropertyNameProps) {
-    const value = this.formatPropertyName(props.value, props?.generateRandomName);
+    const value = this.formatPropertyName(props.label, props?.shouldGenerateRandomName);
 
     switch (props.type) {
       case 'geolocation':
@@ -42,3 +42,4 @@ class PropertyNameFactory {
 }
 
 export { PropertyNameFactory };
+export type { CreatePropertyNameProps };

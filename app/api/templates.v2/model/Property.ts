@@ -1,5 +1,6 @@
 import { DomainObject, DomainObjectProps } from 'api/common.v2/domain/DomainObject';
 import { PropertyType } from './PropertyType';
+import { CreatePropertyNameProps, PropertyNameFactory } from './PropertyNameFactory';
 
 type PropertyUpdateInfo = {
   id: string;
@@ -28,6 +29,15 @@ type PropertyProps = {
   isCommonProperty?: boolean;
 } & DomainObjectProps &
   PropertyOptions;
+
+type CreatePropertyInput = {
+  shouldGenerateRandomName?: boolean;
+  name?: string;
+} & Omit<PropertyProps, 'name'>;
+
+type ProcessNameInput = {
+  name?: string;
+} & CreatePropertyNameProps;
 
 class Property extends DomainObject {
   readonly type: PropertyType;
@@ -62,6 +72,35 @@ class Property extends DomainObject {
     };
   }
 
+  protected static processName(input: ProcessNameInput) {
+    return (
+      input.name ||
+      PropertyNameFactory.create({
+        type: input.type,
+        label: input.label,
+        shouldGenerateRandomName: input.shouldGenerateRandomName,
+      })
+    );
+  }
+
+  static create({ shouldGenerateRandomName, ...rest }: CreatePropertyInput) {
+    const name = this.processName({
+      name: rest.name,
+      shouldGenerateRandomName,
+      label: rest.label,
+      type: rest.type,
+    });
+
+    return new Property({
+      ...rest,
+      name,
+    });
+  }
+
+  get isCommonProperty() {
+    return !!this._isCommonProperty;
+  }
+
   isSame(other: Property) {
     return this.id === other.id;
   }
@@ -83,11 +122,7 @@ class Property extends DomainObject {
 
     return updateInfo;
   }
-
-  get isCommonProperty() {
-    return !!this._isCommonProperty;
-  }
 }
 
 export { Property };
-export type { PropertyUpdateInfo, PropertyProps, PropertyOptions };
+export type { CreatePropertyInput, PropertyUpdateInfo, PropertyProps, PropertyOptions };

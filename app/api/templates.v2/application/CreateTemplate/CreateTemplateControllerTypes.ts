@@ -14,20 +14,12 @@ type CreateTemplateResponse = Omit<TemplateSchema, 'commonProperties'> & {
 };
 
 const CreatePropertySchema = z.object({
-  label: z.string(),
-  type: PropertyTypeSchema,
+  label: z.string(), // ok
+  type: PropertyTypeSchema, // ok
 
-  name: z.string().optional(),
-  isCommonProperty: z.boolean().optional(),
-  generatedId: z.boolean().optional(),
-  content: z.string().optional(),
-  relationType: z.string().optional(),
-  inherit: z
-    .object({
-      property: z.string(),
-      type: PropertyTypeSchema,
-    })
-    .optional(),
+  name: z.string().optional(), // ok
+  isCommonProperty: z.boolean().optional(), // ok
+  content: z.string().optional(), // ok
   filter: z.boolean().optional(), // ok
   sortable: z.boolean().optional(), // ok
   required: z.boolean().optional(), // ok
@@ -36,7 +28,16 @@ const CreatePropertySchema = z.object({
   prioritySorting: z.boolean().optional(), // ok
   defaultfilter: z.boolean().optional(), // ok
   fullWidth: z.boolean().optional(), // ok
-  style: z.string().optional(), // Only Image, Preview, Media type
+  style: z.string().optional(), // ok
+
+  generatedId: z.boolean().optional(),
+  relationType: z.string().optional(),
+  inherit: z
+    .object({
+      property: z.string(),
+      type: PropertyTypeSchema,
+    })
+    .optional(),
   nestedProperties: z.array(z.string()).optional(),
   query: z.array(z.any()).optional(),
   denormalizedProperty: z.string().optional(),

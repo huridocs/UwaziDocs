@@ -5,7 +5,11 @@ describe('PropertyNameFactory', () => {
     const value = 'Some Value with spaces *&^%$@@!#/=';
     const generateRandomName = false;
 
-    const propertyName = PropertyNameFactory.create({ type: 'text', value, generateRandomName });
+    const propertyName = PropertyNameFactory.create({
+      type: 'text',
+      label: value,
+      shouldGenerateRandomName: generateRandomName,
+    });
 
     expect(propertyName).toEqual('some_value_with_spaces____________');
   });
@@ -14,7 +18,11 @@ describe('PropertyNameFactory', () => {
     const value = 'Some Value with spaces';
     const generateRandomName = true;
 
-    const propertyName = PropertyNameFactory.create({ type: 'text', value, generateRandomName });
+    const propertyName = PropertyNameFactory.create({
+      type: 'text',
+      label: value,
+      shouldGenerateRandomName: generateRandomName,
+    });
 
     expect(propertyName).toEqual('some_value_with_spaces');
   });
@@ -25,8 +33,8 @@ describe('PropertyNameFactory', () => {
 
     const propertyName = PropertyNameFactory.create({
       type: 'geolocation',
-      value,
-      generateRandomName,
+      label: value,
+      shouldGenerateRandomName: generateRandomName,
     });
 
     expect(propertyName).toEqual('some_value_geolocation');
@@ -36,7 +44,11 @@ describe('PropertyNameFactory', () => {
     const value = 'Some Value';
     const generateRandomName = false;
 
-    const propertyName = PropertyNameFactory.create({ type: 'nested', value, generateRandomName });
+    const propertyName = PropertyNameFactory.create({
+      type: 'nested',
+      label: value,
+      shouldGenerateRandomName: generateRandomName,
+    });
 
     expect(propertyName).toEqual('some_value_nested');
   });
