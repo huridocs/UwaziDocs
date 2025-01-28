@@ -38,6 +38,7 @@ export class CreateExtractorUseCase implements UseCase<Input, Output> {
     }
 
     const extractor = new Extractor({
+      id: this.dependencies.extractorDS.nextId(),
       targetTemplate,
       sourceTemplate,
       status: ExtractorStatus.Idle,

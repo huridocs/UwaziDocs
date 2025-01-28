@@ -6,12 +6,15 @@ export enum ExtractorStatus {
 }
 
 export type ExtractorProps = {
+  id: string;
   sourceTemplate: Template;
   targetTemplate: Template;
   status: ExtractorStatus;
 };
 
 export class Extractor {
+  id: string;
+
   targetTemplate: Template;
 
   sourceTemplate: Template;
@@ -19,6 +22,7 @@ export class Extractor {
   status: ExtractorStatus;
 
   constructor(props: ExtractorProps) {
+    this.id = props.id;
     this.targetTemplate = props.targetTemplate;
     this.sourceTemplate = props.sourceTemplate;
     this.status = props.status;
