@@ -55,16 +55,19 @@ describe('PDF display', () => {
         cy.contains('a', 'Next').click();
       });
       cy.contains('Los escritos de 17 de septiembre y 17 de noviembre de 2010,');
+      cy.location('search').should('eq', '?page=2');
 
       cy.get('.paginator').within(() => {
         cy.contains('a', 'Next').click();
       });
       cy.contains('especial de protección de los beneficiarios de las medidas,');
+      cy.location('search').should('eq', '?page=3');
 
       cy.get('.paginator').within(() => {
         cy.contains('a', 'Next').click();
       });
       cy.contains('En la presente Resolución el Tribunal examinará:');
+      cy.location('search').should('eq', '?page=4');
       cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS').should('not.exist');
     });
 
@@ -78,6 +81,7 @@ describe('PDF display', () => {
         cy.contains('a', 'Previous').click();
       });
       cy.contains('especial de protección de los beneficiarios de las medidas,');
+      cy.location('search').should('eq', '?page=3');
       cy.contains('En la presente Resolución el Tribunal examinará:').should('not.be.visible');
     });
 
@@ -212,6 +216,7 @@ describe('PDF display', () => {
         cy.contains('.item-document', 'Entity with pdf').within(() => {
           cy.contains('a', 'View').realTouch();
         });
+        cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS');
         cy.get('.closeSidepanel').realTouch();
         cy.get('aside.metadata-sidepanel').should('not.be.visible');
         cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS').should('be.visible');
