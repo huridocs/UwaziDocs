@@ -11,7 +11,7 @@ HTMLCollection [
       >
         <label>
           <span
-            class="translation active sr-only"
+            class="translation sr-only"
           >
             Select
           </span>
@@ -37,7 +37,7 @@ HTMLCollection [
             class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
           >
             <span
-              class="translation"
+              class="translation "
             >
               Animals
             </span>
@@ -60,7 +60,7 @@ HTMLCollection [
           type="button"
         >
           <span
-            class="translation active"
+            class="translation "
           >
             Edit
           </span>
@@ -75,7 +75,7 @@ HTMLCollection [
       >
         <label>
           <span
-            class="translation active sr-only"
+            class="translation sr-only"
           >
             Select
           </span>
@@ -101,7 +101,7 @@ HTMLCollection [
             class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
           >
             <span
-              class="translation"
+              class="translation "
             >
               Colors
             </span>
@@ -124,7 +124,7 @@ HTMLCollection [
           type="button"
         >
           <span
-            class="translation active"
+            class="translation "
           >
             Edit
           </span>
@@ -139,7 +139,7 @@ HTMLCollection [
       >
         <label>
           <span
-            class="translation active sr-only"
+            class="translation sr-only"
           >
             Select
           </span>
@@ -166,7 +166,7 @@ HTMLCollection [
             class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
           >
             <span
-              class="translation"
+              class="translation "
             >
               Names
             </span>
@@ -185,7 +185,7 @@ HTMLCollection [
               data-testid="pill-comp"
             >
               <span
-                class="translation"
+                class="translation "
               >
                 Document
               </span>
@@ -202,7 +202,7 @@ HTMLCollection [
           type="button"
         >
           <span
-            class="translation active"
+            class="translation "
           >
             Edit
           </span>
@@ -228,13 +228,13 @@ exports[`Settings Thesauri ThesauriList Thesaurus deletion should show the selec
       type="button"
     >
       <span
-        class="translation active"
+        class="translation "
       >
         Delete
       </span>
     </button>
     <span
-      class="translation active"
+      class="translation "
     >
       Selected
     </span>
@@ -242,7 +242,7 @@ exports[`Settings Thesauri ThesauriList Thesaurus deletion should show the selec
     2
      
     <span
-      class="translation active"
+      class="translation "
     >
       of
     </span>
@@ -268,9 +268,8 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
         data-testid="settings-content-header"
       >
         <a
-          class="block lg:hidden"
-          data-discover="true"
-          href="/en/settings"
+          class="block lg:hidden "
+          href="/settings"
         >
           <svg
             aria-hidden="true"
@@ -290,7 +289,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
             class="sr-only"
           >
             <span
-              class="translation active"
+              class="translation "
             >
               Navigate back
             </span>
@@ -329,7 +328,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                 data-testid="flowbite-breadcrumb-item"
               >
                 <span
-                  class="translation active max-w-xs truncate"
+                  class="translation max-w-xs truncate"
                 >
                   Thesauri
                 </span>
@@ -361,7 +360,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                     class="text-base font-semibold text-left text-gray-900 bg-white"
                   >
                     <span
-                      class="translation active"
+                      class="translation "
                     >
                       Thesauri
                     </span>
@@ -382,7 +381,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                     >
                       <label>
                         <span
-                          class="translation active sr-only"
+                          class="translation sr-only"
                         >
                           Select all
                         </span>
@@ -403,7 +402,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       class="flex gap-2 cursor-pointer select-none"
                     >
                       <span
-                        class="translation active"
+                        class="translation "
                       >
                         Label
                       </span>
@@ -432,7 +431,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       class="flex "
                     >
                       <span
-                        class="translation active"
+                        class="translation "
                       >
                         Templates
                       </span>
@@ -447,7 +446,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       class="flex "
                     >
                       <span
-                        class="translation active sr-only"
+                        class="translation sr-only"
                       >
                         Action
                       </span>
@@ -464,7 +463,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                   >
                     <label>
                       <span
-                        class="translation active sr-only"
+                        class="translation sr-only"
                       >
                         Select
                       </span>
@@ -490,7 +489,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                         class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
                       >
                         <span
-                          class="translation"
+                          class="translation "
                         >
                           Animals
                         </span>
@@ -513,7 +512,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       type="button"
                     >
                       <span
-                        class="translation active"
+                        class="translation "
                       >
                         Edit
                       </span>
@@ -528,7 +527,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                   >
                     <label>
                       <span
-                        class="translation active sr-only"
+                        class="translation sr-only"
                       >
                         Select
                       </span>
@@ -554,7 +553,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                         class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
                       >
                         <span
-                          class="translation"
+                          class="translation "
                         >
                           Colors
                         </span>
@@ -577,7 +576,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       type="button"
                     >
                       <span
-                        class="translation active"
+                        class="translation "
                       >
                         Edit
                       </span>
@@ -592,7 +591,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                   >
                     <label>
                       <span
-                        class="translation active sr-only"
+                        class="translation sr-only"
                       >
                         Select
                       </span>
@@ -619,7 +618,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                         class="has-[span:not(.active)]:hidden h-full p-1 ml-2 border-2 border-gray-400 border-solid rounded-lg border-y-0"
                       >
                         <span
-                          class="translation"
+                          class="translation "
                         >
                           Names
                         </span>
@@ -638,7 +637,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                           data-testid="pill-comp"
                         >
                           <span
-                            class="translation"
+                            class="translation "
                           >
                             Document
                           </span>
@@ -655,7 +654,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                       type="button"
                     >
                       <span
-                        class="translation active"
+                        class="translation "
                       >
                         Edit
                       </span>
@@ -687,7 +686,7 @@ exports[`Settings Thesauri ThesauriList render existing thesauri should show a l
                 type="button"
               >
                 <span
-                  class="translation active"
+                  class="translation "
                 >
                   Add thesaurus
                 </span>
