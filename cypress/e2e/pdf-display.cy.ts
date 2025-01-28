@@ -1,7 +1,12 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-statements */
 import { clearCookiesAndLogin } from './helpers/login';
-import { clickOnCreateEntity, editPropertyForExtractor, saveEntity } from './helpers';
+import {
+  clickOnCreateEntity,
+  editPropertyForExtractor,
+  saveEntity,
+  waitForLegacyNotifications,
+} from './helpers';
 
 describe('PDF display', () => {
   before(() => {
@@ -32,6 +37,7 @@ describe('PDF display', () => {
         force: true,
       });
       saveEntity();
+      waitForLegacyNotifications();
       cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
     });
   });
@@ -52,22 +58,21 @@ describe('PDF display', () => {
 
     it('should paginate forward', () => {
       cy.get('.paginator').within(() => {
-        cy.contains('a', 'Next').click();
+        cy.contains('a', 'Next').realClick();
       });
       cy.contains('Los escritos de 17 de septiembre y 17 de noviembre de 2010,');
-      cy.location('search').should('eq', '?page=2');
 
       cy.get('.paginator').within(() => {
-        cy.contains('a', 'Next').click();
+        cy.contains('2 / 22');
+        cy.contains('a', 'Next').realClick();
       });
       cy.contains('especial de protección de los beneficiarios de las medidas,');
-      cy.location('search').should('eq', '?page=3');
 
       cy.get('.paginator').within(() => {
-        cy.contains('a', 'Next').click();
+        cy.contains('3 / 22');
+        cy.contains('a', 'Next').realClick();
       });
       cy.contains('En la presente Resolución el Tribunal examinará:');
-      cy.location('search').should('eq', '?page=4');
       cy.contains('CORTE INTERAMERICANA DE DERECHOS HUMANOS').should('not.exist');
     });
 
@@ -78,15 +83,15 @@ describe('PDF display', () => {
 
     it('should paginate backwards', () => {
       cy.get('.paginator').within(() => {
-        cy.contains('a', 'Previous').click();
+        cy.contains('4 / 22');
+        cy.contains('a', 'Previous').realClick();
       });
       cy.contains('especial de protección de los beneficiarios de las medidas,');
-      cy.location('search').should('eq', '?page=3');
       cy.contains('En la presente Resolución el Tribunal examinará:').should('not.be.visible');
     });
 
     it('should show the plaintex for the page', () => {
-      cy.contains('a', 'Plain text').click();
+      cy.contains('a', 'Plain text').realClick();
       cy.get('.raw-text').should('be.visible');
       cy.get('.raw-text').within(() => {
         cy.contains('-3especial de protección');
@@ -95,7 +100,7 @@ describe('PDF display', () => {
 
     it('should paginate in plain text view', () => {
       cy.get('.paginator').within(() => {
-        cy.contains('a', 'Next').click();
+        cy.contains('a', 'Next').realClick();
       });
       cy.get('.raw-text').within(() => {
         cy.contains('-4-');
@@ -210,6 +215,7 @@ describe('PDF display', () => {
           cy.get('.menu-button').realTouch();
         });
         cy.contains('a', 'Library').realTouch();
+        cy.contains('.item-document', 'Entity with pdf');
       });
 
       it('should view the pdf correctly', () => {
@@ -268,22 +274,20 @@ describe('PDF display', () => {
       });
 
       it('should only show visible pages', () => {
-        cy.get('#pdf-container').within(() => {
-          cy.get('#page-1-container .page').should('be.empty');
-          cy.get('#page-2-container .page').should('not.be.empty');
-          cy.get('#page-3-container .page').should('not.be.empty');
-          cy.get('#page-10-container .page').should('be.empty');
-          cy.get('#page-10-container').scrollIntoView();
-          cy.get('#page-1-container .page').should('be.empty');
-          cy.get('#page-2-container .page').should('be.empty');
-          cy.get('#page-3-container .page').should('be.empty');
-          cy.get('#page-10-container .page').should('not.be.empty');
-          cy.get('#page-11-container .page').should('not.be.empty');
-          cy.contains(
-            'span[role="presentation"]',
-            'El artículo 63.2 de la Convención exige que para que la Corte pueda disponer de'
-          ).should('be.visible');
-        });
+        cy.get('#page-1-container .page').should('be.empty');
+        cy.get('#page-2-container .page').should('not.be.empty');
+        cy.get('#page-3-container .page').should('not.be.empty');
+        cy.get('#page-10-container .page').should('be.empty');
+        cy.get('#page-10-container').scrollIntoView();
+        cy.get('#page-1-container .page').should('be.empty');
+        cy.get('#page-2-container .page').should('be.empty');
+        cy.get('#page-3-container .page').should('be.empty');
+        cy.get('#page-10-container .page').should('not.be.empty');
+        cy.get('#page-11-container .page').should('not.be.empty');
+        cy.contains(
+          'span[role="presentation"]',
+          'El artículo 63.2 de la Convención exige que para que la Corte pueda disponer de'
+        ).should('be.visible');
       });
     });
   });
