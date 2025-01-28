@@ -12,7 +12,6 @@ import { Application, Request } from 'express';
 import { UITranslationNotAvailable } from 'api/i18n/defaultTranslations';
 import needsAuthorization from '../auth/authMiddleware';
 import translations from './translations';
-import { getTranslationsEntriesV2 } from './v2_support';
 
 const addLanguage = async (language: LanguageSchema) => {
   const newSettings = await settings.addLanguage(language);
@@ -83,14 +82,6 @@ export default (app: Application) => {
       res.json({ rows: response });
     }
   );
-
-  app.get('/api/translationsV2', async (_req: TranslationsRequest, res) => {
-    const translationsV2 = await getTranslationsEntriesV2();
-
-    const translationList = await translationsV2.all();
-
-    res.json(translationList);
-  });
 
   app.get('/api/languages', async (_req, res) => {
     res.json(await translations.availableLanguages());
@@ -166,45 +157,6 @@ export default (app: Application) => {
       const [response] = await translations.get({ locale });
       req.sockets.emitToCurrentTenant('translationsChange', response);
       res.json(response);
-    }
-  );
-
-  app.post(
-    '/api/translationsV2',
-    needsAuthorization(),
-    validation.validateRequest({
-      type: 'object',
-      properties: {
-        body: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              _id: { type: 'string' },
-              language: { type: 'string' },
-              key: { type: 'string' },
-              value: { type: 'string' },
-              context: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  label: { type: 'string' },
-                  type: { type: 'string' },
-                },
-                required: ['id', 'label', 'type'],
-              },
-            },
-            required: ['language', 'key', 'value', 'context'],
-          },
-        },
-      },
-      required: ['body'],
-    }),
-    async (req, res) => {
-      await translations.v2StructureSave(req.body);
-      req.sockets.emitToCurrentTenant('translationKeysChange', req.body);
-      res.status(200);
-      res.json({ success: true });
     }
   );
 

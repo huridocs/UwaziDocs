@@ -2,15 +2,15 @@ import 'isomorphic-fetch';
 import request from 'supertest';
 
 import { TranslationDBO } from 'api/i18n.v2/schemas/TranslationDBO';
-import i18nRoutes from 'api/i18n/routes';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { TestEmitSources, iosocket, setUpApp } from 'api/utils/testingRoutes';
 import { UserRole } from 'shared/types/userSchema';
+import { translationsRoutes } from '..';
 
 describe('i18n translations V2 routes', () => {
   const createTranslationDBO = getFixturesFactory().v2.database.translationDBO;
-  const app = setUpApp(i18nRoutes, (req, _res, next) => {
+  const app = setUpApp(translationsRoutes, (req, _res, next) => {
     req.user = {
       username: 'admin',
       role: UserRole.ADMIN,
@@ -58,10 +58,10 @@ describe('i18n translations V2 routes', () => {
     await testingEnvironment.tearDown();
   });
 
-  describe('api/translationsV2', () => {
+  describe('/api/v2/translations', () => {
     it('should update the translations and emit translationKeysChange event', async () => {
       const response = await request(app)
-        .post('/api/translationsV2')
+        .post('/api/v2/translations')
         .send([
           {
             language: 'es',
@@ -90,7 +90,9 @@ describe('i18n translations V2 routes', () => {
     });
 
     it('should handle invalid POST request payload', async () => {
-      const response = await request(app).post('/api/translationsV2').send({ invalidKey: 'value' }); // Invalid payload
+      const response = await request(app)
+        .post('/api/v2/translations')
+        .send({ invalidKey: 'value' }); // Invalid payload
       expect(response.status).toBe(400);
       expect(response.body).toEqual(
         expect.objectContaining({ prettyMessage: 'validation failed' })

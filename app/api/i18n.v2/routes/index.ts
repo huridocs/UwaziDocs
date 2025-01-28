@@ -4,15 +4,15 @@ import { validation } from 'api/utils';
 import translations from 'api/i18n';
 import { getTranslationsEntriesV2 } from 'api/i18n/v2_support';
 
-export default (app: Application) => {
-  app.get('/api/translationsV2', async (_req: Request, res) => {
+const translationsRoutes = (app: Application) => {
+  app.get('/api/v2/translations', async (_req: Request, res) => {
     const translationsV2 = await getTranslationsEntriesV2();
     const translationList = await translationsV2.all();
     res.json(translationList);
   });
 
   app.post(
-    '/api/translationsV2',
+    '/api/v2/translations',
     needsAuthorization(),
     validation.validateRequest({
       type: 'object',
@@ -50,3 +50,5 @@ export default (app: Application) => {
     }
   );
 };
+
+export { translationsRoutes };

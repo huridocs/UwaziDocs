@@ -32,7 +32,7 @@ const getV2 = async (
   parameters?: Params
 ): Promise<ClientTranslationSchema[]> => {
   const params = new RequestParams(parameters, headers);
-  const response = api.get('translationsV2', params);
+  const response = api.get('v2/translations', params);
   return response;
 };
 
@@ -61,7 +61,7 @@ const postV2 = async (
       context: { id: context.id, label: context.label, type: context.type },
     }));
     const params = new RequestParams(translations, headers);
-    const response = await api.post('translationsV2', params);
+    const response = await api.post('v2/translations', params);
     return response.status;
   } catch (e) {
     return e;
