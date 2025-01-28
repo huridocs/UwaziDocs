@@ -135,4 +135,43 @@ describe('Search routes', () => {
       expect(options[0].results).toBeDefined();
     });
   });
+
+  it('should return status code 500 if query is not provided', async () => {
+    const res = await request(app)
+      .get('/api/search/lookupaggregation')
+      .query({ property: 'relationship', searchTerm: 'Bat' });
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("The 'query' property can not be undefined");
+  });
+
+  it('should return status code 500 if property is not provided', async () => {
+    const res = await request(app)
+      .get('/api/search/lookupaggregation')
+      .query({
+        query: {
+          types: [ids.template1],
+          filters: {},
+        },
+        searchTerm: 'Bat',
+      });
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("The 'property' key can not be undefined");
+  });
+
+  it('should return status code 500 if searchTerm is not provided', async () => {
+    const res = await request(app)
+      .get('/api/search/lookupaggregation')
+      .query({
+        query: {
+          types: [ids.template1],
+          filters: {},
+        },
+        property: 'relationship',
+      });
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toBe("The 'searchTerm' property can not be undefined");
+  });
 });

@@ -25,6 +25,10 @@ export default (app: Application) => {
       res: Response,
       next: NextFunction
     ) => {
+      if (!req.query.query) throw new Error("The 'query' property can not be undefined");
+      if (!req.query.property) throw new Error("The 'property' key can not be undefined");
+      if (!req.query.searchTerm) throw new Error("The 'searchTerm' property can not be undefined");
+
       const query = JSON.parse(req.query.query);
       search
         .autocompleteAggregations(
