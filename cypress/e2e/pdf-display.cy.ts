@@ -204,12 +204,8 @@ describe('PDF display', () => {
     });
   });
 
-  describe('responsiveness', () => {
+  describe('responsiveness', { viewportWidth: 768, viewportHeight: 1024 }, () => {
     describe('library', () => {
-      beforeEach(() => {
-        cy.viewport('ipad-mini');
-      });
-
       it('should navigate to the library', () => {
         cy.get('header').within(() => {
           cy.get('.menu-button').realTouch();
@@ -243,11 +239,7 @@ describe('PDF display', () => {
       });
     });
 
-    describe('IX sidepanel', () => {
-      beforeEach(() => {
-        cy.viewport('iphone-x');
-      });
-
+    describe('IX sidepanel', { viewportWidth: 375, viewportHeight: 812 }, () => {
       it('should navigate to the extractor', () => {
         cy.get('header').within(() => {
           cy.get('.menu-button').realTouch();

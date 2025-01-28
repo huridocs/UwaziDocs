@@ -2,6 +2,11 @@
 /* eslint-disable max-statements */
 import { clearCookiesAndLogin } from './helpers/login';
 
+const viewport = {
+  viewportWidth: 375,
+  viewportHeight: 667,
+};
+
 // This test is a migration of e2e/mobile/sidePanels.test.ts,
 // it partially covers library responsivenes.
 // e2e/mobile/library.test.ts should be integrated into this test
@@ -12,11 +17,7 @@ describe('Library responsive view', () => {
     clearCookiesAndLogin('admin', 'admin');
   });
 
-  beforeEach(() => {
-    cy.viewport('iphone-6');
-  });
-
-  describe('Toolbar', () => {
+  describe('Toolbar', viewport, () => {
     it('should open the toolbar', () => {
       cy.contains('button', 'Show toolbar').realTouch();
       cy.get('div.search-list').should('be.visible');
@@ -38,7 +39,7 @@ describe('Library responsive view', () => {
     });
   });
 
-  describe('Entity view', () => {
+  describe('Entity view', viewport, () => {
     it('should navigate to the first entity and see the sidepanel', () => {
       cy.contains(
         '.item-document',
