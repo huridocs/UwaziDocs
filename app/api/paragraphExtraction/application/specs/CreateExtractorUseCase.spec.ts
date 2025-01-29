@@ -8,7 +8,7 @@ import { SourceTemplateNotFoundError } from 'api/paragraphExtraction/domain/Sour
 import { TargetTemplateNotFoundError } from 'api/paragraphExtraction/domain/TargetTemplateNotFoundError';
 import { TargetTemplateInvalidError } from 'api/paragraphExtraction/domain/TargetTemplateInvalidError';
 import { TargetSourceTemplateEqualError } from 'api/paragraphExtraction/domain/TargetSourceTemplateEqualError';
-import { CreateExtractorUseCase } from '../CreateExtractor/CreateExtractorUseCase';
+import { CreateExtractorUseCase } from '../CreateExtractorUseCase';
 import { fixtures, sourceTemplate, targetTemplate } from './fixtures';
 
 const createSut = () => {
