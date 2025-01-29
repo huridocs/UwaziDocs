@@ -13,7 +13,6 @@ import { MetadataObjectSchema } from 'shared/types/commonTypes';
 import { EntityWithFilesSchema } from 'shared/types/entityType';
 import { TypeOfFile } from 'shared/types/fileSchema';
 import { FileAttachment } from './entitySavingManager';
-import { ClientSession } from 'mongodb';
 
 const prepareNewFiles = async (
   entity: EntityWithFilesSchema,
@@ -112,14 +111,14 @@ const filterRenamedFiles = (entity: EntityWithFilesSchema, entityFiles: WithId<F
 const processFiles = async (
   entity: EntityWithFilesSchema,
   updatedEntity: EntityWithFilesSchema,
-  attachments: FileAttachment[] = [],
-  documents: FileAttachment[] = []
+  fileAttachments: FileAttachment[] | undefined,
+  documentAttachments: FileAttachment[] | undefined
 ) => {
-  const { attachments: newAttachments, documents: newDocuments } = await prepareNewFiles(
+  const { attachments, documents } = await prepareNewFiles(
     entity,
     updatedEntity,
-    attachments,
-    documents
+    fileAttachments,
+    documentAttachments
   );
 
   if (entity._id && (entity.attachments || entity.documents)) {
@@ -133,11 +132,11 @@ const processFiles = async (
 
     const { renamedAttachments, renamedDocuments } = filterRenamedFiles(entity, entityFiles);
 
-    newAttachments.push(...renamedAttachments);
-    newDocuments.push(...renamedDocuments);
+    attachments.push(...renamedAttachments);
+    documents.push(...renamedDocuments);
   }
 
-  return { proccessedAttachments: newAttachments, proccessedDocuments: newDocuments };
+  return { proccessedAttachments: attachments, proccessedDocuments: documents };
 };
 
 const bindAttachmentToMetadataProperty = (
@@ -192,7 +191,7 @@ const saveFiles = async (
         await filesAPI.save(file, false);
       } catch (e) {
         legacyLogger.error(prettifyError(e));
-        throw new Error(`Could not save file/s: ${file.originalname}`, { cause: e });
+        saveResults.push(`Could not save file/s: ${file.originalname}`);
       }
     })
   );

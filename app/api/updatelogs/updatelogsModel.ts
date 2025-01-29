@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MultiTenantMongooseModel } from 'api/odm/MultiTenantMongooseModel';
+import { MongooseModelWrapper } from 'api/odm/MultiTenantMongooseModel';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 
 const updateLogSchema = new mongoose.Schema({
@@ -17,4 +17,4 @@ export interface UpdateLog extends mongoose.Document {
   deleted: boolean;
 }
 
-export const model = new MultiTenantMongooseModel<UpdateLog>('updatelogs', updateLogSchema);
+export const model = new MongooseModelWrapper<UpdateLog>('updatelogs', updateLogSchema);

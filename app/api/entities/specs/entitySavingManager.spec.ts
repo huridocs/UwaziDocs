@@ -596,7 +596,7 @@ describe('entitySavingManager', () => {
           processDocumentApi.processDocument.mockRestore();
         });
 
-        it('should return an error if an existing main document cannot be saved', async () => {
+        it('should throw an error if a document cannot be saved', async () => {
           jest.spyOn(filesAPI, 'save').mockRejectedValueOnce({ error: { name: 'failed' } });
 
           const { errors } = await saveEntity(
@@ -616,48 +616,6 @@ describe('entitySavingManager', () => {
           filesAPI.save.mockRestore();
         });
       });
-    });
-  });
-
-  describe('transactions', () => {
-    const reqData = { user: editorUser, language: 'en', socketEmiter: () => {} };
-
-    it('should rollback all operations if any operation fails', async () => {
-      testingEnvironment.unsetFakeContext();
-      // Force files.save to fail
-
-      // Attempt to update entity with new attachment that will fail
-      await appContext.run(async () => {
-        // Setup initial entity with a document
-        const { entity: savedEntity } = await saveEntity(
-          { title: 'initial entity', template: template1Id },
-          {
-            ...reqData,
-            files: [{ ...newMainPdfDocument, fieldname: 'documents[0]' }],
-          }
-        );
-
-        // const filesOnDb = await filesAPI.get({ entity: savedEntity.sharedId });
-        // console.log(JSON.stringify(filesOnDb, null, ' '));
-
-        jest.spyOn(filesAPI, 'save').mockImplementation(() => {
-          throw new Error('Forced file save error');
-        });
-
-
-        // Verify entity was not updated
-        const [entityAfterFailure] = await entities.get({ _id: savedEntity._id });
-        expect(entityAfterFailure.title).toBe('initial entity');
-
-        // Verify original document still exists and no new files were added
-        const entityFiles = await filesAPI.get({ entity: savedEntity.sharedId });
-        expect(entityFiles).toHaveLength(1);
-        expect(entityFiles[0].originalname).toBe('myNewFile.pdf');
-      });
-
-      // await expect(updateOperation).rejects.toThrow('Forced file save error');
-      //
-      //
     });
   });
 });

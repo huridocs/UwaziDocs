@@ -1,17 +1,18 @@
-import { BulkWriteOptions, ClientSession } from 'mongodb';
+import { BulkWriteOptions } from 'mongodb';
 import mongoose, { Schema } from 'mongoose';
-import {
-  DataType,
-  UwaziFilterQuery,
-  UwaziUpdateQuery,
-  UwaziQueryOptions,
-  EnforcedWithId,
-  UwaziUpdateOptions,
-} from './model';
 import { tenants } from '../tenants/tenantContext';
 import { DB } from './DB';
+import {
+  DataType,
+  EnforcedWithId,
+  UwaziFilterQuery,
+  UwaziQueryOptions,
+  UwaziUpdateOptions,
+  UwaziUpdateQuery,
+} from './model';
+import { dbSessionContext } from './sessionsContext';
 
-export class MultiTenantMongooseModel<T> {
+export class MongooseModelWrapper<T> {
   dbs: { [k: string]: mongoose.Model<DataType<T>> };
 
   collectionName: string;
@@ -32,84 +33,136 @@ export class MultiTenantMongooseModel<T> {
     );
   }
 
-  findById(id: any, select?: any, options: { session?: ClientSession } = {}) {
-    return this.dbForCurrentTenant().findById(id, select, { ...options, lean: true });
+  findById(id: any, select?: any) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().findById(id, select, {
+      lean: true,
+      ...(session && { session }),
+    });
   }
 
-  find(
-    query: UwaziFilterQuery<DataType<T>>,
-    select = '',
-    options: { session?: ClientSession } = {}
-  ) {
-    return this.dbForCurrentTenant().find(query, select, options);
+  find(query: UwaziFilterQuery<DataType<T>>, select = '', options: any = {}) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().find(query, select, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async findOneAndUpdate(
     query: UwaziFilterQuery<DataType<T>>,
     update: UwaziUpdateQuery<DataType<T>>,
-    options: UwaziQueryOptions & { session?: ClientSession }
+    options: UwaziQueryOptions = {}
   ) {
-    return this.dbForCurrentTenant().findOneAndUpdate(query, update, options);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().findOneAndUpdate(query, update, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
-  async create(data: Partial<DataType<T>>[], options?: any) {
-    return this.dbForCurrentTenant().create(data, options);
+  async create(data: Partial<DataType<T>>[], options: any = {}) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().create(data, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
-  async createMany(dataArray: Partial<DataType<T>>[], options: { session?: ClientSession } = {}) {
-    return this.dbForCurrentTenant().create(dataArray, options);
+  async createMany(dataArray: Partial<DataType<T>>[], options: any = {}) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().create(dataArray, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async _updateMany(
     conditions: UwaziFilterQuery<DataType<T>>,
     doc: UwaziUpdateQuery<DataType<T>>,
-    options: UwaziUpdateOptions<DataType<T>> & { session?: ClientSession } = {}
+    options: UwaziUpdateOptions<DataType<T>> = {}
   ) {
-    return this.dbForCurrentTenant().updateMany(conditions, doc, options);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().updateMany(conditions, doc, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async findOne(conditions: UwaziFilterQuery<DataType<T>>, projection: any) {
-    const result = await this.dbForCurrentTenant().findOne(conditions, projection, { lean: true });
+    const session = dbSessionContext.getSession();
+    const result = await this.dbForCurrentTenant().findOne(conditions, projection, {
+      lean: true,
+      ...(session && { session }),
+    });
     return result as EnforcedWithId<T> | null;
   }
 
   async replaceOne(conditions: UwaziFilterQuery<DataType<T>>, replacement: any) {
-    return this.dbForCurrentTenant().replaceOne(conditions, replacement);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().replaceOne(conditions, replacement, {
+      ...(session && { session }),
+    });
   }
 
-  async countDocuments(
-    query: UwaziFilterQuery<DataType<T>> = {},
-    options: { session?: ClientSession } = {}
-  ) {
-    return this.dbForCurrentTenant().countDocuments(query, options);
+  async countDocuments(query: UwaziFilterQuery<DataType<T>> = {}, options: any = {}) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().countDocuments(query, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async distinct(field: string, query: UwaziFilterQuery<DataType<T>> = {}) {
+    const session = dbSessionContext.getSession();
+    if (session) {
+      return this.dbForCurrentTenant().distinct(field, query).session(session);
+    }
     return this.dbForCurrentTenant().distinct(field, query);
   }
 
-  async deleteMany(query: UwaziFilterQuery<DataType<T>>, options?: { session?: ClientSession }) {
-    return this.dbForCurrentTenant().deleteMany(query, options);
+  async deleteMany(query: UwaziFilterQuery<DataType<T>>, options: any = {}) {
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().deleteMany(query, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async aggregate(aggregations?: any[]) {
-    return this.dbForCurrentTenant().aggregate(aggregations);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().aggregate(aggregations, session && { session });
   }
 
   aggregateCursor<U>(aggregations?: any[]) {
-    return this.dbForCurrentTenant().aggregate<U>(aggregations) as mongoose.Aggregate<U[]>;
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().aggregate<U>(
+      aggregations,
+      session && { session }
+    ) as mongoose.Aggregate<U[]>;
   }
 
   async facet(aggregations: any[], pipelines: any, project: any) {
-    return this.dbForCurrentTenant().aggregate(aggregations).facet(pipelines).project(project);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant()
+      .aggregate(aggregations, session && { session })
+      .facet(pipelines)
+      .project(project);
   }
 
   async updateOne(conditions: UwaziFilterQuery<DataType<T>>, doc: UwaziUpdateQuery<T>) {
-    return this.dbForCurrentTenant().updateOne(conditions, doc);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().updateOne(conditions, doc, {
+      ...(session && { session }),
+    });
   }
 
   async bulkWrite(writes: Array<any>, options?: BulkWriteOptions) {
-    return this.dbForCurrentTenant().bulkWrite(writes, options);
+    const session = dbSessionContext.getSession();
+    return this.dbForCurrentTenant().bulkWrite(writes, {
+      ...options,
+      ...(session && { session }),
+    });
   }
 
   async ensureIndexes() {

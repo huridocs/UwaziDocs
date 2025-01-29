@@ -918,8 +918,4 @@ export default {
   },
 
   count: model.count.bind(model),
-
-  async startSession() {
-    return model.db.startSession();
-  },
 };

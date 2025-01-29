@@ -10,11 +10,9 @@ import mongoose, {
 } from 'mongoose';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { inspect } from 'util';
-import { MultiTenantMongooseModel } from './MultiTenantMongooseModel';
+import { MongooseModelWrapper } from './MultiTenantMongooseModel';
 import { UpdateLogger, createUpdateLogHelper } from './logHelper';
 import { ModelBulkWriteStream } from './modelBulkWriteStream';
-import { ClientSession } from 'mongodb';
-import { appContext } from 'api/utils/AppContext';
 
 /** Ideas!
  *  T is the actual model-specific document Schema!
@@ -37,7 +35,7 @@ export type UwaziUpdateOptions<T> = (UpdateOptions & Omit<MongooseQueryOptions<T
 export class OdmModel<T> implements SyncDBDataSource<T, T> {
   private collectionName: string;
 
-  db: MultiTenantMongooseModel<T>;
+  db: MongooseModelWrapper<T>;
 
   logHelper: UpdateLogger<T>;
 
@@ -50,7 +48,7 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     options: { optimisticLock: boolean } = { optimisticLock: false }
   ) {
     this.collectionName = collectionName;
-    this.db = new MultiTenantMongooseModel<T>(collectionName, schema);
+    this.db = new MongooseModelWrapper<T>(collectionName, schema);
     this.logHelper = logHelper;
     this.options = options;
   }
@@ -86,17 +84,9 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     }
   }
 
-  private getSession(): ClientSession | undefined {
-    return appContext.get('mongoSession') as ClientSession | undefined;
-  }
-
-  async startSession(): Promise<ClientSession> {
-    return this.db.startSession();
-  }
-
   async save(data: Partial<DataType<T>>, _query?: any) {
-    const session = this.getSession();
     if (await this.documentExists(data)) {
+      // @ts-ignore
       const { __v: version, ...toSaveData } = data;
       const query =
         _query && (await this.documentExistsByQuery(_query)) ? _query : { _id: data._id };
@@ -105,7 +95,7 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       const saved = await this.db.findOneAndUpdate(
         query,
         { $set: toSaveData as UwaziUpdateQuery<DataType<T>>, $inc: { __v: 1 } },
-        { new: true, ...(session && { session }) }
+        { new: true }
       );
 
       if (saved === null) {
@@ -119,8 +109,7 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
   }
 
   async create(data: Partial<DataType<T>>) {
-    const session = this.getSession();
-    const saved = await this.db.create([data], session && { session });
+    const saved = await this.db.create([data]);
     await this.logHelper.upsertLogOne(saved[0]);
     return saved[0].toObject<WithId<T>>();
   }
@@ -147,9 +136,8 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
   }
 
   private async saveNew(existingIds: Set<string>, dataArray: Partial<DataType<T>>[]) {
-    const session = this.getSession();
     const newData = dataArray.filter(d => !d._id || !existingIds.has(d._id.toString()));
-    return (await this.db.createMany(newData, session && { session })) || [];
+    return (await this.db.createMany(newData)) || [];
   }
 
   private async saveExisting(
@@ -157,7 +145,6 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     query?: any,
     updateExisting: boolean = true
   ) {
-    const session = this.getSession();
     const ids: DataType<T>['_id'][] = [];
     dataArray.forEach(d => {
       if (d._id) {
@@ -168,7 +155,6 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       (
         await this.db.find({ _id: { $in: ids } } as UwaziFilterQuery<DataType<T>>, '_id', {
           lean: true,
-          ...(session && { session }),
         })
       ).map(d => d._id.toString())
     );
@@ -181,18 +167,13 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
             filter: { ...query, _id: data._id },
             update: data,
           },
-        })),
-        session && { session }
+        }))
       );
 
-      const updated = await this.db.find(
-        {
-          ...query,
-          _id: { $in: Array.from(existingIds) },
-        } as UwaziFilterQuery<DataType<T>>,
-        undefined,
-        session && { session }
-      );
+      const updated = await this.db.find({
+        ...query,
+        _id: { $in: Array.from(existingIds) },
+      } as UwaziFilterQuery<DataType<T>>);
 
       return { existingIds, existingData, updated };
     }
@@ -203,16 +184,14 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
   async updateMany(
     conditions: UwaziFilterQuery<DataType<T>>,
     doc: UwaziUpdateQuery<T>,
-    options: UwaziUpdateOptions<DataType<T>> = {}
+    options?: UwaziUpdateOptions<DataType<T>>
   ) {
-    const session = this.getSession();
     await this.logHelper.upsertLogMany(conditions);
-    return this.db._updateMany(conditions, doc, { ...options, ...(session && { session }) });
+    return this.db._updateMany(conditions, doc, options);
   }
 
   async count(query: UwaziFilterQuery<DataType<T>> = {}) {
-    const session = this.getSession();
-    return this.db.countDocuments(query, session && { session });
+    return this.db.countDocuments(query);
   }
 
   async get(
@@ -220,29 +199,22 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
     select: any = '',
     options: UwaziQueryOptions = {}
   ) {
-    const session = this.getSession();
-    const results = await this.db.find(query, select, {
-      ...options,
-      ...(session && { session }),
-      lean: true,
-    });
+    const results = await this.db.find(query, select, { lean: true, ...options });
     return results as EnforcedWithId<T>[];
   }
 
   async getById(id: any, select?: any) {
-    const session = this.getSession();
-    const results = await this.db.findById(id, select, { lean: true, ...(session && { session }) });
+    const results = await this.db.findById(id, select);
     return results as EnforcedWithId<T> | null;
   }
 
   async delete(condition: any) {
-    const session = this.getSession();
     let cond = condition;
     if (mongoose.Types.ObjectId.isValid(condition)) {
       cond = { _id: condition };
     }
     await this.logHelper.upsertLogMany(cond, true);
-    return this.db.deleteMany(cond, session && { session });
+    return this.db.deleteMany(cond);
   }
 
   async facet(aggregations: any[], pipelines: any, project: any) {

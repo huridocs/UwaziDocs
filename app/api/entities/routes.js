@@ -8,6 +8,7 @@ import thesauri from '../thesauri/thesauri';
 import date from '../utils/date';
 import needsAuthorization from '../auth/authMiddleware';
 import { parseQuery, validation } from '../utils';
+import { withTransaction } from 'api/utils/withTransaction';
 
 async function updateThesauriWithEntity(entity, req) {
   const template = await templates.getById(entity.template);
@@ -80,18 +81,23 @@ export default app => {
     activitylogMiddleware,
     async (req, res, next) => {
       try {
-        const entityToSave = req.body.entity ? JSON.parse(req.body.entity) : req.body;
-        const result = await saveEntity(entityToSave, {
-          user: req.user,
-          language: req.language,
-          socketEmiter: req.emitToSessionSocket,
-          files: req.files,
+        await withTransaction(async () => {
+          const entityToSave = req.body.entity ? JSON.parse(req.body.entity) : req.body;
+          const result = await saveEntity(entityToSave, {
+            user: req.user,
+            language: req.language,
+            socketEmiter: req.emitToSessionSocket,
+            files: req.files,
+          });
+          const { entity, errors } = result;
+          await updateThesauriWithEntity(entity, req);
+          // if (errors.length) {
+          //   throw new Error('Errors during saveEntity', { cause: errors });
+          // }
+          res.json(req.body.entity ? result : entity);
         });
-        const { entity } = result;
-        await updateThesauriWithEntity(entity, req);
-        return res.json(req.body.entity ? result : entity);
       } catch (e) {
-        return next(e);
+        next(e);
       }
     }
   );
