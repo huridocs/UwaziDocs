@@ -1,4 +1,6 @@
 import { Template } from 'api/templates.v2/model/Template';
+import { TargetTemplateInvalidError } from './TargetTemplateInvalidError';
+import { TargetSourceTemplateEqualError } from './TargetSourceTemplateEqualError';
 
 export enum ExtractorStatus {
   Running,
@@ -9,7 +11,6 @@ export type ExtractorProps = {
   id: string;
   sourceTemplate: Template;
   targetTemplate: Template;
-  status: ExtractorStatus;
 };
 
 export class Extractor {
@@ -19,40 +20,21 @@ export class Extractor {
 
   sourceTemplate: Template;
 
-  status: ExtractorStatus;
-
   constructor(props: ExtractorProps) {
     this.id = props.id;
     this.targetTemplate = props.targetTemplate;
     this.sourceTemplate = props.sourceTemplate;
-    this.status = props.status;
 
     this.validate();
   }
 
   private validate() {
-    if (!this.targetTemplate.getPropertiesByType('markdown')) {
-      throw new Error('Target template should have at least one "markdown" property type');
+    if (!this.targetTemplate.getPropertiesByType('markdown').length) {
+      throw new TargetTemplateInvalidError(this.targetTemplate.id);
     }
 
     if (this.targetTemplate.id === this.sourceTemplate.id) {
-      throw new Error('Target and Source template cannot be the same');
+      throw new TargetSourceTemplateEqualError();
     }
-  }
-
-  isRunning() {
-    return this.status === ExtractorStatus.Running;
-  }
-
-  isIdle() {
-    return this.status === ExtractorStatus.Idle;
-  }
-
-  changeToIdle() {
-    this.status = ExtractorStatus.Idle;
-  }
-
-  changeToRunning() {
-    this.status = ExtractorStatus.Running;
   }
 }

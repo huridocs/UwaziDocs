@@ -1,8 +1,10 @@
 import { z } from 'zod';
 import { UseCase } from 'api/common.v2/contracts/UseCase';
-import { Extractor, ExtractorStatus } from 'api/paragraphExtraction/domain/Extractor';
+import { Extractor } from 'api/paragraphExtraction/domain/Extractor';
 import { ExtractorDataSource } from 'api/paragraphExtraction/domain/ExtractorDataSource';
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
+import { TargetTemplateNotFoundError } from 'api/paragraphExtraction/domain/TargetTemplateNotFoundError';
+import { SourceTemplateNotFoundError } from 'api/paragraphExtraction/domain/SourceTemplateNotFoundError copy';
 
 type Input = z.infer<typeof InputSchema>;
 type Output = Extractor;
@@ -22,26 +24,23 @@ export class CreateExtractorUseCase implements UseCase<Input, Output> {
   constructor(private dependencies: Dependencies) {} // Eslint rules are disabled to take advantage of properties shorthand declaration
 
   async execute(input: Input): Promise<Output> {
-    InputSchema.parse(input);
-
     const [targetTemplate, sourceTemplate] = await Promise.all([
       this.dependencies.templatesDS.getById(input.targetTemplateId),
       this.dependencies.templatesDS.getById(input.sourceTemplateId),
     ]);
 
     if (!targetTemplate) {
-      throw new Error(`Target template with id ${input.targetTemplateId} was not found`);
+      throw new TargetTemplateNotFoundError(input.targetTemplateId);
     }
 
     if (!sourceTemplate) {
-      throw new Error(`Source template with id ${input.targetTemplateId} was not found`);
+      throw new SourceTemplateNotFoundError(input.sourceTemplateId);
     }
 
     const extractor = new Extractor({
       id: this.dependencies.extractorDS.nextId(),
       targetTemplate,
       sourceTemplate,
-      status: ExtractorStatus.Idle,
     });
 
     await this.dependencies.extractorDS.create(extractor);
