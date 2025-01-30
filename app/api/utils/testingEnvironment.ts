@@ -6,6 +6,9 @@ import { UserInContextMockFactory } from 'api/utils/testingUserInContext';
 import { setupTestUploadedPaths } from 'api/files';
 import { UserSchema } from 'shared/types/userType';
 
+let appContextGetMock: jest.SpyInstance<unknown, [key: string], any>;
+let appContextSetMock: jest.SpyInstance<unknown, [key: string, value: unknown], any>;
+
 const testingEnvironment = {
   userInContextMockFactory: new UserInContextMockFactory(),
 
@@ -29,18 +32,18 @@ const testingEnvironment = {
   setFakeContext() {
     const originalAppContextGet = appContext.get.bind(appContext);
 
-    jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
+    appContextGetMock = jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
       if (key === 'mongoSession') {
         return undefined;
       }
       return originalAppContextGet(key);
     });
-    jest.spyOn(appContext, 'set').mockImplementation(() => {});
+    appContextSetMock = jest.spyOn(appContext, 'set').mockImplementation(() => {});
   },
 
   unsetFakeContext() {
-    appContext.get.mockRestore();
-    appContext.set.mockRestore();
+    appContextGetMock.mockRestore();
+    appContextSetMock.mockRestore();
   },
 
   async setFixtures(fixtures?: DBFixture) {

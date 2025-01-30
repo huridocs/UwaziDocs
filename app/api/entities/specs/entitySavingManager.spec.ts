@@ -1,15 +1,13 @@
 /* eslint-disable max-lines */
 import { saveEntity } from 'api/entities/entitySavingManager';
+import * as os from 'os';
 import { attachmentsPath, fileExistsOnPath, files as filesAPI, uploadsPath } from 'api/files';
 import * as processDocumentApi from 'api/files/processDocument';
 import { search } from 'api/search';
 import db from 'api/utils/testing_db';
 import { advancedSort } from 'app/utils/advancedSort';
-import * as os from 'os';
 // eslint-disable-next-line node/no-restricted-import
 import { writeFile } from 'fs/promises';
-import { appContext } from 'api/utils/AppContext';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { EntityWithFilesSchema } from 'shared/types/entityType';
@@ -30,6 +28,7 @@ import {
   template2Id,
   textFile,
 } from './entitySavingManagerFixtures';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 const validPdfString = `
 %PDF-1.0
@@ -220,10 +219,10 @@ describe('entitySavingManager', () => {
         };
       });
 
-      // it('should continue saving if a file fails to save', async () => {
-      //   const { entity: savedEntity } = await saveEntity(entity, { ...reqData });
-      //   expect(savedEntity.attachments).toEqual([textFile]);
-      // });
+      it('should continue saving if a file fails to save', async () => {
+        const { entity: savedEntity } = await saveEntity(entity, { ...reqData });
+        expect(savedEntity.attachments).toEqual([textFile]);
+      });
 
       it('should return an error', async () => {
         const { errors } = await saveEntity(entity, { ...reqData });
@@ -593,10 +592,9 @@ describe('entitySavingManager', () => {
             _id: mainPdfFileId.toString(),
             originalname: 'Renamed main pdf.pdf',
           });
-          processDocumentApi.processDocument.mockRestore();
         });
 
-        it('should throw an error if a document cannot be saved', async () => {
+        it('should return an error if an existing main document cannot be saved', async () => {
           jest.spyOn(filesAPI, 'save').mockRejectedValueOnce({ error: { name: 'failed' } });
 
           const { errors } = await saveEntity(
@@ -613,7 +611,6 @@ describe('entitySavingManager', () => {
             }
           );
           expect(errors[0]).toBe('Could not save file/s: changed.pdf');
-          filesAPI.save.mockRestore();
         });
       });
     });

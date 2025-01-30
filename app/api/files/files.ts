@@ -27,11 +27,11 @@ const deduceMimeType = (_file: FileType) => {
 };
 
 export const files = {
-  async save(_file: FileType, index = true, session?: ClientSession) {
+  async save(_file: FileType, index = true) {
     const file = deduceMimeType(_file);
 
     const existingFile = file._id ? await filesModel.getById(file._id) : undefined;
-    const savedFile = await filesModel.save(await validateFile(file), undefined, session);
+    const savedFile = await filesModel.save(await validateFile(file), undefined);
     if (index) {
       await search.indexEntities({ sharedId: savedFile.entity }, '+fullText');
     }
@@ -53,8 +53,7 @@ export const files = {
     return savedFile;
   },
 
-  get: (query: any, select?: any, options?: { session?: ClientSession }) => 
-    filesModel.get(query, select, options),
+  get: filesModel.get.bind(filesModel),
 
   async delete(query: any = {}) {
     const hasFileName = (file: FileType): file is FileType & { filename: string } =>

@@ -130,7 +130,7 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       throw Error('A document was not updated!');
     }
 
-    const saved = updated.concat(created);
+    const saved = created.concat(updated);
     await Promise.all(saved.map(async s => this.logHelper.upsertLogOne(s)));
     return saved.map(s => s.toObject<WithId<T>>());
   }
@@ -152,11 +152,7 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       }
     });
     const existingIds = new Set<string>(
-      (
-        await this.db.find({ _id: { $in: ids } } as UwaziFilterQuery<DataType<T>>, '_id', {
-          lean: true,
-        })
-      ).map(d => d._id.toString())
+      (await this.db.find({ _id: { $in: ids } }, '_id', { lean: true })).map(d => d._id.toString())
     );
 
     const existingData = dataArray.filter(d => d._id && existingIds.has(d._id.toString()));

@@ -90,38 +90,6 @@ export class S3Storage {
       )
     );
   }
-
-  async uploadMany(files: { key: string; body: Buffer }[]) {
-    const uploadedKeys: string[] = [];
-
-    try {
-      const uploadPromises = files.map(async ({ key, body }) => {
-        const result = await this.client.send(
-          new PutObjectCommand({
-            Bucket: S3Storage.bucketName(),
-            Key: key,
-            Body: body,
-          })
-        );
-        uploadedKeys.push(key);
-        return result;
-      });
-
-      return await catchS3Errors(async () => Promise.all(uploadPromises));
-    } catch (error) {
-      // If any upload fails, delete all successfully uploaded files
-      if (uploadedKeys.length > 0) {
-        const deletePromises = uploadedKeys.map(async key => this.delete(key));
-        await Promise.all(deletePromises).catch(deleteError => {
-          // Enhance the original error with cleanup failure information
-          throw new Error(
-            `Upload failed and cleanup was incomplete. Original error: ${error.message}. Cleanup error: ${deleteError.message}`
-          );
-        });
-      }
-      throw error;
-    }
-  }
 }
 
 export { S3TimeoutError };

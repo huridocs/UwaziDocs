@@ -41,7 +41,7 @@ export class MongooseModelWrapper<T> {
     });
   }
 
-  find(query: UwaziFilterQuery<DataType<T>>, select = '', options: any = {}) {
+  find(query: UwaziFilterQuery<DataType<T>>, select = '', options = {}) {
     const session = dbSessionContext.getSession();
     return this.dbForCurrentTenant().find(query, select, {
       ...options,
