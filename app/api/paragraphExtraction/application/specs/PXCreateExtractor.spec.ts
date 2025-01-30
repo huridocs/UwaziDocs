@@ -7,10 +7,7 @@ import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_sourc
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 
-import { SourceTemplateNotFoundError } from '../../domain/SourceTemplateNotFoundError';
-import { TargetSourceTemplateEqualError } from '../../domain/TargetSourceTemplateEqualError';
-import { TargetTemplateInvalidError } from '../../domain/TargetTemplateInvalidError';
-import { TargetTemplateNotFoundError } from '../../domain/TargetTemplateNotFoundError';
+import { PXErrorCode } from 'api/paragraphExtraction/domain/PXValidationError';
 import {
   mongoPXExtractorsCollection,
   MongoPXExtractorsDataSource,
@@ -72,7 +69,6 @@ describe('PXCreateExtractor', () => {
 
   it('should throw if target Template does not exist', async () => {
     const { createExtractor } = setUpUseCase();
-
     const targetTemplateId = new ObjectId().toString();
 
     const promise = createExtractor.execute({
@@ -80,12 +76,13 @@ describe('PXCreateExtractor', () => {
       targetTemplateId,
     });
 
-    await expect(promise).rejects.toEqual(new TargetTemplateNotFoundError(targetTemplateId));
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.TARGET_TEMPLATE_NOT_FOUND,
+    });
   });
 
   it('should throw if source Template does not exist', async () => {
     const { createExtractor } = setUpUseCase();
-
     const sourceTemplateId = new ObjectId().toString();
 
     const promise = createExtractor.execute({
@@ -93,7 +90,9 @@ describe('PXCreateExtractor', () => {
       sourceTemplateId,
     });
 
-    await expect(promise).rejects.toEqual(new SourceTemplateNotFoundError(sourceTemplateId));
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.SOURCE_TEMPLATE_NOT_FOUND,
+    });
   });
 
   it('should throw if target template is not valid for create an Extractor', async () => {
@@ -104,12 +103,11 @@ describe('PXCreateExtractor', () => {
       targetTemplateId: invalidTargetTemplate._id.toString(),
     });
 
-    await expect(promise).rejects.toEqual(
-      new TargetTemplateInvalidError(invalidTargetTemplate._id.toString())
-    );
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.TARGET_TEMPLATE_INVALID,
+    });
 
     const dbPXExtractors = await testingEnvironment.db.getAllFrom(mongoPXExtractorsCollection);
-
     expect(dbPXExtractors).toEqual([]);
   });
 
@@ -121,10 +119,11 @@ describe('PXCreateExtractor', () => {
       targetTemplateId: targetTemplate._id.toString(),
     });
 
-    await expect(promise).rejects.toEqual(new TargetSourceTemplateEqualError());
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.TARGET_SOURCE_TEMPLATE_EQUAL,
+    });
 
     const dbPXExtractors = await testingEnvironment.db.getAllFrom(mongoPXExtractorsCollection);
-
     expect(dbPXExtractors).toEqual([]);
   });
 });

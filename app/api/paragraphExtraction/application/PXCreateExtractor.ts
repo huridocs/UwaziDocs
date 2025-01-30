@@ -3,11 +3,10 @@ import { z } from 'zod';
 import { UseCase } from 'api/common.v2/contracts/UseCase';
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
 
+import { IdGenerator } from 'api/common.v2/contracts/IdGenerator';
 import { PXExtractor } from '../domain/PXExtractor';
 import { PXExtractorsDataSource } from '../domain/PXExtractorDataSource';
-import { SourceTemplateNotFoundError } from '../domain/SourceTemplateNotFoundError';
-import { TargetTemplateNotFoundError } from '../domain/TargetTemplateNotFoundError';
-import { IdGenerator } from 'api/common.v2/contracts/IdGenerator';
+import { PXErrorCode, PXValidationError } from '../domain/PXValidationError';
 
 type Input = z.infer<typeof InputSchema>;
 type Output = PXExtractor;
@@ -33,11 +32,17 @@ export class PXCreateExtractor implements UseCase<Input, Output> {
     ]);
 
     if (!targetTemplate) {
-      throw new TargetTemplateNotFoundError(input.targetTemplateId);
+      throw new PXValidationError(
+        PXErrorCode.TARGET_TEMPLATE_NOT_FOUND,
+        `Target template with id ${input.targetTemplateId} was not found`
+      );
     }
 
     if (!sourceTemplate) {
-      throw new SourceTemplateNotFoundError(input.sourceTemplateId);
+      throw new PXValidationError(
+        PXErrorCode.SOURCE_TEMPLATE_NOT_FOUND,
+        `Source template with id ${input.sourceTemplateId} was not found`
+      );
     }
 
     const extractor = new PXExtractor({

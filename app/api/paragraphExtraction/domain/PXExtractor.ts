@@ -1,6 +1,5 @@
 import { Template } from 'api/templates.v2/model/Template';
-import { TargetTemplateInvalidError } from './TargetTemplateInvalidError';
-import { TargetSourceTemplateEqualError } from './TargetSourceTemplateEqualError';
+import { PXValidationError, PXErrorCode } from './PXValidationError';
 
 export type PXExtractorProps = {
   id: string;
@@ -25,11 +24,17 @@ export class PXExtractor {
 
   private validate() {
     if (!this.targetTemplate.getPropertiesByType('markdown').length) {
-      throw new TargetTemplateInvalidError(this.targetTemplate.id);
+      throw new PXValidationError(
+        PXErrorCode.TARGET_TEMPLATE_INVALID,
+        `Target template with id ${this.targetTemplate.id} should have at least one rich text property`
+      );
     }
 
     if (this.targetTemplate.id === this.sourceTemplate.id) {
-      throw new TargetSourceTemplateEqualError();
+      throw new PXValidationError(
+        PXErrorCode.TARGET_SOURCE_TEMPLATE_EQUAL,
+        'Target and Source template cannot be the same'
+      );
     }
   }
 }
