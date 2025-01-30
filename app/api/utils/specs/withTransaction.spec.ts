@@ -1,4 +1,5 @@
 import { instanceModel } from 'api/odm/model';
+import { dbSessionContext } from 'api/odm/sessionsContext';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { withTransaction } from 'api/utils/withTransaction';
 import { ClientSession } from 'mongodb';
@@ -82,7 +83,7 @@ describe('withTransaction utility', () => {
         await model.save({ title: 'test3' });
       });
 
-      const session = appContext.get('mongoSession');
+      const session = dbSessionContext.getSession();
       expect(session).toBeUndefined();
     });
   });
@@ -90,12 +91,12 @@ describe('withTransaction utility', () => {
   it('should maintain session context during transaction', async () => {
     await appContext.run(async () => {
       await withTransaction(async () => {
-        const session = appContext.get('mongoSession') as ClientSession;
+        const session = dbSessionContext.getSession();
         expect(session).toBeTruthy();
-        expect(session.inTransaction()).toBe(true);
+        expect(session?.inTransaction()).toBe(true);
 
         await model.save({ title: 'test4' });
-        expect(appContext.get('mongoSession')).toBe(session);
+        expect(dbSessionContext.getSession()).toBe(session);
       });
     });
   });
@@ -143,6 +144,71 @@ describe('withTransaction utility', () => {
 
       const docs = await model.get({});
       expect(docs).toMatchObject([{ title: 'concurrent' }]);
+    });
+  });
+
+  describe('manual abort', () => {
+    it('should allow manual abort without throwing error', async () => {
+      await appContext.run(async () => {
+        await withTransaction(async ({ abort }) => {
+          await model.save({ title: 'manual-abort', value: 1 });
+          await abort();
+        });
+
+        const session = dbSessionContext.getSession();
+        expect(session).toBeUndefined();
+        const docs = await model.get({ title: 'manual-abort' });
+        expect(docs).toHaveLength(0);
+      });
+    });
+
+    it('should clean up session after manual abort', async () => {
+      await appContext.run(async () => {
+        await withTransaction(async ({ abort }) => {
+          const sessionBeforeAbort = dbSessionContext.getSession();
+          expect(sessionBeforeAbort).toBeTruthy();
+          expect(sessionBeforeAbort?.inTransaction()).toBe(true);
+
+          await model.save({ title: 'session-cleanup', value: 1 });
+          await abort();
+        });
+
+        expect(dbSessionContext.getSession()).toBeUndefined();
+        const docs = await model.get({ title: 'session-cleanup' });
+        expect(docs).toHaveLength(0);
+      });
+    });
+
+    it('should abort transaction even if subsequent operations fail', async () => {
+      await appContext.run(async () => {
+        let error;
+        try {
+          await withTransaction(async ({ abort }) => {
+            await model.save({ title: 'abort-then-error', value: 1 });
+            await abort();
+            throw new Error('Subsequent error');
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        expect(error?.message).toBe('Subsequent error');
+        const docs = await model.get({ title: 'abort-then-error' });
+        expect(docs).toHaveLength(0);
+      });
+    });
+
+    it('should end session after abort', async () => {
+      await appContext.run(async () => {
+        let sessionToTest: ClientSession | undefined;
+        await withTransaction(async ({ abort }) => {
+          sessionToTest = dbSessionContext.getSession();
+          await model.save({ title: 'session-ended', value: 1 });
+          await abort();
+        });
+
+        expect(sessionToTest?.hasEnded).toBe(true);
+      });
     });
   });
 });

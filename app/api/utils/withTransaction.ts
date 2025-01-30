@@ -1,30 +1,35 @@
-import entities from 'api/entities/entities';
 import { dbSessionContext } from 'api/odm/sessionsContext';
-import { search } from 'api/search';
-import { appContext } from 'api/utils/AppContext';
 
-// const indexEntities = search.indexEntities.bind(search);
-const indexCalls = [];
-// search.indexEntities = async (...args) => {
-//   if (appContext.get('mongoSession')) {
-//     indexCalls.push(args);
-//     return;
-//   }
-//   await indexEntities(...args);
-// };
+interface TransactionOperation {
+  abort: () => Promise<void>;
+}
 
-const withTransaction = async <T>(operation: () => Promise<T>): Promise<T> => {
+const withTransaction = async <T>(
+  operation: (context: TransactionOperation) => Promise<T>
+): Promise<T> => {
   const session = await dbSessionContext.startSession();
   session.startTransaction();
+  let wasManuallyAborted = false;
+
+  const context: TransactionOperation = {
+    abort: async () => {
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
+      wasManuallyAborted = true;
+    },
+  };
 
   try {
-    const result = await operation();
-
-    await session.commitTransaction();
-    // await Promise.all(indexCalls.map(indexArgs => indexEntities(...indexArgs)));
+    const result = await operation(context);
+    if (!wasManuallyAborted) {
+      await session.commitTransaction();
+    }
     return result;
   } catch (e) {
-    await session.abortTransaction();
+    if (!wasManuallyAborted) {
+      await session.abortTransaction();
+    }
     throw e;
   } finally {
     dbSessionContext.clearSession();
