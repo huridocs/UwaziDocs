@@ -2,25 +2,20 @@ import { Template } from 'api/templates.v2/model/Template';
 import { TargetTemplateInvalidError } from './TargetTemplateInvalidError';
 import { TargetSourceTemplateEqualError } from './TargetSourceTemplateEqualError';
 
-export enum ExtractorStatus {
-  Running,
-  Idle,
-}
-
-export type ExtractorProps = {
+export type PXExtractorProps = {
   id: string;
   sourceTemplate: Template;
   targetTemplate: Template;
 };
 
-export class Extractor {
+export class PXExtractor {
   id: string;
 
   targetTemplate: Template;
 
   sourceTemplate: Template;
 
-  constructor(props: ExtractorProps) {
+  constructor(props: PXExtractorProps) {
     this.id = props.id;
     this.targetTemplate = props.targetTemplate;
     this.sourceTemplate = props.sourceTemplate;

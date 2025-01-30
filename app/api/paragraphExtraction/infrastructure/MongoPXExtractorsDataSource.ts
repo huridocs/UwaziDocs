@@ -3,15 +3,15 @@ import { MongoDataSource } from 'api/common.v2/database/MongoDataSource';
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
 import { MongoTransactionManager } from 'api/common.v2/database/MongoTransactionManager';
 import { MongoResultSet } from 'api/common.v2/database/MongoResultSet';
-import { ExtractorDataSource } from '../domain/ExtractorDataSource';
-import { Extractor } from '../domain/Extractor';
-import { MongoExtractor } from './MongoExtractor';
+import { PXExtractorsDataSource } from '../domain/PXExtractorDataSource';
+import { PXExtractor } from '../domain/PXExtractor';
+import { MongoPXExtractorDBO } from './MongoPXExtractorDBO';
 
-export const mongoExtractorsCollectionName = 'paragraph_extraction_extractors';
+export const mongoExtractorsCollectionName = 'px_extractors';
 
-export class MongoExtractorsDataSource
-  extends MongoDataSource<MongoExtractor>
-  implements ExtractorDataSource
+export class MongoPXExtractorsDataSource
+  extends MongoDataSource<MongoPXExtractorDBO>
+  implements PXExtractorsDataSource
 {
   private templatesDS: TemplatesDataSource;
 
@@ -27,7 +27,7 @@ export class MongoExtractorsDataSource
     this.templatesDS = templatesDS;
   }
 
-  getById(id: string): Promise<Extractor | undefined> {
+  getById(id: string): Promise<PXExtractor | undefined> {
     throw new Error('Method not implemented.');
   }
 
@@ -47,7 +47,7 @@ export class MongoExtractorsDataSource
         throw new Error('Template does not exist');
       }
 
-      return new Extractor({
+      return new PXExtractor({
         id: dbo._id.toString(),
         sourceTemplate,
         targetTemplate,
@@ -57,8 +57,8 @@ export class MongoExtractorsDataSource
     return extractors;
   }
 
-  async create(extractor: Extractor): Promise<void> {
-    const mongoExtractor: MongoExtractor = {
+  async create(extractor: PXExtractor): Promise<void> {
+    const mongoExtractor: MongoPXExtractorDBO = {
       _id: new ObjectId(extractor.id),
       sourceTemplateId: new ObjectId(extractor.sourceTemplate.id),
       targetTemplateId: new ObjectId(extractor.targetTemplate.id),

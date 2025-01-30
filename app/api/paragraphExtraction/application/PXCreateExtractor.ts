@@ -1,17 +1,19 @@
 import { z } from 'zod';
+
 import { UseCase } from 'api/common.v2/contracts/UseCase';
-import { Extractor } from 'api/paragraphExtraction/domain/Extractor';
-import { ExtractorDataSource } from 'api/paragraphExtraction/domain/ExtractorDataSource';
 import { TemplatesDataSource } from 'api/templates.v2/contracts/TemplatesDataSource';
-import { TargetTemplateNotFoundError } from 'api/paragraphExtraction/domain/TargetTemplateNotFoundError';
-import { SourceTemplateNotFoundError } from 'api/paragraphExtraction/domain/SourceTemplateNotFoundError copy';
+
+import { PXExtractor } from '../domain/PXExtractor';
+import { PXExtractorsDataSource } from '../domain/PXExtractorDataSource';
+import { SourceTemplateNotFoundError } from '../domain/SourceTemplateNotFoundError';
+import { TargetTemplateNotFoundError } from '../domain/TargetTemplateNotFoundError';
 
 type Input = z.infer<typeof InputSchema>;
-type Output = Extractor;
+type Output = PXExtractor;
 
 type Dependencies = {
   templatesDS: TemplatesDataSource;
-  extractorDS: ExtractorDataSource;
+  extractorDS: PXExtractorsDataSource;
 };
 
 const InputSchema = z.object({
@@ -19,9 +21,8 @@ const InputSchema = z.object({
   sourceTemplateId: z.string({ message: 'You should provide a source template' }),
 });
 
-export class CreateExtractorUseCase implements UseCase<Input, Output> {
-  // eslint-disable-next-line no-useless-constructor, no-empty-function
-  constructor(private dependencies: Dependencies) {} // Eslint rules are disabled to take advantage of properties shorthand declaration
+export class PXCreateExtractor implements UseCase<Input, Output> {
+  constructor(private dependencies: Dependencies) {}
 
   async execute(input: Input): Promise<Output> {
     const [targetTemplate, sourceTemplate] = await Promise.all([
@@ -37,7 +38,7 @@ export class CreateExtractorUseCase implements UseCase<Input, Output> {
       throw new SourceTemplateNotFoundError(input.sourceTemplateId);
     }
 
-    const extractor = new Extractor({
+    const extractor = new PXExtractor({
       id: this.dependencies.extractorDS.nextId(),
       targetTemplate,
       sourceTemplate,

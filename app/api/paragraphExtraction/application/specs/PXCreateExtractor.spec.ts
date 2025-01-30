@@ -1,45 +1,56 @@
 import { ObjectId } from 'mongodb';
-import db from 'api/utils/testing_db';
-import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_source_defaults';
-import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
-import { MongoExtractorsDataSource } from 'api/paragraphExtraction/infrastructure/MongoExtractorsDataSource.ts';
-import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
-import { SourceTemplateNotFoundError } from 'api/paragraphExtraction/domain/SourceTemplateNotFoundError copy';
-import { TargetTemplateNotFoundError } from 'api/paragraphExtraction/domain/TargetTemplateNotFoundError';
-import { TargetTemplateInvalidError } from 'api/paragraphExtraction/domain/TargetTemplateInvalidError';
-import { TargetSourceTemplateEqualError } from 'api/paragraphExtraction/domain/TargetSourceTemplateEqualError';
-import { CreateExtractorUseCase } from '../CreateExtractorUseCase';
-import { fixtures, sourceTemplate, targetTemplate } from './fixtures';
 
-const createSut = () => {
+import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
+import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
+import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_source_defaults';
+import { getFixturesFactory } from 'api/utils/fixturesFactory';
+import db from 'api/utils/testing_db';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
+
+import { SourceTemplateNotFoundError } from '../../domain/SourceTemplateNotFoundError';
+import { TargetSourceTemplateEqualError } from '../../domain/TargetSourceTemplateEqualError';
+import { TargetTemplateInvalidError } from '../../domain/TargetTemplateInvalidError';
+import { TargetTemplateNotFoundError } from '../../domain/TargetTemplateNotFoundError';
+import { MongoPXExtractorsDataSource } from '../../infrastructure/MongoPXExtractorsDataSource';
+import { PXCreateExtractor } from '../PXCreateExtractor';
+
+const factory = getFixturesFactory();
+
+const setUpUseCase = () => {
   const transaction = DefaultTransactionManager();
   const templatesDS = DefaultTemplatesDataSource(transaction);
 
-  const extractorDS = new MongoExtractorsDataSource(getConnection(), transaction, templatesDS);
+  const extractorDS = new MongoPXExtractorsDataSource(getConnection(), transaction, templatesDS);
 
   return {
-    templatesDS,
-    extractorDS,
-    sut: new CreateExtractorUseCase({
+    createExtractor: new PXCreateExtractor({
       extractorDS,
       templatesDS,
     }),
   };
 };
 
-describe('CreateExtractorUseCase', () => {
+const sourceTemplate = factory.template('Source Template', [factory.property('text', 'text')]);
+const targetTemplate = factory.template('Target Template', [
+  factory.property('rich_text', 'markdown'),
+]);
+const invalidTargetTemplate = factory.template('Invalid Target');
+
+describe('PXCreateExtractor', () => {
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp({
+      templates: [sourceTemplate, targetTemplate, invalidTargetTemplate],
+    });
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   it('should create an Extractor correctly', async () => {
-    const { sut } = createSut();
+    const { createExtractor } = setUpUseCase();
 
-    await sut.execute({
+    await createExtractor.execute({
       sourceTemplateId: sourceTemplate._id.toString(),
       targetTemplateId: targetTemplate._id.toString(),
     });
@@ -56,11 +67,11 @@ describe('CreateExtractorUseCase', () => {
   });
 
   it('should throw if target Template does not exist', async () => {
-    const { sut } = createSut();
+    const { createExtractor } = setUpUseCase();
 
     const targetTemplateId = new ObjectId().toString();
 
-    const promise = sut.execute({
+    const promise = createExtractor.execute({
       sourceTemplateId: sourceTemplate._id.toString(),
       targetTemplateId,
     });
@@ -69,11 +80,11 @@ describe('CreateExtractorUseCase', () => {
   });
 
   it('should throw if source Template does not exist', async () => {
-    const { sut } = createSut();
+    const { createExtractor } = setUpUseCase();
 
     const sourceTemplateId = new ObjectId().toString();
 
-    const promise = sut.execute({
+    const promise = createExtractor.execute({
       targetTemplateId: sourceTemplate._id.toString(),
       sourceTemplateId,
     });
@@ -82,20 +93,15 @@ describe('CreateExtractorUseCase', () => {
   });
 
   it('should throw if target template is not valid for create an Extractor', async () => {
-    await db.setupFixturesAndContext({
-      ...fixtures,
-      templates: [{ ...targetTemplate, properties: [] }, sourceTemplate],
-    });
+    const { createExtractor } = setUpUseCase();
 
-    const { sut } = createSut();
-
-    const promise = sut.execute({
+    const promise = createExtractor.execute({
       sourceTemplateId: sourceTemplate._id.toString(),
-      targetTemplateId: targetTemplate._id.toString(),
+      targetTemplateId: invalidTargetTemplate._id.toString(),
     });
 
     await expect(promise).rejects.toEqual(
-      new TargetTemplateInvalidError(targetTemplate._id.toString())
+      new TargetTemplateInvalidError(invalidTargetTemplate._id.toString())
     );
 
     const mongoExtractors = await db.paragraphExtractionExtractors()?.find().toArray();
@@ -104,9 +110,9 @@ describe('CreateExtractorUseCase', () => {
   });
 
   it('should throw if target and source template are the same', async () => {
-    const { sut } = createSut();
+    const { createExtractor } = setUpUseCase();
 
-    const promise = sut.execute({
+    const promise = createExtractor.execute({
       sourceTemplateId: targetTemplate._id.toString(),
       targetTemplateId: targetTemplate._id.toString(),
     });
