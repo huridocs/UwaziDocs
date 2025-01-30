@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 
 import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
 import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
+import { MongoIdHandler } from 'api/common.v2/database/MongoIdGenerator';
 import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_source_defaults';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import db from 'api/utils/testing_db';
@@ -20,12 +21,13 @@ const setUpUseCase = () => {
   const transaction = DefaultTransactionManager();
   const templatesDS = DefaultTemplatesDataSource(transaction);
 
-  const extractorDS = new MongoPXExtractorsDataSource(getConnection(), transaction, templatesDS);
+  const extractorDS = new MongoPXExtractorsDataSource(getConnection(), transaction);
 
   return {
     createExtractor: new PXCreateExtractor({
       extractorDS,
       templatesDS,
+      idGenerator: MongoIdHandler,
     }),
   };
 };
