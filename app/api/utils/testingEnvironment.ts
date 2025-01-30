@@ -59,6 +59,12 @@ const testingEnvironment = {
   async tearDown() {
     await testingDB.disconnect();
   },
+
+  db: {
+    async getAllFrom(collectionName: string) {
+      return testingDB.mongodb?.collection(collectionName).find().toArray();
+    },
+  },
 };
 
 export { testingEnvironment };

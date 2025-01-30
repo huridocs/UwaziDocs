@@ -5,14 +5,16 @@ import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTen
 import { MongoIdHandler } from 'api/common.v2/database/MongoIdGenerator';
 import { DefaultTemplatesDataSource } from 'api/templates.v2/database/data_source_defaults';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
-import db from 'api/utils/testing_db';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 import { SourceTemplateNotFoundError } from '../../domain/SourceTemplateNotFoundError';
 import { TargetSourceTemplateEqualError } from '../../domain/TargetSourceTemplateEqualError';
 import { TargetTemplateInvalidError } from '../../domain/TargetTemplateInvalidError';
 import { TargetTemplateNotFoundError } from '../../domain/TargetTemplateNotFoundError';
-import { MongoPXExtractorsDataSource } from '../../infrastructure/MongoPXExtractorsDataSource';
+import {
+  mongoPXExtractorsCollection,
+  MongoPXExtractorsDataSource,
+} from '../../infrastructure/MongoPXExtractorsDataSource';
 import { PXCreateExtractor } from '../PXCreateExtractor';
 
 const factory = getFixturesFactory();
@@ -57,9 +59,9 @@ describe('PXCreateExtractor', () => {
       targetTemplateId: targetTemplate._id.toString(),
     });
 
-    const mongoExtractors = await db.paragraphExtractionExtractors()?.find().toArray();
+    const dbPXExtractors = await testingEnvironment.db.getAllFrom(mongoPXExtractorsCollection);
 
-    expect(mongoExtractors).toEqual([
+    expect(dbPXExtractors).toEqual([
       {
         _id: expect.any(ObjectId),
         sourceTemplateId: expect.any(ObjectId),
@@ -106,9 +108,9 @@ describe('PXCreateExtractor', () => {
       new TargetTemplateInvalidError(invalidTargetTemplate._id.toString())
     );
 
-    const mongoExtractors = await db.paragraphExtractionExtractors()?.find().toArray();
+    const dbPXExtractors = await testingEnvironment.db.getAllFrom(mongoPXExtractorsCollection);
 
-    expect(mongoExtractors).toEqual([]);
+    expect(dbPXExtractors).toEqual([]);
   });
 
   it('should throw if target and source template are the same', async () => {
@@ -121,8 +123,8 @@ describe('PXCreateExtractor', () => {
 
     await expect(promise).rejects.toEqual(new TargetSourceTemplateEqualError());
 
-    const mongoExtractors = await db.paragraphExtractionExtractors()?.find().toArray();
+    const dbPXExtractors = await testingEnvironment.db.getAllFrom(mongoPXExtractorsCollection);
 
-    expect(mongoExtractors).toEqual([]);
+    expect(dbPXExtractors).toEqual([]);
   });
 });

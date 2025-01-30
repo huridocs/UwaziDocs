@@ -4,13 +4,13 @@ import { PXExtractor } from '../domain/PXExtractor';
 import { PXExtractorsDataSource } from '../domain/PXExtractorDataSource';
 import { MongoPXExtractorDBO } from './MongoPXExtractorDBO';
 
-export const mongoExtractorsCollectionName = 'px_extractors';
+export const mongoPXExtractorsCollection = 'px_extractors';
 
 export class MongoPXExtractorsDataSource
   extends MongoDataSource<MongoPXExtractorDBO>
   implements PXExtractorsDataSource
 {
-  protected collectionName = mongoExtractorsCollectionName;
+  protected collectionName = mongoPXExtractorsCollection;
 
   async create(extractor: PXExtractor): Promise<void> {
     const mongoExtractor: MongoPXExtractorDBO = {

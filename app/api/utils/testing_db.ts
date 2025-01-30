@@ -16,7 +16,7 @@ import { ThesaurusSchema } from 'shared/types/thesaurusType';
 import { UserGroupSchema } from 'shared/types/userGroupType';
 import uniqueID from 'shared/uniqueID';
 import { config } from 'api/config';
-import { mongoExtractorsCollectionName } from 'api/paragraphExtraction/infrastructure/MongoPXExtractorsDataSource';
+import { mongoPXExtractorsCollection } from 'api/paragraphExtraction/infrastructure/MongoPXExtractorsDataSource';
 import { UserSchema } from '../../shared/types/userType';
 import { elasticTesting } from './elastic_testing';
 import { testingTenants } from './testingTenants';
@@ -98,9 +98,6 @@ const testingDB: {
     dbName?: string
   ) => Promise<Db | null>;
   clearAllAndLoadFixtures: (fixtures: DBFixture, dbName?: string) => Promise<void>;
-  paragraphExtractionExtractors: () =>
-    | mongoose.mongo.Collection<mongoose.mongo.BSON.Document>
-    | undefined;
 } = {
   mongodb: null,
   dbName: '',
@@ -175,10 +172,6 @@ const testingDB: {
       .createIndex({ language: 1, key: 1, 'context.id': 1 }, { unique: true });
 
     await mongodb.collection(newTranslationsCollection).createIndex({ 'context.id': 1, key: 1 });
-  },
-
-  paragraphExtractionExtractors() {
-    return this.mongodb?.collection(mongoExtractorsCollectionName);
   },
 
   /**
