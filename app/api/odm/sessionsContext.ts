@@ -8,8 +8,20 @@ export const dbSessionContext = {
     return appContext.get('mongoSession') as ClientSession | undefined;
   },
 
+  getReindexOperations() {
+    return (
+      (appContext.get('reindexOperations') as [query?: any, select?: string, limit?: number][]) ||
+      []
+    );
+  },
+
   clearSession() {
     appContext.set('mongoSession', undefined);
+  },
+
+  clearContext() {
+    appContext.set('mongoSession', undefined);
+    appContext.set('reindexOperations', undefined);
   },
 
   async startSession() {
@@ -18,5 +30,11 @@ export const dbSessionContext = {
     const session = await connection.startSession();
     appContext.set('mongoSession', session);
     return session;
+  },
+
+  registerESIndexOperation(args: [query?: any, select?: string, limit?: number]) {
+    const reindexOperations = dbSessionContext.getReindexOperations();
+    reindexOperations.push(args);
+    appContext.set('reindexOperations', reindexOperations);
   },
 };

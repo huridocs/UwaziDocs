@@ -1,15 +1,37 @@
-import { instanceModel } from 'api/odm/model';
-import { dbSessionContext } from 'api/odm/sessionsContext';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
-import { withTransaction } from 'api/utils/withTransaction';
 import { ClientSession } from 'mongodb';
 import { Schema } from 'mongoose';
+
+import entities from 'api/entities';
+import { instanceModel } from 'api/odm/model';
+import { dbSessionContext } from 'api/odm/sessionsContext';
+
 import { appContext } from '../AppContext';
+import { elasticTesting } from '../elastic_testing';
+import { getFixturesFactory } from '../fixturesFactory';
+import { testingEnvironment } from '../testingEnvironment';
+import { withTransaction } from '../withTransaction';
+import { EntitySchema } from 'shared/types/entityType';
+
+const factory = getFixturesFactory();
 
 interface TestDoc {
   title: string;
   value?: number;
 }
+
+afterAll(async () => {
+  await testingEnvironment.tearDown();
+});
+
+const saveEntity = async (entity: EntitySchema) =>
+  entities.save(entity, { user: {}, language: 'es' }, { updateRelationships: false });
+
+const createEntity = async (entity: EntitySchema) =>
+  entities.save(
+    { ...entity, _id: undefined, sharedId: undefined },
+    { user: {}, language: 'es' },
+    { updateRelationships: false }
+  );
 
 describe('withTransaction utility', () => {
   let model: any;
@@ -25,10 +47,6 @@ describe('withTransaction utility', () => {
   beforeEach(async () => {
     await testingEnvironment.setUp({ transactiontests: [] });
     testingEnvironment.unsetFakeContext();
-  });
-
-  afterAll(async () => {
-    await testingEnvironment.tearDown();
   });
 
   it('should commit transaction when operation succeeds', async () => {
@@ -209,6 +227,87 @@ describe('withTransaction utility', () => {
 
         expect(sessionToTest?.hasEnded).toBe(true);
       });
+    });
+  });
+});
+
+describe('Entities elasticsearch index', () => { beforeEach(async () => {
+    await testingEnvironment.setUp(
+      {
+        transactiontests: [],
+        templates: [factory.template('template1')],
+        entities: [
+          factory.entity('existing1', 'template1'),
+          factory.entity('existing2', 'template1'),
+        ],
+        settings: [{ languages: [{ label: 'English', key: 'en', default: true }] }],
+      },
+      'with_transaction_index'
+    );
+    testingEnvironment.unsetFakeContext();
+  });
+
+  it('should handle delayed reindexing after a successful transaction', async () => {
+    await appContext.run(async () => {
+      await withTransaction(async () => {
+        await entities.save(
+          { ...factory.entity('test1', 'template1'), _id: undefined, sharedId: undefined },
+          { user: {}, language: 'es' },
+          { updateRelationships: false }
+        );
+        await entities.save(
+          { ...factory.entity('test2', 'template1'), _id: undefined, sharedId: undefined },
+          { user: {}, language: 'es' },
+          { updateRelationships: false }
+        );
+      });
+
+      await elasticTesting.refresh();
+      const indexedEntities = await elasticTesting.getIndexedEntities();
+      expect(indexedEntities).toHaveLength(4);
+      expect(indexedEntities).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ title: 'test1' }),
+          expect.objectContaining({ title: 'test2' }),
+          expect.objectContaining({ title: 'existing1' }),
+          expect.objectContaining({ title: 'existing2' }),
+        ])
+      );
+    });
+  });
+
+  it('should not index changes to elasticsearch if transaction is aborted manually', async () => {
+    await appContext.run(async () => {
+      await withTransaction(async ({ abort }) => {
+        await saveEntity({ ...factory.entity('existing1', 'template1'), title: 'update1' });
+        await saveEntity({ ...factory.entity('existing2', 'template1'), title: 'update2' });
+        await createEntity(factory.entity('new', 'template1'));
+        await abort();
+      });
+
+      const indexedEntities = await elasticTesting.getIndexedEntities();
+      expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
+    });
+  });
+
+  it('should not index changes to elasticsearch if transaction is aborted by an error', async () => {
+    await appContext.run(async () => {
+      let error;
+      try {
+        await withTransaction(async () => {
+          await saveEntity({ ...factory.entity('existing1', 'template1'), title: 'update1' });
+          await saveEntity({ ...factory.entity('existing2', 'template1'), title: 'update2' });
+          await createEntity(factory.entity('new', 'template1'));
+          throw new Error('Testing error');
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error.message).toBe('Testing error');
+
+      const indexedEntities = await elasticTesting.getIndexedEntities();
+      expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
     });
   });
 });

@@ -5,7 +5,7 @@ import { search } from 'api/search';
 import { withTransaction } from 'api/utils/withTransaction';
 import needsAuthorization from '../auth/authMiddleware';
 import templates from '../templates/templates';
-import thesauri from '../thesauri/thesauri';
+import { thesauri } from '../thesauri/thesauri';
 import { parseQuery, validation } from '../utils';
 import date from '../utils/date';
 import entities from './entities';
@@ -81,7 +81,7 @@ export default app => {
     activitylogMiddleware,
     async (req, res, next) => {
       try {
-        await withTransaction(async () => {
+        await withTransaction(async ({ abort }) => {
           const entityToSave = req.body.entity ? JSON.parse(req.body.entity) : req.body;
           const result = await saveEntity(entityToSave, {
             user: req.user,
@@ -92,7 +92,7 @@ export default app => {
           const { entity, errors } = result;
           await updateThesauriWithEntity(entity, req);
           if (errors.length) {
-            console.log(errors);
+            await abort();
           }
           res.json(req.body.entity ? result : entity);
         });

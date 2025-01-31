@@ -126,6 +126,7 @@ const testingDB: {
 
   async tearDown() {
     await this.disconnect();
+    connected = false;
   },
 
   async disconnect() {
