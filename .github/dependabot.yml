@@ -16,7 +16,6 @@ updates:
         versions: [">= 0.10.1"]
       - dependency-name: Mongoose #Mongoose upgrade #7017
         versions: [">= 8.4.3"]
-      - dependency-name: cookie
       - dependency-name: "@socket.io*"
       - dependency-name: bootstrap
       - dependency-name: express-prom-bundle
