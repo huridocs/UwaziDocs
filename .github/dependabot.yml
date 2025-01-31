@@ -15,10 +15,9 @@ updates:
       - dependency-name: flowbite-react #Flowbite & flowbite-datepicker upgrade #6993
         versions: ['>= 0.10.1']
       - dependency-name: Mongoose #Mongoose upgrade #7017
-        versions: ['>= 8.4.3']
-      - dependency-name: cookie
-      - dependency-name: '@socket.io*'
-      - dependency-name: bootstrap #we have decided to dont update bootstrap #7489
+        versions: [">= 8.4.3"]
+      - dependency-name: "@socket.io*"
+      - dependency-name: bootstrap
       - dependency-name: express-prom-bundle
       - dependency-name: immutable
       - dependency-name: otplib
