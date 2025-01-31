@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import entities from 'api/entities';
 import { applicationEventsBus } from 'api/eventsbus';
 import { mimeTypeFromUrl } from 'api/files/extensionHelper';
@@ -25,12 +26,20 @@ const deduceMimeType = (_file: FileType) => {
   return file;
 };
 
+export class UpdateFileError extends Error {
+  constructor() {
+    super('Can not update a File that does not exist');
+  }
+}
+
 export const files = {
   async save(_file: FileType, index = true) {
     const file = deduceMimeType(_file);
 
     const existingFile = file._id ? await filesModel.getById(file._id) : undefined;
-    const savedFile = await filesModel.save(await validateFile(file), undefined);
+    if (file._id && !existingFile) throw new UpdateFileError();
+
+    const savedFile = await filesModel.save(await validateFile(file));
     if (index) {
       await search.indexEntities({ sharedId: savedFile.entity }, '+fullText');
     }
