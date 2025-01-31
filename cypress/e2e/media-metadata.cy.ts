@@ -81,11 +81,11 @@ describe('Media metadata', { defaultCommandTimeout: 5000 }, () => {
       });
     cy.contains(field)
       .parentsUntil('.form-group')
-      .contains('This file type is not supported on media fields')
+      .contains('Error loading your image')
       .scrollIntoView();
     cy.contains(field)
       .parentsUntil('.form-group')
-      .contains('This file type is not supported on media fields')
+      .contains('Error loading your image')
       .should('be.visible');
   };
 
