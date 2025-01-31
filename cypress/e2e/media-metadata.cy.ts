@@ -70,7 +70,7 @@ describe('Media metadata', { defaultCommandTimeout: 5000 }, () => {
     });
   };
 
-  const addInvalidFile = (field: string) => {
+  const addInvalidVideoFile = (field: string) => {
     cy.contains(field).parentsUntil('.form-group').contains('button', 'Add file').scrollIntoView();
     cy.contains(field).parentsUntil('.form-group').contains('button', 'Add file').click();
     cy.contains('button', 'Select from computer');
@@ -86,6 +86,25 @@ describe('Media metadata', { defaultCommandTimeout: 5000 }, () => {
     cy.contains(field)
       .parentsUntil('.form-group')
       .contains('This file type is not supported on media fields')
+      .should('be.visible');
+  };
+
+  const addInvalidImageFile = (field: string) => {
+    cy.contains(field).parentsUntil('.form-group').contains('button', 'Add file').scrollIntoView();
+    cy.contains(field).parentsUntil('.form-group').contains('button', 'Add file').click();
+    cy.contains('button', 'Select from computer');
+    cy.get('.upload-button input[type=file]')
+      .first()
+      .selectFile('./cypress/test_files/sample.pdf', {
+        force: true,
+      });
+    cy.contains(field)
+      .parentsUntil('.form-group')
+      .contains('Error loading your image')
+      .scrollIntoView();
+    cy.contains(field)
+      .parentsUntil('.form-group')
+      .contains('Error loading your image')
       .should('be.visible');
   };
 
@@ -163,8 +182,8 @@ describe('Media metadata', { defaultCommandTimeout: 5000 }, () => {
   // eslint-disable-next-line max-statements
   it('should show an error for an invalid property and allow to replace it for a valid one', () => {
     addEntity('Reporte con propiedades audiovisuales corregidas');
-    addInvalidFile('Fotografía');
-    addInvalidFile('Video');
+    addInvalidImageFile('Fotografía');
+    addInvalidVideoFile('Video');
     clickMediaAction('Fotografía', 'Unlink');
     addImage();
     clickMediaAction('Video', 'Unlink');
