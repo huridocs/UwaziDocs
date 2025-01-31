@@ -5,7 +5,6 @@ import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import connections from 'api/relationships';
 import { search } from 'api/search';
 import { cleanupRecordsOfFiles } from 'api/services/ocr/ocrRecords';
-import { ClientSession } from 'mongodb';
 import { validateFile } from 'shared/types/fileSchema';
 import { FileType } from 'shared/types/fileType';
 import { inspect } from 'util';

@@ -91,9 +91,9 @@ export default app => {
           });
           const { entity, errors } = result;
           await updateThesauriWithEntity(entity, req);
-          // if (errors.length) {
-          //   throw new Error('Errors during saveEntity', { cause: errors });
-          // }
+          if (errors.length) {
+            console.log(errors);
+          }
           res.json(req.body.entity ? result : entity);
         });
       } catch (e) {

@@ -45,16 +45,16 @@ const FIELD_TYPES_TO_SYNC = [
   propertyTypes.numeric,
 ];
 
-async function updateEntity(entity, _template, unrestricted = false, session) {
-  const docLanguages = await this.getAllLanguages(entity.sharedId, { session });
+async function updateEntity(entity, _template, unrestricted = false) {
+  const docLanguages = await this.getAllLanguages(entity.sharedId);
   if (
     docLanguages[0].template &&
     entity.template &&
     docLanguages[0].template.toString() !== entity.template.toString()
   ) {
     await Promise.all([
-      this.deleteRelatedEntityFromMetadata(docLanguages[0], session),
-      relationships.delete({ entity: entity.sharedId }, null, false, { session }),
+      this.deleteRelatedEntityFromMetadata(docLanguages[0]),
+      relationships.delete({ entity: entity.sharedId }, null, false),
     ]);
   }
   const template = _template || { properties: [] };
@@ -99,9 +99,9 @@ async function updateEntity(entity, _template, unrestricted = false, session) {
         if (template._id) {
           await denormalizeRelated(fullEntity, template, currentDoc);
         }
-        const saveResult = await saveFunc(toSave, undefined, session);
+        const saveResult = await saveFunc(toSave, undefined);
 
-        await updateNewRelationships(v2RelationshipsUpdates, session);
+        await updateNewRelationships(v2RelationshipsUpdates);
 
         return saveResult;
       }
@@ -138,13 +138,13 @@ async function updateEntity(entity, _template, unrestricted = false, session) {
         await denormalizeRelated(toSave, template, d);
       }
 
-      return saveFunc(toSave, undefined, session);
+      return saveFunc(toSave, undefined);
     })
   );
 
-  await denormalizeAfterEntityUpdate(entity, session);
+  await denormalizeAfterEntityUpdate(entity);
 
-  const afterEntities = await model.get({ sharedId: entity.sharedId }, null, { session });
+  const afterEntities = await model.get({ sharedId: entity.sharedId });
   await applicationEventsBus.emit(
     new EntityUpdatedEvent({
       before: docLanguages,
@@ -156,7 +156,7 @@ async function updateEntity(entity, _template, unrestricted = false, session) {
   return result;
 }
 
-async function createEntity(doc, [currentLanguage, languages], sharedId, docTemplate, session) {
+async function createEntity(doc, [currentLanguage, languages], sharedId, docTemplate) {
   if (!docTemplate) docTemplate = await templates.getById(doc.template);
   const thesauriByKey = await templates.getRelatedThesauri(docTemplate);
 
@@ -195,15 +195,15 @@ async function createEntity(doc, [currentLanguage, languages], sharedId, docTemp
         { thesauriByKey }
       );
 
-      return model.save(langDoc, undefined, session);
+      return model.save(langDoc);
     })
   );
 
-  await updateNewRelationships(v2RelationshipsUpdates, session);
+  await updateNewRelationships(v2RelationshipsUpdates);
 
-  await Promise.all(result.map(r => denormalizeAfterEntityCreation(r, session)));
+  await Promise.all(result.map(r => denormalizeAfterEntityCreation(r)));
 
-  const createdEntities = await model.get({ sharedId }, null, { session });
+  const createdEntities = await model.get({ sharedId });
   await applicationEventsBus.emit(
     new EntityCreatedEvent({
       entities: createdEntities,
@@ -551,7 +551,7 @@ export default {
     validateWritePermissions(ids, entitiesToUpdate);
     await Promise.all(
       ids.map(async id => {
-        const entity = await entitiesToUpdate.find(
+        const entity = entitiesToUpdate.find(
           e => e.sharedId === id && e.language === params.language
         );
 

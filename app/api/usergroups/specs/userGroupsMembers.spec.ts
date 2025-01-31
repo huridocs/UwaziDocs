@@ -1,12 +1,11 @@
-import { testingDB } from 'api/utils/testing_db';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
+import userGroups from 'api/usergroups/userGroups';
 import {
   getByMemberIdList,
-  updateUserMemberships,
   removeUsersFromAllGroups,
+  updateUserMemberships,
 } from 'api/usergroups/userGroupsMembers';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { UserRole } from 'shared/types/userSchema';
-import userGroups from 'api/usergroups/userGroups';
 import { fixtures, group1Id, group2Id, user1Id, user2Id, user3Id } from './fixtures';
 
 describe('userGroupsMembers', () => {

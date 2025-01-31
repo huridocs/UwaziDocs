@@ -1,18 +1,16 @@
-import express from 'express';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import bodyParser from 'body-parser';
+import express from 'express';
 import request from 'supertest';
 
-import db from 'api/utils/testing_db';
-
 import users from 'api/users/users';
-import svgCaptcha from 'svg-captcha';
 import backend from 'fetch-mock';
+import svgCaptcha from 'svg-captcha';
+import instrumentRoutes from '../../utils/instrumentRoutes';
 import { CaptchaModel } from '../CaptchaModel';
+import { comparePasswords } from '../encryptPassword';
 import authRoutes from '../routes';
 import fixtures from './fixtures.js';
-import instrumentRoutes from '../../utils/instrumentRoutes';
-import { comparePasswords } from '../encryptPassword';
 
 describe('Auth Routes', () => {
   let routes;

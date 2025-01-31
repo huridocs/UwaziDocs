@@ -1,5 +1,4 @@
-import { ObjectId } from 'mongodb';
-import { ClientSession } from 'mongodb';
+import { ClientSession, ObjectId } from 'mongodb';
 
 import entities from 'api/entities';
 import { populateGeneratedIdByTemplate } from 'api/entities/generatedIdPropertyAutoFiller';
@@ -138,7 +137,7 @@ const checkAndFillGeneratedIdProperties = async (
   return newGeneratedIdProps.length > 0;
 };
 
-const _save = async (template: TemplateSchema, session?: ClientSession) => {
+const _save = async (template: TemplateSchema) => {
   const newTemplate = await model.save(template, undefined);
   await addTemplateTranslation(newTemplate);
   return newTemplate;
@@ -257,10 +256,7 @@ export default {
     return property;
   },
 
-  async getPropertiesByName(
-    propertyNames: string[],
-    session?: ClientSession
-  ): Promise<PropertySchema[]> {
+  async getPropertiesByName(propertyNames: string[]): Promise<PropertySchema[]> {
     const nameSet = new Set(propertyNames);
     const templates = await this.get({
       $or: [
@@ -285,7 +281,7 @@ export default {
     return Array.from(Object.values(propertiesByName));
   },
 
-  async setAsDefault(_id: string, session?: ClientSession) {
+  async setAsDefault(_id: string) {
     const [templateToBeDefault] = await this.get({ _id });
     const [currentDefault] = await this.get({ _id: { $nin: [_id] }, default: true });
 

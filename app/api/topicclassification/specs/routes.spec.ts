@@ -1,7 +1,6 @@
 import * as topicClassification from 'api/config/topicClassification';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { setUpApp } from 'api/utils/testingRoutes';
-import db from 'api/utils/testing_db';
 import { NextFunction } from 'express';
 import JSONRequest from 'shared/JSONRequest';
 import request from 'supertest';

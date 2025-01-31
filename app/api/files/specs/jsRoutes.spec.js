@@ -1,20 +1,19 @@
 /*eslint-disable max-lines*/
-import { testingEnvironment } from 'api/utils/testingEnvironment';
-import db from 'api/utils/testing_db';
 import entities from 'api/entities';
-import { settingsModel } from 'api/settings/settingsModel';
 import { search } from 'api/search';
-import request from 'supertest';
+import { settingsModel } from 'api/settings/settingsModel';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import express from 'express';
+import request from 'supertest';
 
 import mailer from 'api/utils/mailer';
 // eslint-disable-next-line node/no-restricted-import
 import fs from 'fs/promises';
-import { allowedPublicTemplate, fixtures, templateId } from './fixtures';
-import instrumentRoutes from '../../utils/instrumentRoutes';
-import uploadRoutes from '../jsRoutes.js';
 import { legacyLogger } from '../../log';
+import instrumentRoutes from '../../utils/instrumentRoutes';
 import { createDirIfNotExists, deleteFiles } from '../filesystem';
+import uploadRoutes from '../jsRoutes.js';
+import { allowedPublicTemplate, fixtures, templateId } from './fixtures';
 
 const mockExport = jest.fn();
 jest.mock('api/csv/csvExporter', () =>

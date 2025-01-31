@@ -1,4 +1,3 @@
-import db from 'api/utils/testing_db';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { files } from 'api/files/files';
 import { search } from 'api/search';

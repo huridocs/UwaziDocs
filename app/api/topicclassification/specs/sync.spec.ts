@@ -1,8 +1,7 @@
 import * as topicClassification from 'api/config/topicClassification';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
 import entities from 'api/entities';
 import { search } from 'api/search';
-import db from 'api/utils/testing_db';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 import JSONRequest from 'shared/JSONRequest';
 import { provenanceTypes } from 'shared/provenanceTypes';
 import { TaskProvider } from 'shared/tasks/tasks';

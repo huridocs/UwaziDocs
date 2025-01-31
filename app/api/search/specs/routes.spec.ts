@@ -2,7 +2,6 @@ import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { Application } from 'express';
 import request, { Response as SuperTestResponse } from 'supertest';
 
-
 import searchRoutes from 'api/search/routes';
 import { setUpApp } from 'api/utils/testingRoutes';
 

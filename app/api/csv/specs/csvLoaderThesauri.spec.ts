@@ -1,13 +1,12 @@
-import db from 'api/utils/testing_db';
-import { testingEnvironment } from 'api/utils/testingEnvironment';
-import thesauri from 'api/thesauri';
 import translations from 'api/i18n';
 import settings from 'api/settings';
+import thesauri from 'api/thesauri';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 
+import { IndexedContextValues } from 'api/i18n/translations';
+import { WithId } from 'api/odm';
 import { ObjectId } from 'mongodb';
 import { ThesaurusSchema } from 'shared/types/thesaurusType';
-import { WithId } from 'api/odm';
-import { IndexedContextValues } from 'api/i18n/translations';
 import { CSVLoader } from '../csvLoader';
 import { fixtures, thesauri1Id } from './fixtures';
 import { mockCsvFileReadStream } from './helpers';
