@@ -305,6 +305,7 @@ Entity types,Типы объектов
 Entity updated,Entity updated
 Error,Ошибка
 Error adding thesauri.,Error adding thesauri.
+Error loading your image,Error loading your image
 Error updating thesauri.,Error updating thesauri.
 Expand all,Expand all
 Exploration,Изучение
@@ -375,7 +376,6 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","Если это внешний URL, используйте полностью сформированный URL. Т. е. http://www.uwazi.io."
 "If you want to continue, please type","Если вы хотите продолжить, пожалуйста, введите"
-Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,Импортировать
 Import asset,Import asset
