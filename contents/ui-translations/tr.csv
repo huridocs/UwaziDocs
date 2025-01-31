@@ -308,6 +308,7 @@ Entity types,Varlık türü
 Entity updated,Entity updated
 Error,Hata
 Error adding thesauri.,Error adding thesauri.
+Error loading your image,Error loading your image
 Error updating thesauri.,Error updating thesauri.
 Expand all,Expand all
 Exploration,Arama
@@ -378,7 +379,6 @@ ID,ID
 ID:,ID:
 "If it is an external URL, use a fully formed URL. Ie. http://www.uwazi.io.","Harici bir URL ise, tam olarak oluşturulmuş bir URL kullanın: http://www.uwazi.io."
 "If you want to continue, please type","Devam etmek istiyorsanız, lütfen yazın"
-Image not found,Image not found
 Impact of property change warning,All entities and documents that have already this property assigned will loose its current value
 Import,İçe aktar
 Import asset,Import asset
