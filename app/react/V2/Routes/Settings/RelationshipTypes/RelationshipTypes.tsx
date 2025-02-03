@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from 'react';
 import { IncomingHttpHeaders } from 'http';
-import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router-dom';
+import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router';
 import { Row } from '@tanstack/react-table';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { Translate } from 'app/I18N';
@@ -86,7 +86,7 @@ const RelationshipTypes = () => {
       });
       setIsSidepanelOpen(false);
     }
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setRelationshipTypes(relationshipTypes);
   };
 
@@ -106,7 +106,7 @@ const RelationshipTypes = () => {
       });
       setShowConfirmationModal(false);
     }
-    revalidator.revalidate();
+    await revalidator.revalidate();
     setRelationshipTypes(relationshipTypes);
   };
 

@@ -59,12 +59,17 @@ describe('Homepage entities', () => {
 
   it('should display the related entity on the sidepanel', async () => {
     await page.goto(`${host}/entity/7ycel666l65vobt9`);
+    await disableTransitions();
+    await page.waitForSelector('div[aria-label="Relationships"]');
     await expect(page).toClick('div[aria-label="Relationships"]');
     await page.waitForSelector('.relationships-graph');
     await expect(page).toClick('.item-name', {
       text: 'Artavia Murillo y otros. Resolución de la Corte IDH de 31 de marzo de 2014',
     });
     await page.waitForSelector('aside.side-panel > .sidepanel-body > .view > .item-info');
+    await expect(page).toMatchElement('.item-name', {
+      text: 'Artavia Murillo y otros. Resolución de la Corte IDH de 31 de marzo de 2014',
+    });
     await testSelectorShot('aside.side-panel > .sidepanel-body', { threshold: 0.08 });
   });
 
