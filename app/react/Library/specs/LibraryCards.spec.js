@@ -6,6 +6,8 @@ import createStore from 'app/store';
 import DocumentsList from 'app/Library/components/DocumentsList';
 import LibraryLayout from 'app/Library/LibraryLayout';
 
+jest.mock('app/appRoutes');
+
 describe('Library', () => {
   const templates = [
     {

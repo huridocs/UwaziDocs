@@ -65,8 +65,7 @@ function mapStateToProps(state, props) {
     documents: state[props.storeKey].documents,
     filters: state[props.storeKey].filters,
     filtersPanel: state[props.storeKey].ui.get('filtersPanel'),
-    //TODO: Uncomment when rerendering is fixed
-    // search: state[props.storeKey].search,
+    search: state[props.storeKey].search,
     selectedDocuments: state[props.storeKey].ui.get('selectedDocuments'),
     multipleSelected: state[props.storeKey].ui.get('selectedDocuments').size > 1,
     rowListZoomLevel: state[props.storeKey].ui.get('zoomLevel'),
