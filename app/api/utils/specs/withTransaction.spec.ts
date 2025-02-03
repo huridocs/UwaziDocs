@@ -4,13 +4,13 @@ import { Schema } from 'mongoose';
 import entities from 'api/entities';
 import { instanceModel } from 'api/odm/model';
 import { dbSessionContext } from 'api/odm/sessionsContext';
+import { EntitySchema } from 'shared/types/entityType';
 
 import { appContext } from '../AppContext';
 import { elasticTesting } from '../elastic_testing';
 import { getFixturesFactory } from '../fixturesFactory';
 import { testingEnvironment } from '../testingEnvironment';
 import { withTransaction } from '../withTransaction';
-import { EntitySchema } from 'shared/types/entityType';
 
 const factory = getFixturesFactory();
 
@@ -231,7 +231,8 @@ describe('withTransaction utility', () => {
   });
 });
 
-describe('Entities elasticsearch index', () => { beforeEach(async () => {
+describe('Entities elasticsearch index', () => {
+  beforeEach(async () => {
     await testingEnvironment.setUp(
       {
         transactiontests: [],

@@ -1,5 +1,5 @@
-import { Application, NextFunction, Request, Response } from 'express';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
+import { Application, NextFunction, Request, Response } from 'express';
 import request, { Response as SuperTestResponse } from 'supertest';
 
 import { setUpApp } from 'api/utils/testingRoutes';
@@ -10,15 +10,14 @@ import routes from 'api/entities/routes';
 import { legacyLogger } from 'api/log';
 import templates from 'api/templates';
 import thesauri from 'api/thesauri';
+import { appContext } from 'api/utils/AppContext';
 import { UserInContextMockFactory } from 'api/utils/testingUserInContext';
+import { ObjectId } from 'mongodb';
 import path from 'path';
 import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
 import { UserRole } from 'shared/types/userSchema';
-import { ObjectId } from 'mongodb';
-import fixtures, { permissions } from './fixtures';
-import { storage } from 'api/files';
 import entities from '../entities';
-import { appContext } from 'api/utils/AppContext';
+import fixtures, { permissions } from './fixtures';
 
 jest.mock(
   '../../auth/authMiddleware.ts',
