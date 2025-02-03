@@ -16,6 +16,9 @@ import { AccessLevels, PermissionType } from 'shared/types/permissionSchema';
 import { UserRole } from 'shared/types/userSchema';
 import { ObjectId } from 'mongodb';
 import fixtures, { permissions } from './fixtures';
+import { storage } from 'api/files';
+import entities from '../entities';
+import { appContext } from 'api/utils/AppContext';
 
 jest.mock(
   '../../auth/authMiddleware.ts',
@@ -243,6 +246,29 @@ describe('entities routes', () => {
         .attach('attachments[1]', path.join(__dirname, 'Hello, World.pdf'), 'Nombre en español 4');
 
       expect(legacyLogger.error).toHaveBeenCalledWith(expect.stringContaining('Deprecation'));
+    });
+
+    it('should run saveEntity process as a transaction', async () => {
+      jest.restoreAllMocks();
+      jest.spyOn(entities, 'getUnrestrictedWithDocuments').mockImplementationOnce(() => {
+        throw new Error('error at the end of the saveEntity');
+      });
+      new UserInContextMockFactory().mock(user);
+      const response: SuperTestResponse = await request(app)
+        .post('/api/entities')
+        .field('entity', JSON.stringify(entityToSave))
+        .attach('documents[0]', path.join(__dirname, 'Hello, World.pdf'), 'Nombre en español')
+        .field('documents_originalname[0]', 'Nombre en español')
+        .expect(500);
+
+      expect(response.body).toMatchObject({
+        error: expect.any(String),
+      });
+
+      await appContext.run(async () => {
+        const myEntity = await entities.get({ title: 'my entity' });
+        expect(myEntity.length).toBe(0);
+      });
     });
   });
 });
