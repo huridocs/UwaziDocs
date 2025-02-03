@@ -174,9 +174,7 @@ describe('MediaField', () => {
       await render(imageProps);
       const img = renderResult.container.getElementsByTagName('img')[0];
       fireEvent.error(img);
-      expect(
-        await screen.findByText('This file type is not supported on media fields')
-      ).toBeInTheDocument();
+      expect(await screen.findByText('Error loading your image')).toBeInTheDocument();
     });
   });
 });
