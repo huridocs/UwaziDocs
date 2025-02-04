@@ -1,18 +1,18 @@
 import { ClientSession } from 'mongodb';
-import { model, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 
 import entities from 'api/entities';
 import { instanceModel } from 'api/odm/model';
 import { dbSessionContext } from 'api/odm/sessionsContext';
 import { EntitySchema } from 'shared/types/entityType';
 
+import { storage } from 'api/files';
+import { Readable } from 'stream';
 import { appContext } from '../AppContext';
 import { elasticTesting } from '../elastic_testing';
 import { getFixturesFactory } from '../fixturesFactory';
 import { testingEnvironment } from '../testingEnvironment';
 import { withTransaction } from '../withTransaction';
-import { storage } from 'api/files';
-import { Readable } from 'stream';
 
 const factory = getFixturesFactory();
 

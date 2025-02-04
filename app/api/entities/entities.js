@@ -332,12 +332,11 @@ const validateWritePermissions = (ids, entitiesToUpdate) => {
   }
 };
 
-const withDocuments = async (entities, documentsFullText, options = {}) => {
+const withDocuments = async (entities, documentsFullText) => {
   const sharedIds = entities.map(entity => entity.sharedId);
   const allFiles = await files.get(
     { entity: { $in: sharedIds } },
-    documentsFullText ? '+fullText ' : ' ',
-    options
+    documentsFullText ? '+fullText ' : ' '
   );
   const idFileMap = new Map();
   allFiles.forEach(file => {

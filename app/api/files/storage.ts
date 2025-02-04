@@ -25,7 +25,7 @@ import {
 } from './filesystem';
 import { S3Storage } from './S3Storage';
 
-type FileTypes = NonNullable<FileType['type']> | 'activitylog' | 'segmentation';
+export type FileTypes = NonNullable<FileType['type']> | 'activitylog' | 'segmentation';
 
 let s3Instance: S3Storage;
 const s3 = () => {

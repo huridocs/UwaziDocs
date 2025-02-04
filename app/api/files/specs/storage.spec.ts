@@ -426,9 +426,9 @@ describe('storage', () => {
 
     it('should rollback already uploaded files if an error occurs', async () => {
       const files = [
-        { filename: 'file1.txt', file: Readable.from(['content1']), type: 'document' },
-        { filename: 'file2.txt', file: Readable.from(['content2']), type: 'document' },
-        { filename: 'file3.txt', file: Readable.from(['content3']), type: 'document' },
+        { filename: 'file1.txt', file: Readable.from(['content1']), type: 'document' as const },
+        { filename: 'file2.txt', file: Readable.from(['content2']), type: 'document' as const },
+        { filename: 'file3.txt', file: Readable.from(['content3']), type: 'document' as const },
       ];
 
       const originalStoreFile = storage.storeFile.bind(storage);

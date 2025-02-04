@@ -83,18 +83,18 @@ export default app => {
       try {
         const result = await withTransaction(async ({ abort }) => {
           const entityToSave = req.body.entity ? JSON.parse(req.body.entity) : req.body;
-          const result = await saveEntity(entityToSave, {
+          const saveResult = await saveEntity(entityToSave, {
             user: req.user,
             language: req.language,
             socketEmiter: req.emitToSessionSocket,
             files: req.files,
           });
-          const { entity, errors } = result;
+          const { entity, errors } = saveResult;
           await updateThesauriWithEntity(entity, req);
           if (errors.length) {
             await abort();
           }
-          return req.body.entity ? result : entity;
+          return req.body.entity ? saveResult : entity;
         });
         res.json(result);
       } catch (e) {
