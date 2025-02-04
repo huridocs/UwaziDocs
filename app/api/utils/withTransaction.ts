@@ -2,6 +2,7 @@ import { storage } from 'api/files/storage';
 import { dbSessionContext } from 'api/odm/sessionsContext';
 import { search } from 'api/search';
 import { appContext } from './AppContext';
+import { tenants } from 'api/tenants';
 
 interface TransactionOperation {
   abort: () => Promise<void>;
@@ -39,6 +40,9 @@ const performDelayedReindexes = async () => {
 const withTransaction = async <T>(
   operation: (context: TransactionOperation) => Promise<T>
 ): Promise<T> => {
+  if (!tenants.current().featureFlags?.v1_transactions) {
+    return operation({ abort: async () => {} });
+  }
   const session = await dbSessionContext.startSession();
   session.startTransaction();
   let wasManuallyAborted = false;
