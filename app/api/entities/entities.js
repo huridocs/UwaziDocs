@@ -506,7 +506,7 @@ export default {
   async getUnrestrictedWithDocuments(query, select, options = {}) {
     const { documentsFullText, ...restOfOptions } = options;
     const entities = await this.getUnrestricted(query, select, restOfOptions);
-    return withDocuments(entities, documentsFullText, restOfOptions);
+    return withDocuments(entities, documentsFullText);
   },
 
   async get(query, select, options = {}) {
@@ -514,7 +514,7 @@ export default {
     const extendedSelect = withoutDocuments ? select : extendSelect(select);
     const entities = await model.get(query, extendedSelect, restOfOptions);
 
-    return withoutDocuments ? entities : withDocuments(entities, documentsFullText, options);
+    return withoutDocuments ? entities : withDocuments(entities, documentsFullText);
   },
 
   async getWithRelationships(query, select, pagination) {

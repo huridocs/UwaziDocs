@@ -81,7 +81,7 @@ export default app => {
     activitylogMiddleware,
     async (req, res, next) => {
       try {
-        await withTransaction(async ({ abort }) => {
+        const result = await withTransaction(async ({ abort }) => {
           const entityToSave = req.body.entity ? JSON.parse(req.body.entity) : req.body;
           const result = await saveEntity(entityToSave, {
             user: req.user,
@@ -94,8 +94,9 @@ export default app => {
           if (errors.length) {
             await abort();
           }
-          res.json(req.body.entity ? result : entity);
+          return req.body.entity ? result : entity;
         });
+        res.json(result);
       } catch (e) {
         next(e);
       }

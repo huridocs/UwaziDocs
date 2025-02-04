@@ -30,20 +30,25 @@ const testingEnvironment = {
   },
 
   setFakeContext() {
-    const originalAppContextGet = appContext.get.bind(appContext);
-
-    appContextGetMock = jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
-      if (key === 'mongoSession') {
-        return undefined;
-      }
-      return originalAppContextGet(key);
-    });
-    appContextSetMock = jest.spyOn(appContext, 'set').mockImplementation(() => {});
+    if (!jest.isMockFunction(appContext.get)) {
+      const originalAppContextGet = appContext.get.bind(appContext);
+      appContextGetMock = jest.spyOn(appContext, 'get').mockImplementation((key: string) => {
+        if (key === 'mongoSession' || key === 'fileOperations' || key === 'reindexOperations') {
+          return undefined;
+        }
+        return originalAppContextGet(key);
+      });
+      appContextSetMock = jest.spyOn(appContext, 'set').mockImplementation(() => {});
+    }
   },
 
   unsetFakeContext() {
-    appContextGetMock.mockRestore();
-    appContextSetMock.mockRestore();
+    if (jest.isMockFunction(appContext.get)) {
+      appContextGetMock.mockRestore();
+    }
+    if (jest.isMockFunction(appContext.set)) {
+      appContextSetMock.mockRestore();
+    }
   },
 
   async setFixtures(fixtures?: DBFixture) {

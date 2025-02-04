@@ -71,7 +71,7 @@ export const files = {
     await filesModel.delete(query);
     if (toDeleteFiles.length > 0) {
       const idsToDelete = toDeleteFiles.map(f => f._id!.toString());
-      await connections.delete({ file: { $in: idsToDelete } }, null, false);
+      await connections.delete({ file: { $in: idsToDelete } });
       await V2.deleteTextReferencesToFiles(idsToDelete);
 
       await Promise.all(

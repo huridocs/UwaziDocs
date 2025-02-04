@@ -6,7 +6,7 @@ import { files as filesAPI, storage } from 'api/files';
 import { processDocument } from 'api/files/processDocument';
 import { search } from 'api/search';
 import { legacyLogger } from 'api/log';
-import { prettifyError } from 'api/utils/handleError';
+import { handleError, prettifyError } from 'api/utils/handleError';
 import { ClientEntitySchema } from 'app/istore';
 import { FileType } from 'shared/types/fileType';
 import { MetadataObjectSchema } from 'shared/types/commonTypes';
@@ -205,7 +205,7 @@ const saveFiles = async (
         .filter(result => result.status === 'rejected')
         .map(rejected => {
           const { reason } = rejected as PromiseRejectedResult;
-          return legacyLogger.error(prettifyError(reason));
+          handleError(reason);
         });
 
       if (socketEmiter) {
