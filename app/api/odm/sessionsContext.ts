@@ -1,6 +1,9 @@
+import { ClientSession } from 'mongoose';
+import { Readable } from 'stream';
+
 import { tenants } from 'api/tenants';
 import { appContext } from 'api/utils/AppContext';
-import { ClientSession } from 'mongoose';
+
 import { DB } from './DB';
 
 export const dbSessionContext = {
@@ -15,6 +18,13 @@ export const dbSessionContext = {
     );
   },
 
+  getFileOperations() {
+    return (
+      (appContext.get('fileOperations') as { filename: string; file: Readable; type: string }[]) ||
+      []
+    );
+  },
+
   clearSession() {
     appContext.set('mongoSession', undefined);
   },
@@ -22,6 +32,7 @@ export const dbSessionContext = {
   clearContext() {
     appContext.set('mongoSession', undefined);
     appContext.set('reindexOperations', undefined);
+    appContext.set('fileOperations', undefined);
   },
 
   async startSession() {
@@ -36,5 +47,11 @@ export const dbSessionContext = {
     const reindexOperations = dbSessionContext.getReindexOperations();
     reindexOperations.push(args);
     appContext.set('reindexOperations', reindexOperations);
+  },
+
+  registerFileOperation(args: { filename: string; file: Readable; type: string }) {
+    const fileOperations = dbSessionContext.getFileOperations();
+    fileOperations.push(args);
+    appContext.set('fileOperations', fileOperations);
   },
 };

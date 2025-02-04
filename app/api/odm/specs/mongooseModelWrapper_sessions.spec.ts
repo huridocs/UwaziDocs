@@ -35,6 +35,7 @@ describe('MultiTenantMongooseModel Session operations', () => {
 
   afterAll(async () => {
     await testingEnvironment.tearDown();
+    await session.endSession();
   });
 
   describe('create()', () => {

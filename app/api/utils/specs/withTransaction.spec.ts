@@ -1,5 +1,5 @@
 import { ClientSession } from 'mongodb';
-import { Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import entities from 'api/entities';
 import { instanceModel } from 'api/odm/model';
@@ -11,6 +11,8 @@ import { elasticTesting } from '../elastic_testing';
 import { getFixturesFactory } from '../fixturesFactory';
 import { testingEnvironment } from '../testingEnvironment';
 import { withTransaction } from '../withTransaction';
+import { storage } from 'api/files';
+import { Readable } from 'stream';
 
 const factory = getFixturesFactory();
 
@@ -229,86 +231,141 @@ describe('withTransaction utility', () => {
       });
     });
   });
-});
-
-describe('Entities elasticsearch index', () => {
-  beforeEach(async () => {
-    await testingEnvironment.setUp(
-      {
-        transactiontests: [],
-        templates: [factory.template('template1')],
-        entities: [
-          factory.entity('existing1', 'template1'),
-          factory.entity('existing2', 'template1'),
-        ],
-        settings: [{ languages: [{ label: 'English', key: 'en', default: true }] }],
-      },
-      'with_transaction_index'
-    );
-    testingEnvironment.unsetFakeContext();
-  });
-
-  it('should handle delayed reindexing after a successful transaction', async () => {
-    await appContext.run(async () => {
-      await withTransaction(async () => {
-        await entities.save(
-          { ...factory.entity('test1', 'template1'), _id: undefined, sharedId: undefined },
-          { user: {}, language: 'es' },
-          { updateRelationships: false }
-        );
-        await entities.save(
-          { ...factory.entity('test2', 'template1'), _id: undefined, sharedId: undefined },
-          { user: {}, language: 'es' },
-          { updateRelationships: false }
-        );
-      });
-
-      await elasticTesting.refresh();
-      const indexedEntities = await elasticTesting.getIndexedEntities();
-      expect(indexedEntities).toHaveLength(4);
-      expect(indexedEntities).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ title: 'test1' }),
-          expect.objectContaining({ title: 'test2' }),
-          expect.objectContaining({ title: 'existing1' }),
-          expect.objectContaining({ title: 'existing2' }),
-        ])
+  describe('Entities elasticsearch index', () => {
+    beforeEach(async () => {
+      await testingEnvironment.setUp(
+        {
+          transactiontests: [],
+          templates: [factory.template('template1')],
+          entities: [
+            factory.entity('existing1', 'template1'),
+            factory.entity('existing2', 'template1'),
+          ],
+          settings: [{ languages: [{ label: 'English', key: 'en', default: true }] }],
+        },
+        'with_transaction_index'
       );
+      testingEnvironment.unsetFakeContext();
     });
-  });
 
-  it('should not index changes to elasticsearch if transaction is aborted manually', async () => {
-    await appContext.run(async () => {
-      await withTransaction(async ({ abort }) => {
-        await saveEntity({ ...factory.entity('existing1', 'template1'), title: 'update1' });
-        await saveEntity({ ...factory.entity('existing2', 'template1'), title: 'update2' });
-        await createEntity(factory.entity('new', 'template1'));
-        await abort();
-      });
-
-      const indexedEntities = await elasticTesting.getIndexedEntities();
-      expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
-    });
-  });
-
-  it('should not index changes to elasticsearch if transaction is aborted by an error', async () => {
-    await appContext.run(async () => {
-      let error;
-      try {
+    it('should handle delayed reindexing after a successful transaction', async () => {
+      await appContext.run(async () => {
         await withTransaction(async () => {
+          await entities.save(
+            { ...factory.entity('test1', 'template1'), _id: undefined, sharedId: undefined },
+            { user: {}, language: 'es' },
+            { updateRelationships: false }
+          );
+          await entities.save(
+            { ...factory.entity('test2', 'template1'), _id: undefined, sharedId: undefined },
+            { user: {}, language: 'es' },
+            { updateRelationships: false }
+          );
+        });
+
+        await elasticTesting.refresh();
+        const indexedEntities = await elasticTesting.getIndexedEntities();
+        expect(indexedEntities).toHaveLength(4);
+        expect(indexedEntities).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ title: 'test1' }),
+            expect.objectContaining({ title: 'test2' }),
+            expect.objectContaining({ title: 'existing1' }),
+            expect.objectContaining({ title: 'existing2' }),
+          ])
+        );
+      });
+    });
+
+    it('should not index changes to elasticsearch if transaction is aborted manually', async () => {
+      await appContext.run(async () => {
+        await withTransaction(async ({ abort }) => {
           await saveEntity({ ...factory.entity('existing1', 'template1'), title: 'update1' });
           await saveEntity({ ...factory.entity('existing2', 'template1'), title: 'update2' });
           await createEntity(factory.entity('new', 'template1'));
-          throw new Error('Testing error');
+          await abort();
         });
-      } catch (e) {
-        error = e;
-      }
 
-      expect(error.message).toBe('Testing error');
+        const indexedEntities = await elasticTesting.getIndexedEntities();
+        expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
+      });
+    });
 
-      const indexedEntities = await elasticTesting.getIndexedEntities();
-      expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
+    it('should not index changes to elasticsearch if transaction is aborted by an error', async () => {
+      await appContext.run(async () => {
+        let error;
+        try {
+          await withTransaction(async () => {
+            await saveEntity({ ...factory.entity('existing1', 'template1'), title: 'update1' });
+            await saveEntity({ ...factory.entity('existing2', 'template1'), title: 'update2' });
+            await createEntity(factory.entity('new', 'template1'));
+            throw new Error('Testing error');
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        expect(error.message).toBe('Testing error');
+
+        const indexedEntities = await elasticTesting.getIndexedEntities();
+        expect(indexedEntities).toMatchObject([{ title: 'existing1' }, { title: 'existing2' }]);
+      });
+    });
+  });
+
+  describe('storeFile', () => {
+    it('should store file after transaction is committed', async () => {
+      await appContext.run(async () => {
+        await withTransaction(async () => {
+          await model.save({ title: 'test-file', value: 1 });
+          await storage.storeFile('file_to_commit.txt', Readable.from(['content']), 'document');
+        });
+
+        const docs = await model.get({ title: 'test-file' });
+        expect(docs[0]).toBeTruthy();
+        expect(docs[0].value).toBe(1);
+
+        expect(await storage.fileExists('file_to_commit.txt', 'document')).toBe(true);
+      });
+    });
+
+    it('should rollback transaction when storeFile operation fails', async () => {
+      await appContext.run(async () => {
+        let errorThrown;
+        jest.spyOn(storage, 'storeMultipleFiles').mockImplementation(async () => {
+          throw new Error('Intentional storeFile error');
+        });
+
+        try {
+          await withTransaction(async () => {
+            await model.save({ title: 'test-file-fail', value: 1 });
+            await storage.storeFile('file_to_fail.txt', Readable.from(['content']), 'document');
+          });
+        } catch (error) {
+          errorThrown = error;
+        }
+
+        expect(errorThrown.message).toBe('Intentional storeFile error');
+
+        const docs = await model.get({ title: 'test-file-fail' });
+        expect(docs).toHaveLength(0);
+      });
+    });
+
+    it('should rollback transaction when manually aborted after storeFile operation', async () => {
+      await appContext.run(async () => {
+        jest.spyOn(storage, 'storeMultipleFiles').mockImplementation(async () => {
+          throw new Error('Intentional storeFile error');
+        });
+        await withTransaction(async ({ abort }) => {
+          await model.save({ title: 'test-file-abort', value: 1 });
+          await storage.storeFile('file_to_abort.txt', Readable.from(['content']), 'document');
+          await abort();
+        });
+
+        const docs = await model.get({ title: 'test-file-abort' });
+        expect(docs).toHaveLength(0);
+      });
     });
   });
 });

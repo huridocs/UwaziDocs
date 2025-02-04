@@ -1,5 +1,7 @@
+import { storage } from 'api/files/storage';
 import { dbSessionContext } from 'api/odm/sessionsContext';
 import { search } from 'api/search';
+import { appContext } from './AppContext';
 
 interface TransactionOperation {
   abort: () => Promise<void>;
@@ -11,6 +13,19 @@ search.indexEntities = async (query, select, limit) => {
     return dbSessionContext.registerESIndexOperation([query, select, limit]);
   }
   return originalIndexEntities(query, select, limit);
+};
+
+const originalStoreFile = storage.storeFile.bind(storage);
+storage.storeFile = async (filename, file, type) => {
+  if (dbSessionContext.getSession() && !appContext.get('fileOperationsNow')) {
+    return dbSessionContext.registerFileOperation({ filename, file, type });
+  }
+  return originalStoreFile(filename, file, type);
+};
+
+const performDelayedFileStores = async () => {
+  appContext.set('fileOperationsNow', true);
+  await storage.storeMultipleFiles(dbSessionContext.getFileOperations());
 };
 
 const performDelayedReindexes = async () => {
@@ -40,6 +55,7 @@ const withTransaction = async <T>(
   try {
     const result = await operation(context);
     if (!wasManuallyAborted) {
+      await performDelayedFileStores();
       await session.commitTransaction();
       dbSessionContext.clearSession();
       await performDelayedReindexes();
@@ -51,6 +67,7 @@ const withTransaction = async <T>(
     }
     throw e;
   } finally {
+    appContext.set('fileOperationsNow', false);
     dbSessionContext.clearSession();
     await session.endSession();
   }
