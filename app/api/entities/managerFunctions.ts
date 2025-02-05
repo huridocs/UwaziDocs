@@ -13,6 +13,7 @@ import { MetadataObjectSchema } from 'shared/types/commonTypes';
 import { EntityWithFilesSchema } from 'shared/types/entityType';
 import { TypeOfFile } from 'shared/types/fileSchema';
 import { FileAttachment } from './entitySavingManager';
+import { tenants } from 'api/tenants';
 
 const prepareNewFiles = async (
   entity: EntityWithFilesSchema,
@@ -197,21 +198,21 @@ const saveFiles = async (
   );
 
   if (documentsToProcess.length) {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    Promise.allSettled(
+    const documentsBeingProcessed = Promise.allSettled(
       documentsToProcess.map(async document => processDocument(entity.sharedId!, document))
     ).then(results => {
       results
         .filter(result => result.status === 'rejected')
-        .map(rejected => {
-          const { reason } = rejected as PromiseRejectedResult;
-          handleError(reason);
-        });
+        .map(rejected => handleError(rejected.reason));
 
       if (socketEmiter) {
         socketEmiter('documentProcessed', entity.sharedId!);
       }
     });
+
+    if (tenants.current().featureFlags?.v1_transactions) {
+      await documentsBeingProcessed;
+    }
   }
 
   if (attachments.length || documents.length) {

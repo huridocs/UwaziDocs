@@ -189,6 +189,24 @@ describe('withTransaction utility', () => {
     });
   });
 
+  it('should clear the context after a transaction', async () => {
+    await appContext.run(async () => {
+      await withTransaction(async () => {
+        await model.save({ title: 'test-clear-session' });
+        dbSessionContext.registerFileOperation({
+          filename: 'test',
+          file: Readable.from(['content']),
+          type: 'document' as const,
+        });
+        dbSessionContext.registerESIndexOperation([{}, 'select', 10]);
+      });
+
+      expect(dbSessionContext.getSession()).toBeUndefined();
+      expect(dbSessionContext.getFileOperations()).toEqual([]);
+      expect(dbSessionContext.getReindexOperations()).toEqual([]);
+    });
+  });
+
   describe('manual abort', () => {
     it('should allow manual abort without throwing error', async () => {
       await appContext.run(async () => {
@@ -252,6 +270,7 @@ describe('withTransaction utility', () => {
         expect(sessionToTest?.hasEnded).toBe(true);
       });
     });
+
     it('should do nothing when the feature flag is off', async () => {
       testingTenants.changeCurrentTenant({ featureFlags: { v1_transactions: false } });
 
@@ -266,7 +285,8 @@ describe('withTransaction utility', () => {
       });
     });
   });
-  describe('Entities elasticsearch index', () => {
+
+  describe('entities elasticsearch index', () => {
     beforeEach(async () => {
       await testingEnvironment.setUp(
         {
@@ -349,6 +369,12 @@ describe('withTransaction utility', () => {
   });
 
   describe('storeFile', () => {
+    afterAll(async () => {
+      await storage.removeFile('file_to_commit.txt', 'document');
+      await storage.removeFile('file_to_fail.txt', 'document');
+      await storage.removeFile('file_to_abort.txt', 'document');
+    });
+
     it('should store file after transaction is committed', async () => {
       await appContext.run(async () => {
         await withTransaction(async () => {

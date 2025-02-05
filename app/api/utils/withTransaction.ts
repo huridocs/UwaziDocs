@@ -18,14 +18,13 @@ search.indexEntities = async (query, select, limit) => {
 
 const originalStoreFile = storage.storeFile.bind(storage);
 storage.storeFile = async (filename, file, type) => {
-  if (dbSessionContext.getSession() && !appContext.get('fileOperationsNow')) {
+  if (dbSessionContext.getSession()) {
     return dbSessionContext.registerFileOperation({ filename, file, type });
   }
   return originalStoreFile(filename, file, type);
 };
 
 const performDelayedFileStores = async () => {
-  appContext.set('fileOperationsNow', true);
   await storage.storeMultipleFiles(dbSessionContext.getFileOperations());
 };
 
@@ -59,9 +58,9 @@ const withTransaction = async <T>(
   try {
     const result = await operation(context);
     if (!wasManuallyAborted) {
+      dbSessionContext.clearSession();
       await performDelayedFileStores();
       await session.commitTransaction();
-      dbSessionContext.clearSession();
       await performDelayedReindexes();
     }
     return result;
@@ -71,8 +70,8 @@ const withTransaction = async <T>(
     }
     throw e;
   } finally {
-    appContext.set('fileOperationsNow', false);
     dbSessionContext.clearSession();
+    dbSessionContext.clearContext();
     await session.endSession();
   }
 };
