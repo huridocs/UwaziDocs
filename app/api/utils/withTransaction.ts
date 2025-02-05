@@ -3,6 +3,8 @@ import { dbSessionContext } from 'api/odm/sessionsContext';
 import { search } from 'api/search';
 import { appContext } from './AppContext';
 import { tenants } from 'api/tenants';
+import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
+import { inspect } from 'util';
 
 interface TransactionOperation {
   abort: () => Promise<void>;
@@ -39,6 +41,8 @@ const performDelayedReindexes = async () => {
 const withTransaction = async <T>(
   operation: (context: TransactionOperation) => Promise<T>
 ): Promise<T> => {
+  const logger = DefaultLogger();
+
   if (!tenants.current().featureFlags?.v1_transactions) {
     return operation({ abort: async () => {} });
   }
@@ -52,27 +56,51 @@ const withTransaction = async <T>(
         await session.abortTransaction();
       }
       wasManuallyAborted = true;
+      logger.info(
+        `[v1_transactions] Transactions was manually aborted, session id -> ${inspect(session.id)}`
+      );
     },
   };
 
   try {
     const result = await operation(context);
+    logger.info(
+      `[v1_transactions] Transaction operations was successfully completed, session id -> ${inspect(session.id)}`
+    );
     if (!wasManuallyAborted) {
       dbSessionContext.clearSession();
       await performDelayedFileStores();
+      logger.info(
+        `[v1_transactions] Transaction saved all files before session commit, session id -> ${inspect(session.id)}`
+      );
       await session.commitTransaction();
+      logger.info(
+        `[v1_transactions] Transaction session was commited, session id -> ${inspect(session.id)}`
+      );
       await performDelayedReindexes();
+      logger.info(
+        `[v1_transactions] Transaction elasticsearch reindexes after session was commited, session id -> ${inspect(session.id)}`
+      );
     }
     return result;
   } catch (e) {
     if (!wasManuallyAborted) {
+      logger.info(
+        `[v1_transactions] Transaction aborted due to error: ${inspect(e)}, session id -> ${inspect(session.id)}`
+      );
       await session.abortTransaction();
     }
     throw e;
   } finally {
     dbSessionContext.clearSession();
     dbSessionContext.clearContext();
+    logger.info(
+      `[v1_transactions] Transaction cleared all context info, session id -> ${inspect(session.id)}`
+    );
     await session.endSession();
+    logger.info(
+      `[v1_transactions] Transaction session ended, session id -> ${inspect(session.id)}`
+    );
   }
 };
 
