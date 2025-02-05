@@ -40,6 +40,7 @@ describe('withTransaction utility', () => {
   let model: any;
 
   beforeAll(async () => {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
     const schema = new Schema({
       title: String,
       value: Number,

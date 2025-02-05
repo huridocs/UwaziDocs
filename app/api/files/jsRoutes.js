@@ -5,6 +5,7 @@ import { search } from 'api/search';
 import settings from 'api/settings';
 import mailer from 'api/utils/mailer';
 import cors from 'cors';
+import { withTransaction } from 'api/utils/withTransaction';
 import proxy from 'express-http-proxy';
 // eslint-disable-next-line node/no-restricted-import
 import { createReadStream } from 'fs';
@@ -85,20 +86,21 @@ const routes = app => {
         return;
       }
 
-      const { entity: savedEntity } = await saveEntity(entity, {
-        user: {},
-        language: req.language,
-        socketEmiter: req.emitToSessionSocket,
-        files: req.files,
+      const result = await withTransaction(async ({ abort }) => {
+        const { entity: savedEntity } = await saveEntity(entity, {
+          user: {},
+          language: req.language,
+          socketEmiter: req.emitToSessionSocket,
+          files: req.files,
+        });
+
+        await processEntityDocument(req, savedEntity.sharedId);
+
+        if (email) {
+          await mailer.send(email);
+        }
       });
-
-      await processEntityDocument(req, savedEntity.sharedId);
-
-      if (email) {
-        await mailer.send(email);
-      }
-
-      res.json(savedEntity);
+      res.json(result);
     }
   );
 
