@@ -77,15 +77,19 @@ class TenantsModel extends EventEmitter {
   }
 
   async initialize() {
-    const collections = (await this.tenantsDB.db.listCollections().toArray()).map(c => c.name);
+    const { db } = this.tenantsDB;
+    if (!db) {
+      throw new Error('Tenants db is undefined');
+    }
+    const collections = (await db.listCollections().toArray()).map(c => c.name);
 
     if (collections.includes(this.collectionName)) {
-      await this.tenantsDB.db.command({
+      await db.command({
         collMod: this.collectionName,
         validator: schemaValidator,
       });
     } else {
-      await this.tenantsDB.db.createCollection(this.collectionName, {
+      await db.createCollection(this.collectionName, {
         validator: schemaValidator,
       });
     }

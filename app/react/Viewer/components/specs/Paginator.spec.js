@@ -77,7 +77,7 @@ describe('Paginator', () => {
   });
 
   describe('when passing onPageChange callback', () => {
-    it('should execute callback on prev/next passing the page selecte', () => {
+    it('should execute callback on prev/next passing the adjacent page forcing navigation for partially visible pages', () => {
       page = 5;
       const props = {
         totalPages: 25,
@@ -91,13 +91,13 @@ describe('Paginator', () => {
         .find(CurrentLocationLink)
         .at(0)
         .simulate('click', { preventDefault: () => {} });
-      expect(props.onPageChange).toHaveBeenCalledWith(4);
+      expect(props.onPageChange).toHaveBeenCalledWith(4, true);
 
       component
         .find(CurrentLocationLink)
         .at(1)
         .simulate('click', { preventDefault: () => {} });
-      expect(props.onPageChange).toHaveBeenCalledWith(6);
+      expect(props.onPageChange).toHaveBeenCalledWith(6, true);
     });
   });
 });
