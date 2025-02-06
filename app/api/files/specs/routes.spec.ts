@@ -9,12 +9,10 @@ import { legacyLogger } from 'api/log';
 import connections from 'api/relationships';
 import { search } from 'api/search';
 import * as ocrRecords from 'api/services/ocr/ocrRecords';
-import { user } from 'api/services/preserve/specs/fixtures';
 import { appContext } from 'api/utils/AppContext';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { setUpApp } from 'api/utils/testingRoutes';
 import { testingTenants } from 'api/utils/testingTenants';
-import { UserInContextMockFactory } from 'api/utils/testingUserInContext';
 import db from 'api/utils/testing_db';
 import { FileType } from 'shared/types/fileType';
 import { UserSchema } from 'shared/types/userType';
@@ -465,7 +463,6 @@ describe('files routes', () => {
       jest.spyOn(entities, 'getUnrestrictedWithDocuments').mockImplementationOnce(() => {
         throw new Error('error at the end of the saveEntity');
       });
-      new UserInContextMockFactory().mock(user);
       await request(jsRoutesApp)
         .post('/api/public')
         .set('Bypass-Captcha', 'true')

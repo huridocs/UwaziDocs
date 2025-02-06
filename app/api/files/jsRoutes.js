@@ -86,7 +86,7 @@ const routes = app => {
         return;
       }
 
-      const result = await withTransaction(async ({ abort }) => {
+      const result = await withTransaction(async () => {
         const { entity: savedEntity } = await saveEntity(entity, {
           user: {},
           language: req.language,

@@ -1,7 +1,6 @@
 import { storage } from 'api/files/storage';
 import { dbSessionContext } from 'api/odm/sessionsContext';
 import { search } from 'api/search';
-import { appContext } from './AppContext';
 import { tenants } from 'api/tenants';
 import { DefaultLogger } from 'api/log.v2/infrastructure/StandardLogger';
 import { inspect } from 'util';
