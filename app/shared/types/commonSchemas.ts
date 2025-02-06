@@ -239,7 +239,7 @@ export const LanguageISO6391Schema = {
 
 export const languageSchema = {
   type: 'object',
-  required: ['key', 'label'],
+  required: ['key', 'label', 'ISO639_1'],
   additionalProperties: false,
   definitions: {
     LanguageISO6391Schema,

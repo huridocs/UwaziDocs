@@ -42,7 +42,7 @@ export const FileMappers = {
       fileDBO.entity,
       fileDBO.totalPages,
       fileDBO.filename,
-      LanguageUtils.fromISO639_3(fileDBO.language).ISO639_1!
+      LanguageUtils.fromISO639_3(fileDBO.language).ISO639_1
     ).withCreationDate(new Date(fileDBO.creationDate));
   },
 };
