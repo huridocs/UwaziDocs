@@ -134,7 +134,7 @@ describe('S3FileStorage', () => {
   describe('getPath', () => {
     it.each([
       {
-        file: new Document('id', 'entity', 1, 'document'),
+        file: new Document('id', 'entity', 1, 'document', 'ab'),
         expected: 'test-tenant/documents/document',
       },
       {
