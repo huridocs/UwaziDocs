@@ -1,5 +1,4 @@
 import { config } from 'api/config';
-import { DB } from 'api/odm/DB';
 import { Db, ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import waitForExpect from 'wait-for-expect';
@@ -17,7 +16,7 @@ describe('tenantsModel', () => {
   beforeAll(async () => {
     await testingDB.connect();
     testingEnvironment.setRequestId();
-    db = DB.connectionForDB(config.SHARED_DB).db;
+    db = testingDB.db(config.SHARED_DB);
   });
 
   beforeEach(async () => {
