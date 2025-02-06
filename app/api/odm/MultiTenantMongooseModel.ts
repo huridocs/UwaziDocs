@@ -1,15 +1,15 @@
 import { BulkWriteOptions } from 'mongodb';
-import mongoose, { Schema } from 'mongoose';
-import { tenants } from '../tenants/tenantContext';
-import { DB } from './DB';
+import mongoose, { ProjectionType, Schema } from 'mongoose';
 import {
   DataType,
-  EnforcedWithId,
   UwaziFilterQuery,
-  UwaziQueryOptions,
-  UwaziUpdateOptions,
   UwaziUpdateQuery,
+  UwaziQueryOptions,
+  EnforcedWithId,
+  UwaziUpdateOptions,
 } from './model';
+import { tenants } from '../tenants/tenantContext';
+import { DB } from './DB';
 import { dbSessionContext } from './sessionsContext';
 
 export class MongooseModelWrapper<T> {
@@ -41,7 +41,11 @@ export class MongooseModelWrapper<T> {
     });
   }
 
-  find(query: UwaziFilterQuery<DataType<T>>, select = '', options = {}) {
+  find(
+    query: UwaziFilterQuery<DataType<T>>,
+    select: ProjectionType<DataType<T>> = {},
+    options = {}
+  ) {
     const session = dbSessionContext.getSession();
     return this.dbForCurrentTenant().find(query, select, {
       ...options,

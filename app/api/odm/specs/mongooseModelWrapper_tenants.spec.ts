@@ -5,7 +5,6 @@ import { config } from 'api/config';
 import { testingTenants } from 'api/utils/testingTenants';
 import { instanceModel } from 'api/odm';
 import testingDB from 'api/utils/testing_db';
-import { DB } from '../DB';
 
 const testSchema = new mongoose.Schema({
   name: String,
@@ -23,9 +22,9 @@ describe('ODM Model multi-tenant', () => {
 
   beforeAll(async () => {
     await testingDB.connect({ defaultTenant: false });
-    defaultDB = DB.connectionForDB(config.defaultTenant.dbName).db;
-    db1 = DB.connectionForDB('db1').db;
-    db2 = DB.connectionForDB('db2').db;
+    defaultDB = testingDB.db(config.defaultTenant.dbName);
+    db1 = testingDB.db('db1');
+    db2 = testingDB.db('db2');
   });
 
   beforeEach(async () => {

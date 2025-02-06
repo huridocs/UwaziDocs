@@ -81,6 +81,7 @@ const testingDB: {
   mongodb: Db | null;
   dbName: string;
   UserInContextMockFactory: UserInContextMockFactory;
+  db: (dbName: string) => Db;
   connect: (options?: { defaultTenant: boolean } | undefined) => Promise<Connection>;
   disconnect: () => Promise<void>;
   tearDown: () => Promise<void>;
@@ -108,7 +109,7 @@ const testingDB: {
         .basename(expect.getState().testPath || '')
         .replace(/[.-]/g, '_')}`.substring(0, 63);
       await initMongoServer(this.dbName);
-      mongodb = mongooseConnection.db;
+      mongodb = this.db(this.dbName);
       this.mongodb = mongodb;
 
       if (options.defaultTenant) {
@@ -122,6 +123,10 @@ const testingDB: {
     }
 
     return mongooseConnection;
+  },
+
+  db(dbName: string) {
+    return DB.mongodb_Db(dbName);
   },
 
   async tearDown() {
@@ -152,7 +157,7 @@ const testingDB: {
     await this.connect();
     let optionalMongo: Db | null = null;
     if (dbName) {
-      optionalMongo = DB.connectionForDB(dbName).db;
+      optionalMongo = DB.connectionForDB(dbName).getClient().db(dbName);
     }
     await fixturer.clearAllAndLoad(optionalMongo || mongodb, fixtures);
     await this.createIndices();

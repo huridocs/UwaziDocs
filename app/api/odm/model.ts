@@ -152,7 +152,22 @@ export class OdmModel<T> implements SyncDBDataSource<T, T> {
       }
     });
     const existingIds = new Set<string>(
-      (await this.db.find({ _id: { $in: ids } }, '_id', { lean: true })).map(d => d._id.toString())
+      (
+        await this.db.find(
+          { _id: { $in: ids } },
+          { _id: 1 },
+          {
+            lean: true,
+          }
+        )
+      )
+        .map(d => {
+          if (d._id) {
+            return d._id.toString();
+          }
+          return null;
+        })
+        .filter((id): id is string => typeof id === 'string')
     );
 
     const existingData = dataArray.filter(d => d._id && existingIds.has(d._id.toString()));
