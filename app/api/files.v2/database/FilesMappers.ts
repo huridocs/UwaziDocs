@@ -1,5 +1,4 @@
 import { LanguageUtils } from 'shared/language';
-import { LanguageISO6391 } from 'shared/types/commonTypes';
 import { FileDBOType } from './schemas/filesTypes';
 import { UwaziFile } from '../model/UwaziFile';
 import { Document } from '../model/Document';
@@ -43,7 +42,7 @@ export const FileMappers = {
       fileDBO.entity,
       fileDBO.totalPages,
       fileDBO.filename,
-      LanguageUtils.fromISO639_3(fileDBO.language).ISO639_1 as LanguageISO6391
+      LanguageUtils.fromISO639_3(fileDBO.language).ISO639_1!
     ).withCreationDate(new Date(fileDBO.creationDate));
   },
 };
