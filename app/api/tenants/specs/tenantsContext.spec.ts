@@ -52,4 +52,24 @@ describe('tenantsContext', () => {
       expect(tenants.tenants['tenant two'].dbName).toBe('tenant_two');
     });
   });
+
+  it('should only return tenants enabled for given feature flag', () => {
+    tenants.add({
+      name: 'test-tenant',
+      dbName: 'test-tenant-db',
+      featureFlags: { s3Storage: true },
+    });
+
+    tenants.add({
+      name: 'test-tenant-2',
+      dbName: 'test-tenant-db',
+      featureFlags: { s3Storage: false },
+    });
+
+    const result = tenants.getTenantsForFeatureFlag('s3Storage');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('test-tenant');
+    expect(result[0].featureFlags?.s3Storage).toBeTruthy();
+  });
 });
