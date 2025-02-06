@@ -1,3 +1,4 @@
+import { Entity } from 'api/entities.v2/model/Entity';
 import { Template } from 'api/templates.v2/model/Template';
 import { PXValidationError, PXErrorCode } from './PXValidationError';
 
@@ -36,5 +37,9 @@ export class PXExtractor {
         'Target and Source template cannot be the same'
       );
     }
+  }
+
+  canExtract(entity: Entity) {
+    return this.sourceTemplate.id === entity.template;
   }
 }

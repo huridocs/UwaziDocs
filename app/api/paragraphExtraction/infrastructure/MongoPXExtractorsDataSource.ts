@@ -1,3 +1,4 @@
+import { TemplateMappers } from 'api/templates.v2/database/TemplateMappers';
 import { MongoDataSource } from 'api/common.v2/database/MongoDataSource';
 import { ObjectId } from 'mongodb';
 import { PXExtractor } from '../domain/PXExtractor';
@@ -11,6 +12,54 @@ export class MongoPXExtractorsDataSource
   implements PXExtractorsDataSource
 {
   protected collectionName = mongoPXExtractorsCollection;
+
+  // Todo: This method needs to be tested
+  async getById(extractorId: string): Promise<PXExtractor | undefined> {
+    const extractor = await this.getCollection()
+      .aggregate([
+        {
+          $match: { _id: new ObjectId(extractorId) },
+        },
+        {
+          $lookup: {
+            from: 'templates',
+            localField: 'sourceTemplateId',
+            foreignField: '_id',
+            as: 'sourceTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'templates',
+            localField: 'targetTemplateId',
+            foreignField: '_id',
+            as: 'targetTemplate',
+          },
+        },
+        {
+          $unwind: '$sourceTemplate',
+        },
+        {
+          $unwind: '$targetTemplate',
+        },
+        {
+          $project: {
+            _id: 1,
+            sourceTemplate: 1,
+            targetTemplate: 1,
+          },
+        },
+      ])
+      .next();
+
+    if (!extractor) return undefined;
+
+    return new PXExtractor({
+      id: extractor._id,
+      sourceTemplate: TemplateMappers.toApp(extractor.sourceTemplate),
+      targetTemplate: TemplateMappers.toApp(extractor.targetTemplate),
+    });
+  }
 
   async create(extractor: PXExtractor): Promise<void> {
     const mongoExtractor: MongoPXExtractorDBO = {
