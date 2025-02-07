@@ -150,9 +150,9 @@ Cypress.on('window:before:load', window => {
   );
 });
 
-Cypress.Commands.add('clearAndType', (selector, value) => {
-  cy.get(selector).clear();
-  cy.get(selector).type(value);
+Cypress.Commands.add('clearAndType', (selector, value, options) => {
+  cy.get(selector).clear(options);
+  cy.get(selector).type(value, options);
 });
 
 // eslint-disable-next-line prefer-arrow-callback
@@ -194,4 +194,12 @@ Cypress.Commands.add('realDragAndDrop', (subject, target) => {
   target.realMouseMove(0, 0, { position: 'center' }).realMouseUp().wait(100);
 });
 
-export {};
+
+Cypress.Commands.add('waitForLegacyNotifications', () => {
+  cy.get('.alert-wrapper').each(element => {
+    cy.wrap(element).should('be.empty');
+  });
+});
+
+
+export { };
