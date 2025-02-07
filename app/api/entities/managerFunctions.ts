@@ -205,7 +205,7 @@ const saveFiles = async (
         .filter(result => result.status === 'rejected')
         .map(rejected => handleError(rejected.reason));
 
-      if (socketEmiter) {
+      if (socketEmiter && tenants.current().featureFlags?.v1_transactions) {
         socketEmiter('documentProcessed', entity.sharedId!);
       }
     });
