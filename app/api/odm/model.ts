@@ -10,7 +10,7 @@ import mongoose, {
 } from 'mongoose';
 import { ObjectIdSchema } from 'shared/types/commonTypes';
 import { inspect } from 'util';
-import { MongooseModelWrapper } from './MultiTenantMongooseModel';
+import { MongooseModelWrapper } from './MongooseModelWrapper';
 import { UpdateLogger, createUpdateLogHelper } from './logHelper';
 import { ModelBulkWriteStream } from './modelBulkWriteStream';
 

@@ -69,7 +69,7 @@ export class MongooseModelWrapper<T> {
     const session = dbSessionContext.getSession();
     return this.dbForCurrentTenant().create(data, {
       ...options,
-      ...(session && { session }),
+      ...(session && { session, ordered: true }),
     });
   }
 
@@ -77,7 +77,7 @@ export class MongooseModelWrapper<T> {
     const session = dbSessionContext.getSession();
     return this.dbForCurrentTenant().create(dataArray, {
       ...options,
-      ...(session && { session }),
+      ...(session && { session, ordered: true }),
     });
   }
 
