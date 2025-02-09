@@ -105,6 +105,8 @@ const ExtractorModal = ({
             startOnSelected={!!templateTo}
             className="min-h-[327px]"
             hideFilters
+            itemClassName="bg-gray-50 rounded-lg"
+            itemContainerClassName="max-h-[327px] overflow-y-auto my-5"
             blankState={<NoQualifiedTemplatesMessage />}
           />
         </div>
@@ -116,6 +118,8 @@ const ExtractorModal = ({
               onChange={setTemplatesFrom}
               allowSelelectAll={templateFromOptions.length > 0}
               startOnSelected={templatesFrom.length > 0}
+              itemClassName="bg-gray-50 rounded-lg"
+              itemContainerClassName="max-h-[327px] overflow-y-auto my-5"
               className="min-h-[327px]"
             />
           </div>
