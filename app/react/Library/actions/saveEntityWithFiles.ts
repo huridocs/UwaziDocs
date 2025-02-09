@@ -40,13 +40,7 @@ const saveEntityWithFiles = async (entity: ClientEntitySchema, dispatch?: Dispat
   const entityToSave = { ...entity, documents: oldDocuments };
 
   const addedDocuments = await Promise.all(
-    (newDocuments as ClientBlobFile[]).map(async file => {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      const blob = await fetch(file.data).then(async r => r.blob());
-      const newDocument = new File([blob], file.originalFile.name, { type: blob.type });
-      URL.revokeObjectURL(file.data);
-      return newDocument;
-    })
+    (newDocuments as ClientBlobFile[]).map(async file => file.originalFile)
   );
 
   return new Promise((resolve, reject) => {
