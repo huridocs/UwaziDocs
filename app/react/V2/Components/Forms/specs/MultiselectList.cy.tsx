@@ -244,5 +244,25 @@ describe('MultiselectList.cy.tsx', () => {
       );
       cy.contains('no items string').should('be.visible');
     });
+
+    it('should load/show filters when hideFilters is not set', () => {
+      cy.viewport(450, 650);
+      mount(
+        <div className="p-2 tw-content">
+          <MultiselectList onChange={() => {}} items={[]} />
+        </div>
+      );
+      cy.get('[data-testid="multiselectlist-filters"]').should('exist');
+    });
+
+    it('should not load/show filters when hideFilters is true', () => {
+      cy.viewport(450, 650);
+      mount(
+        <div className="p-2 tw-content">
+          <MultiselectList onChange={() => {}} items={[]} hideFilters />
+        </div>
+      );
+      cy.get('[data-testid="multiselectlist-filters"]').should('not.exist');
+    });
   });
 });

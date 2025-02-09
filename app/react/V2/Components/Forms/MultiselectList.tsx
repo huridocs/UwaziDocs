@@ -32,6 +32,7 @@ interface MultiselectListProps {
   startOnSelected?: boolean;
   search?: string;
   suggestions?: boolean;
+  hideFilters?: boolean;
   blankState?: string | React.ReactNode;
 }
 
@@ -52,6 +53,7 @@ const MultiselectList = ({
   startOnSelected = false,
   search = '',
   suggestions = false,
+  hideFilters = false,
   blankState = <Translate>No items available</Translate>,
 }: MultiselectListProps) => {
   const [selectedItems, setSelectedItems] = useState<string[]>(value || []);
@@ -200,7 +202,7 @@ const MultiselectList = ({
 
     const selected = selectedItems.includes(item.value);
     const borderSyles = selected
-      ? 'border-sucess-200'
+      ? 'border-success-200'
       : 'border-transparent hover:border-primary-300';
 
     return (
@@ -319,36 +321,38 @@ const MultiselectList = ({
           value={searchTerm}
           clearFieldAction={() => setSearchTerm('')}
         />
-        <div className="flex mx-1 my-4 flex-nowrap">
-          <RadioSelect
-            name="filter"
-            orientation="horizontal"
-            options={[
-              {
-                label: <Translate data-testid="multiselectlist-show-all">All</Translate>,
-                value: 'true',
-                defaultChecked: !startOnSelected,
-              },
-              {
-                label: renderSelectedLabel(),
-                value: 'false',
-                disabled: selectedOrSuggestedItems.size === 0,
-                defaultChecked: startOnSelected,
-              },
-            ]}
-            onChange={applyFilter}
-            className="flex-grow"
-          />
-          {allowSelelectAll && (
-            <button
-              type="button"
-              className="text-gray-400 underline"
-              onClick={() => handleSelectAll()}
-            >
-              <Translate>Select all</Translate>
-            </button>
-          )}
-        </div>
+        {!hideFilters && (
+          <div className="flex mx-1 my-4 flex-nowrap" data-testid="multiselectlist-filters">
+            <RadioSelect
+              name="filter"
+              orientation="horizontal"
+              options={[
+                {
+                  label: <Translate data-testid="multiselectlist-show-all">All</Translate>,
+                  value: 'true',
+                  defaultChecked: !startOnSelected,
+                },
+                {
+                  label: renderSelectedLabel(),
+                  value: 'false',
+                  disabled: selectedOrSuggestedItems.size === 0,
+                  defaultChecked: startOnSelected,
+                },
+              ]}
+              onChange={applyFilter}
+              className="flex-grow"
+            />
+            {allowSelelectAll && (
+              <button
+                type="button"
+                className="text-gray-400 underline"
+                onClick={() => handleSelectAll()}
+              >
+                <Translate>Select all</Translate>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {items.length === 0 && (

@@ -104,6 +104,7 @@ const ExtractorModal = ({
             singleSelect
             startOnSelected={!!templateTo}
             className="min-h-[327px]"
+            hideFilters
             blankState={<NoQualifiedTemplatesMessage />}
           />
         </div>
