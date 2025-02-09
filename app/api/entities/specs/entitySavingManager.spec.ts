@@ -556,7 +556,7 @@ describe('entitySavingManager', () => {
         it('should not reprocess existing documents', async () => {
           jest
             .spyOn(processDocumentApi, 'processDocument')
-            .mockResolvedValueOnce({ _id: db.id() as ObjectId });
+            .mockResolvedValueOnce({ __v: 1, _id: db.id() as ObjectId });
 
           const changedFile = { ...mainPdfFile, originalname: 'Renamed main pdf.pdf' };
 
