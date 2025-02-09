@@ -82,7 +82,7 @@ const ExtractorModal = ({
   return (
     <Modal size="xxl">
       <Modal.Header>
-        <h1 className="text-xl font-medium text-gray-900">
+        <h1 className="text-lg font-semibold text-gray-900">
           {extractor ? (
             <Translate>Edit Extractor</Translate>
           ) : (
@@ -94,7 +94,7 @@ const ExtractorModal = ({
       </Modal.Header>
 
       <Modal.Body className="pt-0">
-        <div className={`${step !== 1 && 'hidden'}`}>
+        <div className={`${step !== 1 ? 'hidden' : ''}`}>
           <MultiselectList
             value={[templateTo]}
             items={templateToOptions}
@@ -107,7 +107,7 @@ const ExtractorModal = ({
             blankState={<NoQualifiedTemplatesMessage />}
           />
         </div>
-        <div className={`${step !== 2 && 'hidden'}`}>
+        <div className={`${step !== 2 ? 'hidden' : ''}`}>
           <div>
             <MultiselectList
               value={templatesFrom || []}
@@ -121,12 +121,16 @@ const ExtractorModal = ({
         </div>
 
         <div className="flex flex-col">
-          <div className="flex justify-center w-full gap-2">
+          <div
+            className={`flex justify-center w-full gap-2 ${templateToOptions.length === 0 ? 'opacity-50' : ''}`}
+          >
             <div className={`w-2 h-2 rounded-full ${isActiveStepClassName(step === 1)}`} />
             <div className={`w-2 h-2 rounded-full ${isActiveStepClassName(step === 2)}`} />
           </div>
-          {templateToOptions.length !== 0 && step === 1 && (
-            <span className="mt-5 text-gray-500 font-light text-sm">
+          {step === 1 && (
+            <span
+              className={`mt-5 text-gray-500 font-light text-sm ${templateToOptions.length === 0 ? 'invisible' : ''}`}
+            >
               <Translate>Templates meeting</Translate>{' '}
               <Link to={linkPXTemplateCriteria} target="_blank" className="underline">
                 <Translate>required criteria</Translate>
@@ -144,7 +148,11 @@ const ExtractorModal = ({
                 <Button styling="light" onClick={() => setShowModal(false)} className="grow">
                   <Translate>Cancel</Translate>
                 </Button>
-                <Button className="grow" onClick={() => setStep(2)} disabled={!templateTo}>
+                <Button
+                  className="grow bg-indigo-800 disabled:opacity-50"
+                  onClick={() => setStep(2)}
+                  disabled={!templateTo}
+                >
                   <span className="flex items-center justify-center gap-2 flex-nowrap">
                     <Translate>Next</Translate>
                     <ArrowRightIcon className="w-5" />
