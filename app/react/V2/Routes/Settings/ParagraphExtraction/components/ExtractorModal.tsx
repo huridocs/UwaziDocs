@@ -127,9 +127,9 @@ const ExtractorModal = ({
           </div>
           {templateToOptions.length !== 0 && step === 1 && (
             <span className="mt-5 text-gray-500 font-light text-sm">
-              <Translate>Templates meeting required criteria</Translate>.{' '}
-              <Link to={linkPXTemplateCriteria} target="_blank">
-                <Translate className="underline">Read Documentation</Translate>
+              <Translate>Templates meeting</Translate>{' '}
+              <Link to={linkPXTemplateCriteria} target="_blank" className="underline">
+                <Translate>required criteria</Translate>
               </Link>
             </span>
           )}
