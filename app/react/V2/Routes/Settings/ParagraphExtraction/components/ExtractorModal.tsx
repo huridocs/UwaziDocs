@@ -87,7 +87,7 @@ const ExtractorModal = ({
             <Translate>Edit Extractor</Translate>
           ) : (
             (step === 1 && <Translate>Target template</Translate>) ||
-            (step === 2 && <Translate>Paragraph extractor</Translate>)
+            (step === 2 && <Translate>Source template</Translate>)
           )}
         </h1>
         <Modal.CloseButton onClick={() => setShowModal(false)} />
@@ -169,7 +169,11 @@ const ExtractorModal = ({
                 <Button styling="light" onClick={() => setStep(1)} className="grow">
                   <Translate>Back</Translate>
                 </Button>
-                <Button className="grow" onClick={async () => handleSubmit()} color="success">
+                <Button
+                  className="grow bg-indigo-800 disabled:opacity-50"
+                  onClick={async () => handleSubmit()}
+                  disabled={!templatesFrom.length}
+                >
                   {extractor ? <Translate>Update</Translate> : <Translate>Add</Translate>}
                 </Button>
               </>
