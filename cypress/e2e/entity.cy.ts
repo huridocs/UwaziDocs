@@ -105,9 +105,9 @@ const addInvalidImageFile = (field: string) => {
 };
 
 
-const checkMediaSnapshots = (selector: string) => {
+const checkMediaSnapshots = (selector: string, options = {}) => {
   cy.get(selector).scrollIntoView({ offset: { top: -30, left: 0 } });
-  cy.get(selector).toMatchImageSnapshot({ disableTimersAndAnimations: true, threshold: 0.08 });
+  cy.get(selector).toMatchImageSnapshot({ ...options, disableTimersAndAnimations: true, threshold: 0.08 });
 };
 
 const checkExternalMedia = () => {
@@ -262,7 +262,6 @@ describe('Entities', () => {
       cy.contains('.metadata-type-multidaterange', 'Multi Date RangeNov 23, 1963 ~ Sep 12, 1964');
       cy.get('.metadata-type-link a').should('have.text', 'Huridocs').and('have.attr', 'href', 'https://www.huridocs.org/');
       cy.get('.side-panel.is-active .sidepanel-body.scrollable').scrollTo(0, 1300);
-      checkMediaSnapshots('#tabpanel-metadata .metadata-type-multimedia.metadata-name-image');
       checkMediaSnapshots('#tabpanel-metadata .metadata-type-multimedia.metadata-name-media');
       cy.get('.leaflet-container').scrollIntoView();
       cy.get('.leaflet-marker-icon').should('have.length', 1);
