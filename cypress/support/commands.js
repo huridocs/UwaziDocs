@@ -199,12 +199,10 @@ Cypress.Commands.add('realDragAndDrop', (subject, target) => {
   target.realMouseMove(0, 0, { position: 'center' }).realMouseUp().wait(100);
 });
 
-
 Cypress.Commands.add('waitForLegacyNotifications', () => {
   cy.get('.alert-wrapper').each(element => {
     cy.wrap(element).should('be.empty');
   });
 });
 
-
-export { };
+export {};

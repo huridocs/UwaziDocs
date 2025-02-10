@@ -1,9 +1,5 @@
 import { clearCookiesAndLogin } from './helpers/login';
-import {
-  changeLanguage,
-  clickOnEditEntity,
-  saveEntity,
-} from './helpers';
+import { changeLanguage, clickOnEditEntity, saveEntity } from './helpers';
 
 const entityTitle = 'Entity with all props';
 const textWithHtml = `<h1>The title</h1>
@@ -21,7 +17,9 @@ const textWithHtml = `<h1>The title</h1>
 
 const clickMediaAction = (field: string, action: string) => {
   cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', action).focus();
-  cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', action).click({ force: true });
+  cy.contains(`.form-group.${field.toLowerCase()}`, field)
+    .contains('button', action)
+    .click({ force: true });
 };
 
 const addVideo = (action: string, local: boolean = true) => {
@@ -54,11 +52,9 @@ const addVideo = (action: string, local: boolean = true) => {
 const addImage = () => {
   clickMediaAction('Image', 'Add file');
   cy.contains('button', 'Select from computer');
-  cy.get('.upload-button input[type=file]')
-    .first()
-    .selectFile('./cypress/test_files/batman.jpg', {
-      force: true,
-    });
+  cy.get('.upload-button input[type=file]').first().selectFile('./cypress/test_files/batman.jpg', {
+    force: true,
+  });
   // wait for image
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(200);
@@ -71,11 +67,9 @@ const addImage = () => {
 const addInvalidVideoFile = (field: string) => {
   cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', 'Add file').click();
   cy.contains('button', 'Select from computer');
-  cy.get('.upload-button input[type=file]')
-    .first()
-    .selectFile('./cypress/test_files/sample.pdf', {
-      force: true,
-    });
+  cy.get('.upload-button input[type=file]').first().selectFile('./cypress/test_files/sample.pdf', {
+    force: true,
+  });
   cy.contains(field)
     .parentsUntil('.form-group')
     .contains('This file type is not supported on media fields')
@@ -89,11 +83,9 @@ const addInvalidVideoFile = (field: string) => {
 const addInvalidImageFile = (field: string) => {
   cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', 'Add file').click();
   cy.contains('button', 'Select from computer');
-  cy.get('.upload-button input[type=file]')
-    .first()
-    .selectFile('./cypress/test_files/sample.pdf', {
-      force: true,
-    });
+  cy.get('.upload-button input[type=file]').first().selectFile('./cypress/test_files/sample.pdf', {
+    force: true,
+  });
   cy.contains(field)
     .parentsUntil('.form-group')
     .contains('Error loading your image')
@@ -104,10 +96,13 @@ const addInvalidImageFile = (field: string) => {
     .should('be.visible');
 };
 
-
 const checkMediaSnapshots = (selector: string, options = {}) => {
   cy.get(selector).scrollIntoView({ offset: { top: -30, left: 0 } });
-  cy.get(selector).toMatchImageSnapshot({ ...options, disableTimersAndAnimations: true, threshold: 0.08 });
+  cy.get(selector).toMatchImageSnapshot({
+    ...options,
+    disableTimersAndAnimations: true,
+    threshold: 0.08,
+  });
 };
 
 const checkExternalMedia = () => {
@@ -149,10 +144,16 @@ describe('Entities', () => {
           cy.wrap($btn).click();
         }
       });
-      cy.contains('.metadataTemplate span', /^Date$/).siblings().contains('button', 'Edit').click();
+      cy.contains('.metadataTemplate span', /^Date$/)
+        .siblings()
+        .contains('button', 'Edit')
+        .click();
       cy.clearAndType('#property-label', 'Single Date', { delay: 0 });
 
-      cy.contains('.metadataTemplate span', 'Relationship').siblings().contains('button', 'Edit').click();
+      cy.contains('.metadataTemplate span', 'Relationship')
+        .siblings()
+        .contains('button', 'Edit')
+        .click();
       cy.contains('Any entity or document');
       cy.contains('.metadataTemplate', 'Relationship').get('select').eq(1).select(1);
       cy.contains('span', 'Media').siblings().contains('button', 'Edit').click();
@@ -161,7 +162,9 @@ describe('Entities', () => {
 
     it('should add another select of type multiselect', () => {
       cy.get('li.list-group-item:nth-child(3) > button:nth-child(1)').click();
-      cy.get('.metadataTemplate-list > li:nth-child(15) > div:nth-child(1) > div:nth-child(2) > button')
+      cy.get(
+        '.metadataTemplate-list > li:nth-child(15) > div:nth-child(1) > div:nth-child(2) > button'
+      )
         .contains('Edit')
         .click();
       cy.clearAndType('#property-label', 'Multiselect', { delay: 0 });
@@ -175,15 +178,24 @@ describe('Entities', () => {
 
       cy.get('.metadataTemplate-list > li:nth-child(10)').scrollIntoView();
       cy.contains('.metadataTemplate-list > li:nth-child(16) span', 'Date').scrollIntoView();
-      cy.contains('.metadataTemplate-list > li:nth-child(16) span', 'Date').siblings().contains('button', 'Edit').click();
+      cy.contains('.metadataTemplate-list > li:nth-child(16) span', 'Date')
+        .siblings()
+        .contains('button', 'Edit')
+        .click();
       cy.clearAndType('#property-label', 'Multi Date', { delay: 0 });
       cy.get('#property-type').select('Multiple date');
 
-      cy.contains('.metadataTemplate-list > li:nth-child(17) span', 'Date').siblings().contains('button', 'Edit').click();
+      cy.contains('.metadataTemplate-list > li:nth-child(17) span', 'Date')
+        .siblings()
+        .contains('button', 'Edit')
+        .click();
       cy.clearAndType('#property-label', 'Date Range', { delay: 0 });
       cy.get('#property-type').select('Single date range');
 
-      cy.contains('.metadataTemplate-list > li:nth-child(18) span', 'Date').siblings().contains('button', 'Edit').click();
+      cy.contains('.metadataTemplate-list > li:nth-child(18) span', 'Date')
+        .siblings()
+        .contains('button', 'Edit')
+        .click();
       cy.clearAndType('#property-label', 'Multi Date Range', { delay: 0 });
       cy.get('#property-type').select('Multiple date range');
 
@@ -196,7 +208,7 @@ describe('Entities', () => {
       cy.get('button').contains('Save').click();
       cy.get('.alert.alert-danger').should('exist');
     });
-  })
+  });
 
   describe('Entity Metadata', () => {
     it('should create an entity filling all the props.', () => {
@@ -210,17 +222,16 @@ describe('Entities', () => {
       cy.get('.form-group.numeric input').type('42', { delay: 0 });
 
       cy.contains('.form-group.select', 'Select').within(() => {
-        cy.get('select').select('Activo')
-      })
+        cy.get('select').select('Activo');
+      });
 
       cy.contains('.form-group.relationship', 'Relationship').within(() => {
         cy.contains('19 Comerciantes').click();
-      })
+      });
 
       cy.contains('.form-group.date', 'Single Date').within(() => {
         cy.get('input').type('08/09/1966', { delay: 0 });
-      })
-
+      });
 
       addImage();
       addVideo('Add file');
@@ -230,20 +241,34 @@ describe('Entities', () => {
 
       cy.contains('.form-group.multiselect', 'Multiselect').within(() => {
         cy.contains('Activo').click();
-      })
+      });
 
       cy.get('.form-group.daterange div.DatePicker__From input').type('23/11/1963', { delay: 0 });
       cy.get('.form-group.daterange div.DatePicker__To input').type('12/09/1964', { delay: 0 });
       cy.get('.form-group.multidate button.btn.add').click();
-      cy.get('.form-group.multidate .multidate-item:first-of-type input').type('23/11/1963', { delay: 0 });
-      cy.get('.form-group.multidate .multidate-item:nth-of-type(2) input').type('12/09/1964', { delay: 0 });
+      cy.get('.form-group.multidate .multidate-item:first-of-type input').type('23/11/1963', {
+        delay: 0,
+      });
+      cy.get('.form-group.multidate .multidate-item:nth-of-type(2) input').type('12/09/1964', {
+        delay: 0,
+      });
       cy.get('.form-group.multidaterange button.btn.add').click();
       cy.get('.form-group.link #label').type('Huridocs', { delay: 0 });
-      cy.get('.form-group.link #url').scrollIntoView().type('https://www.huridocs.org/', { delay: 0 });
-      cy.get('.form-group.multidaterange .multidate-item:first-of-type div.DatePicker__From input').type('23/11/1963', { delay: 0 });
-      cy.get('.form-group.multidaterange .multidate-item:first-of-type div.DatePicker__To input').type('12/09/1964', { delay: 0 });
-      cy.get('.form-group.multidaterange .multidate-item:nth-of-type(2) div.DatePicker__From input').type('23/11/1963', { delay: 0 });
-      cy.get('.form-group.multidaterange .multidate-item:nth-of-type(2) div.DatePicker__To input').type('12/09/1964', { delay: 0 });
+      cy.get('.form-group.link #url')
+        .scrollIntoView()
+        .type('https://www.huridocs.org/', { delay: 0 });
+      cy.get(
+        '.form-group.multidaterange .multidate-item:first-of-type div.DatePicker__From input'
+      ).type('23/11/1963', { delay: 0 });
+      cy.get(
+        '.form-group.multidaterange .multidate-item:first-of-type div.DatePicker__To input'
+      ).type('12/09/1964', { delay: 0 });
+      cy.get(
+        '.form-group.multidaterange .multidate-item:nth-of-type(2) div.DatePicker__From input'
+      ).type('23/11/1963', { delay: 0 });
+      cy.get(
+        '.form-group.multidaterange .multidate-item:nth-of-type(2) div.DatePicker__To input'
+      ).type('12/09/1964', { delay: 0 });
       cy.get('.form-group.markdown textarea').type(textWithHtml, { delay: 0 });
       saveEntity();
       cy.waitForLegacyNotifications();
@@ -257,15 +282,22 @@ describe('Entities', () => {
       cy.get('.metadata-type-multiselect').should('contain.text', 'Activo');
       cy.get('.metadata-type-relationship').should('contain.text', '19 Comerciantes');
       cy.get('.metadata-type-date').should('contain.text', 'Sep 8, 1966');
-      cy.get('.metadata-type-daterange').should('contain.text', 'Date RangeNov 23, 1963 ~ Sep 12, 1964');
-      cy.get('.metadata-type-multidate').should('contain.text', 'Multi DateNov 23, 1963Sep 12, 1964');
+      cy.get('.metadata-type-daterange').should(
+        'contain.text',
+        'Date RangeNov 23, 1963 ~ Sep 12, 1964'
+      );
+      cy.get('.metadata-type-multidate').should(
+        'contain.text',
+        'Multi DateNov 23, 1963Sep 12, 1964'
+      );
       cy.contains('.metadata-type-multidaterange', 'Multi Date RangeNov 23, 1963 ~ Sep 12, 1964');
-      cy.get('.metadata-type-link a').should('have.text', 'Huridocs').and('have.attr', 'href', 'https://www.huridocs.org/');
+      cy.get('.metadata-type-link a')
+        .should('have.text', 'Huridocs')
+        .and('have.attr', 'href', 'https://www.huridocs.org/');
       cy.get('.side-panel.is-active .sidepanel-body.scrollable').scrollTo(0, 1300);
       checkMediaSnapshots('#tabpanel-metadata .metadata-type-multimedia.metadata-name-media');
       cy.get('.leaflet-container').scrollIntoView();
       cy.get('.leaflet-marker-icon').should('have.length', 1);
-
     });
 
     it('should check that the HTML is show as expected', () => {
@@ -296,7 +328,6 @@ describe('Entities', () => {
       cy.contains('a', 'I am a link to the Tracy Robinson entity').click();
       cy.contains('.content-header-title > h1:nth-child(1)', 'Tracy Robinson').should('exist');
     });
-
   });
 
   describe('Media properties', () => {
@@ -322,7 +353,6 @@ describe('Entities', () => {
         cy.get('video', { timeout: 1000 });
       });
     });
-
 
     it('should allow set an external link from a media property', () => {
       cy.contains('a', 'Library').click();
@@ -376,7 +406,6 @@ describe('Entities', () => {
       });
     });
 
-
     it('should allow unlink the value of a media property', () => {
       clickOnEditEntity();
       clickMediaAction('Image', 'Unlink');
@@ -424,7 +453,6 @@ describe('Entities', () => {
       saveEntity('Entity updated');
       cy.get('.metadata-type-select').should('contain.text', 'New Single Value');
       cy.get('.metadata-type-multiselect').should('contain.text', 'MultiselectActivoNew Value');
-
     });
   });
   describe('Entity Translations', () => {
@@ -433,9 +461,13 @@ describe('Entities', () => {
       cy.contains('.item-document:nth-child(1) span', 'Entity with all props').click();
       clickOnEditEntity('Editar');
       cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
-      cy.clearAndType('textarea[name="library.sidepanel.metadata.title"]', 'Entidad con todas las propiedades', {
-        delay: 0,
-      });
+      cy.clearAndType(
+        'textarea[name="library.sidepanel.metadata.title"]',
+        'Entidad con todas las propiedades',
+        {
+          delay: 0,
+        }
+      );
       cy.get('input[name="library.sidepanel.metadata.metadata.text"]').click();
       cy.clearAndType(
         'input[name="library.sidepanel.metadata.metadata.text"]',
@@ -476,7 +508,7 @@ describe('Entities', () => {
       cy.contains('.item-document:nth-child(1) span', 'Entidad con todas las propiedades').click();
       cy.contains('.metadata-type-text > dd', 'Texto de prueba en Español').should('exist');
     });
-  })
+  });
   describe('Empty properties', () => {
     it('should be able to remove all the values from properties.', () => {
       changeLanguage('English');
@@ -510,5 +542,5 @@ describe('Entities', () => {
     it('should not have metadata.', () => {
       cy.get('div.metadata.tab-content-visible div.view > dl > div').should('have.length', 0);
     });
-  })
+  });
 });

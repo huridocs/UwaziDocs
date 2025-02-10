@@ -1,4 +1,10 @@
-import { clearCookiesAndLogin, clickOnCreateEntity, clickOnEditEntity, saveEntity, selectRestrictedEntities } from './helpers';
+import {
+  clearCookiesAndLogin,
+  clickOnCreateEntity,
+  clickOnEditEntity,
+  saveEntity,
+  selectRestrictedEntities,
+} from './helpers';
 
 describe('text references', () => {
   before(() => {
@@ -8,8 +14,13 @@ describe('text references', () => {
   });
 
   it('should navigate to a document', () => {
-    cy.contains('.item-document', 'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012').contains('View').click();
-    cy.contains('Previous')
+    cy.contains(
+      '.item-document',
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+    )
+      .contains('View')
+      .click();
+    cy.contains('Previous');
   });
 
   it('should select the title and create a reference to another paragraph', () => {
@@ -72,24 +83,43 @@ describe('text references', () => {
 
   it('should display relationships on the sidepanel', async () => {
     cy.contains('a', 'Library').click();
-    cy.contains('.item-document:nth-child(5)', 'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012').click();
+    cy.contains(
+      '.item-document:nth-child(5)',
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+    ).click();
     cy.get('#tab-relationships').click();
     cy.contains('#tabpanel-relationships', 'Relationships');
-    cy.contains('.sidepanel-relationship-right-entity', 'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016');
+    cy.contains(
+      '.sidepanel-relationship-right-entity',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+    );
     cy.contains('.sidepanel-relationship-right-entity', 'Chile');
   });
 
-
   it('should display entity relationship page', async () => {
-    cy.contains('.item-document:nth-child(5)', 'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012').contains('View').click();
+    cy.contains(
+      '.item-document:nth-child(5)',
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+    )
+      .contains('View')
+      .click();
     cy.get('#tab-relationships').click();
-    cy.contains('div.relationshipsHub:nth-child(1)', 'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016');
+    cy.contains(
+      'div.relationshipsHub:nth-child(1)',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+    );
     cy.contains('div.relationshipsHub:nth-child(8)', 'Chile');
   });
 
   it('should display the related entity on the sidepanel', async () => {
-    cy.contains('div.relationshipsHub:nth-child(1)', 'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016').click();
-    cy.contains('.sidepanel-body .item-name', 'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016').should('be.visible');
+    cy.contains(
+      'div.relationshipsHub:nth-child(1)',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+    ).click();
+    cy.contains(
+      '.sidepanel-body .item-name',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+    ).should('be.visible');
   });
 
   it('should delete the reference to the entity', () => {
@@ -118,20 +148,17 @@ describe('Entity with main documents', () => {
     selectRestrictedEntities();
     clickOnCreateEntity();
     cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
-    cy.get('textarea[name="library.sidepanel.metadata.title"]').type(
-      'Entity with main documents',
-      { delay: 0 }
-    );
+    cy.get('textarea[name="library.sidepanel.metadata.title"]').type('Entity with main documents', {
+      delay: 0,
+    });
     cy.get('input[name="library.sidepanel.metadata.metadata.resumen"]').click();
     cy.get('input[name="library.sidepanel.metadata.metadata.resumen"]').type(
       'An entity with main documents',
       { delay: 0 }
     );
-    cy.get('.document-list-parent > input')
-      .first()
-      .selectFile('./cypress/test_files/valid.pdf', {
-        force: true,
-      });
+    cy.get('.document-list-parent > input').first().selectFile('./cypress/test_files/valid.pdf', {
+      force: true,
+    });
     saveEntity();
   });
 
@@ -169,11 +196,9 @@ describe('Entity with main documents', () => {
       'Renamed file.pdf',
       { delay: 0 }
     );
-    cy.get('.document-list-parent > input')
-      .first()
-      .selectFile('./cypress/test_files/invalid.pdf', {
-        force: true,
-      });
+    cy.get('.document-list-parent > input').first().selectFile('./cypress/test_files/invalid.pdf', {
+      force: true,
+    });
     saveEntity('Entity updated');
     cy.contains('.item-document', 'Entity with main documents').click();
     cy.contains('.file-originalname', 'Renamed file.pdf').should('exist');
