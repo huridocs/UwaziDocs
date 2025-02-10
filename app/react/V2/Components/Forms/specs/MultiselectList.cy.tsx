@@ -315,7 +315,7 @@ describe('MultiselectList.cy.tsx', () => {
           />
         </div>
       );
-      cy.get('li').should('have.class', 'mb-4');
+      cy.get('li').should('have.class', 'bg-gray-50');
     });
 
     it('should apply a custom class name to each checkbox item', () => {

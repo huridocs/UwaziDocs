@@ -210,7 +210,7 @@ const MultiselectList = ({
       : 'border-transparent hover:border-primary-300';
 
     return (
-      <li key={item.value} className={`${itemClassName ?? 'mb-4 '}`}>
+      <li key={item.value} className={`${itemClassName ?? 'bg-gray-50 rounded-lg mb-4'}`}>
         <button
           type="button"
           className={`w-full flex text-left p-2.5 border ${borderSyles} rounded-lg items-center`}
@@ -235,7 +235,7 @@ const MultiselectList = ({
     return (
       <li
         key={item.value}
-        className={`${!selected && searchTerm && !showAll ? 'opacity-70' : ''} ${itemClassName ?? ' mb-2 '} `}
+        className={`${!selected && searchTerm && !showAll ? 'opacity-70' : ''} ${itemClassName ?? ' bg-gray-50 rounded-lg mb-2'} `}
       >
         <Checkbox
           name={item.value}
@@ -264,7 +264,7 @@ const MultiselectList = ({
     const isOpen = isGroupOpen(group.value);
     if (foldableGroups) {
       return (
-        <li key={group.value} className={`${itemClassName ?? 'mb-4 '}`}>
+        <li key={group.value} className={`${itemClassName ?? 'bg-gray-50 rounded-lg mb-4'}`}>
           <div
             className={`flex justify-between p-3 mb-4 rounded-lg ${isOpen ? 'bg-indigo-50' : 'bg-gray-50'}`}
             onClick={() => handleGroupToggle(group.value)}
@@ -290,7 +290,7 @@ const MultiselectList = ({
     }
 
     return (
-      <li key={group.value} className={`${itemClassName ?? 'mb-4 '}`}>
+      <li key={group.value} className={`${itemClassName ?? 'bg-gray-50 rounded-lg mb-4'}`}>
         <span className="block mb-4 text-sm font-bold text-gray-900">{group.label}</span>
         <ul className={`${itemContainerClassName ?? ''}`}>{group.items?.map(renderItem)}</ul>
       </li>
