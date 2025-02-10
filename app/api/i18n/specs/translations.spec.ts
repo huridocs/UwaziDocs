@@ -1,4 +1,4 @@
-import db from 'api/utils/testing_db';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 import entities from 'api/entities';
 import pages from 'api/pages';
@@ -8,18 +8,18 @@ import { ContextType } from 'shared/translationSchema';
 // eslint-disable-next-line node/no-restricted-import
 import * as fs from 'fs';
 import { UITranslationNotAvailable } from '../defaultTranslations';
+import { addLanguage } from '../routes';
 import translations from '../translations';
 import fixtures, { dictionaryId } from './fixtures';
 import { sortByLocale } from './sortByLocale';
-import { addLanguage } from '../routes';
 
 describe('translations', () => {
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   describe('get()', () => {
