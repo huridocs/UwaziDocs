@@ -15,7 +15,7 @@ declare global {
       selection(subject: string, fn: any): Chainable;
       setSelection(subject: string, query?: string | object, endQuery?: any[]): Chainable;
       clearAndType(selector: string, value: string, options?= {}): Chainable;
-      addTimeLink(duration: number, label: string, index?: number): Chainable;
+      addTimeLink(duration: number, label: string, index?: number, seconds?: number, minutes?: number): Chainable;
       blankState(): Chainable;
       getByTestId(id: string): Chainable<Element>;
       shouldNotBeActionable(

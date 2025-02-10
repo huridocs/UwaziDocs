@@ -19,7 +19,8 @@ const textWithHtml = `<h1>The title</h1>
   </ol>`;
 
 const clickMediaAction = (field: string, action: string) => {
-  cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', action).click();
+  cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', action).focus();
+  cy.contains(`.form-group.${field.toLowerCase()}`, field).contains('button', action).click({ force: true });
 };
 
 const addVideo = (action: string, local: boolean = true) => {
@@ -244,6 +245,7 @@ describe('Entities', () => {
       cy.get('.form-group.multidaterange .multidate-item:nth-of-type(2) div.DatePicker__To input').type('12/09/1964', { delay: 0 });
       cy.get('.form-group.markdown textarea').type(textWithHtml, { delay: 0 });
       saveEntity();
+      cy.waitForLegacyNotifications();
     });
 
     it('should have all the values correctly saved.', () => {
@@ -263,6 +265,7 @@ describe('Entities', () => {
       checkMediaSnapshots('#tabpanel-metadata .metadata-type-multimedia.metadata-name-media');
       cy.get('.leaflet-container').scrollIntoView();
       cy.get('.leaflet-marker-icon').should('have.length', 1);
+
     });
 
     it('should check that the HTML is show as expected', () => {
@@ -301,9 +304,11 @@ describe('Entities', () => {
       cy.contains('a', 'Library').click();
       cy.contains('.item-document:nth-child(1) span', 'Entity with all props').click();
       cy.contains('Text');
+      cy.intercept('GET', 'api/files/*').as('getFile');
       clickOnEditEntity();
+      cy.wait('@getFile');
       cy.get('.side-panel.is-active .sidepanel-body.scrollable').scrollTo(0, 1000);
-      cy.addTimeLink(1000, 'Control point', 1);
+      cy.addTimeLink(1000, 'Control point', 1, 12, 0);
       saveEntity('Entity updated');
       cy.waitForLegacyNotifications();
       checkMediaSnapshots('#tabpanel-metadata .video-container > div:nth-child(2)');
@@ -326,8 +331,9 @@ describe('Entities', () => {
       clickOnEditEntity();
       cy.get('.side-panel.is-active .sidepanel-body.scrollable').scrollTo(0, 1500);
       cy.contains('Update');
-      clickMediaAction('Media', 'Update');
       cy.wait('@getFile');
+      cy.wait('@getFile');
+      clickMediaAction('Media', 'Update');
       addVideo('', false);
       cy.contains('button', 'Add timelink').click();
       cy.clearAndType('input[name="timelines.0.timeMinutes"]', '09', { delay: 0 });
@@ -384,14 +390,22 @@ describe('Entities', () => {
     it('should add a thesauri value on a single select field and select it', () => {
       cy.contains('.item-document:nth-child(1) span', 'Entity with all props').click();
       clickOnEditEntity();
+      // wait for the thesauri values to load
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(200);
       cy.contains('Type');
-      cy.contains('button', 'add value').click();
+      cy.contains(
+        '#metadataForm > div:nth-child(3) > .form-group.select > ul > .wide > div > div > button > span',
+        'add value'
+      ).click();
       cy.contains('.modal-content', 'Add thesaurus value');
+      cy.get('input[name=value]#newThesauriValue').focus();
       cy.get('input[name=value]#newThesauriValue').type('New Single Value', {
         delay: 0,
       });
       cy.contains('.confirm-button', 'Save').click();
       cy.contains('Thesaurus saved');
+      cy.waitForLegacyNotifications();
     });
 
     it('should add a thesauri value on a multiselect field and select it', () => {
@@ -406,6 +420,7 @@ describe('Entities', () => {
       });
       cy.contains('.confirm-button', 'Save').click();
       cy.contains('Thesaurus saved');
+      cy.waitForLegacyNotifications();
       saveEntity('Entity updated');
       cy.get('.metadata-type-select').should('contain.text', 'New Single Value');
       cy.get('.metadata-type-multiselect').should('contain.text', 'MultiselectActivoNew Value');
