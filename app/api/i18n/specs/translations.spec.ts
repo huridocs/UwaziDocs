@@ -1,12 +1,12 @@
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 import entities from 'api/entities';
+import { TranslationSyO } from 'api/i18n.v2/schemas/TranslationSyO';
 import pages from 'api/pages';
 import settings from 'api/settings';
 import thesauri from 'api/thesauri/thesauri.js';
 import { ContextType } from 'shared/translationSchema';
 // eslint-disable-next-line node/no-restricted-import
-import { TranslationSyO } from 'api/i18n.v2/schemas/TranslationSyO';
 import * as fs from 'fs';
 import { UITranslationNotAvailable } from '../defaultTranslations';
 import { addLanguage } from '../routes';
