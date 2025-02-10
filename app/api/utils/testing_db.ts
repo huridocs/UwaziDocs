@@ -131,6 +131,7 @@ const testingDB: {
 
   async tearDown() {
     await this.disconnect();
+    connected = false;
   },
 
   async disconnect() {
@@ -149,6 +150,9 @@ const testingDB: {
     await fixturer.clear(mongodb, collections);
   },
 
+  /**
+   * @deprecated
+   */
   async setupFixturesAndContext(fixtures: DBFixture, elasticIndex?: string, dbName?: string) {
     await this.connect();
     let optionalMongo: Db | null = null;
@@ -185,6 +189,9 @@ const testingDB: {
     await this.setupFixturesAndContext(fixtures, elasticIndex);
   },
 
+  /**
+   * @deprecated
+   */
   async clearAllAndLoadFixtures(fixtures: DBFixture) {
     await fixturer.clearAllAndLoad(mongodb, fixtures);
   },
