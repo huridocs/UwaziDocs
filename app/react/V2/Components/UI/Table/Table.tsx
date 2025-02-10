@@ -226,7 +226,7 @@ const Table = <T extends TableRow<T>>({
             {dataState.length === 0 && (
               <NoDataRow colSpan={memoizedColumns.length} DisplayElement={noDataMessage} />
             )}
-            {dataState.length && (
+            {dataState.length > 0 && (
               <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
                 {table.getRowModel().rows.map(row => (
                   <DraggableRow
