@@ -96,7 +96,7 @@ export default app => {
             await abort();
           }
           return req.body.entity ? saveResult : entity;
-        });
+        }, 'POST /api/entities');
         res.json(result);
         if (tenants.current().featureFlags.v1_transactions) {
           req.emitToSessionSocket(
