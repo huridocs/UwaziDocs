@@ -5,6 +5,7 @@ export interface Paragraph {
   height: number;
   pageNumber: number;
   text: string;
+  type: string;
 }
 
 export interface Segmentation {

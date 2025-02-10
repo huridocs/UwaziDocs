@@ -5,11 +5,11 @@ import { SettingsDataSource } from 'api/settings.v2/contracts/SettingsDataSource
 import { FilesDataSource } from 'api/files.v2/contracts/FilesDataSource';
 import { Entity } from 'api/entities.v2/model/Entity';
 import { Document } from 'api/files.v2/model/Document';
-import { LanguageISO6391 } from 'shared/types/commonTypes';
+import { LanguagesListSchema } from 'shared/types/commonTypes';
 
 import { PXExtractorsDataSource } from '../domain/PXExtractorDataSource';
 import { PXErrorCode, PXValidationError } from '../domain/PXValidationError';
-import { PXExtractionService } from '../domain/PXExtractionService';
+import { PXExtractionId, PXExtractionService } from '../domain/PXExtractionService';
 
 type Input = z.infer<typeof Schema>;
 
@@ -51,14 +51,26 @@ export class PXExtractParagraphsFromEntity implements UseCase<Input, Output> {
         `There are some Documents without Segmentations for the Entity "${entity.title}"`
       );
     }
-    await this.dependencies.extractionService.extractParagraph(segmentations!);
+
+    const defaultLanguage = installedLanguages.find(language => !!language.default)?.key!;
+
+    await this.dependencies.extractionService.extractParagraph({
+      documents,
+      segmentations,
+      defaultLanguage,
+      extractionId: new PXExtractionId({
+        entitySharedId: entity.sharedId,
+        extractorId: extractor.id,
+      }),
+      xmlFilesPath: [],
+    });
   }
 
   private async getInitialData(input: Input) {
     const [extractor, entities, installedLanguages] = await Promise.all([
       this.dependencies.extractorsDS.getById(input.extractorId),
       this.dependencies.entityDS.getByIds([input.entitySharedId]).all(),
-      this.dependencies.settingsDS.getLanguageKeys(),
+      this.dependencies.settingsDS.getInstalledLanguages(),
     ]);
     const [entity] = entities;
 
@@ -76,13 +88,31 @@ export class PXExtractParagraphsFromEntity implements UseCase<Input, Output> {
       );
     }
 
+    if (!installedLanguages.length) {
+      throw new PXValidationError(
+        PXErrorCode.LANGUAGES_NOT_FOUND,
+        'There is no languages available'
+      );
+    }
+
     return { extractor, entity, installedLanguages };
   }
 
-  private async getDocuments(entity: Entity, installedLanguages: LanguageISO6391[]) {
+  private async getDocuments(entity: Entity, installedLanguages: LanguagesListSchema) {
     const documents = await this.dependencies.filesDS.getDocumentsForEntity(entity.sharedId).all();
 
-    return documents.filter(document => installedLanguages.includes(document.language));
+    const filteredDocuments = documents.filter(document =>
+      installedLanguages.some(language => language.key === document.language)
+    );
+
+    if (!filteredDocuments.length) {
+      throw new PXValidationError(
+        PXErrorCode.DOCUMENTS_NOT_FOUND,
+        `There is no valid Documents for the Entity ${entity.title}`
+      );
+    }
+
+    return filteredDocuments;
   }
 
   private async getSegmentations(documents: Document[]) {
@@ -93,21 +123,3 @@ export class PXExtractParagraphsFromEntity implements UseCase<Input, Output> {
     return segmentations;
   }
 }
-
-/**
- * The ExtractParagraphsFromEntityUseCase will be per Entity (entitySharedId)
- * 1. Get primary Documents for that Entity in the collection UI languages and only one per language
- * 2. The language of Primary Document must be configured on UI Languages collections
- *
- * 3. From PDF 'okay' to extract, search for pdf segmentations.
- *
- * Paragraph should be create with the title of the Entity in that UI language.Paragraph number
- *
- * 1. Fix type error behind mapping different languages
- * 2. Improve by refactoring
- * 3. Cover behavior by testing  [ OK ]
- * 4. query more than one segmentation  [ OK ]
- * 5. Throw if any segemnation if found. [ OK ]
- * 6. every segmentation should have XML
- *
- */

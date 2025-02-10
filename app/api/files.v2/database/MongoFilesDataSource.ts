@@ -19,9 +19,11 @@ export type SegmentationDBO = SegmentationType & {
 export class MongoFilesDataSource extends MongoDataSource<FileDBOType> implements FilesDataSource {
   protected collectionName = 'files';
 
-  getSegmentations(fileId: string[]): ResultSet<Segmentation> {
+  getSegmentations(filesId: string[]): ResultSet<Segmentation> {
     const cursor = this.getCollection<SegmentationDBO>('segmentations').find({
-      fileID: { $in: fileId.map(id => new ObjectId(id)) },
+      fileID: { $in: filesId.map(id => new ObjectId(id)) },
+      status: 'ready',
+      segmentation: { $exists: true },
     });
 
     return new MongoResultSet(cursor, SegmentationMapper.toDomain);

@@ -1,55 +1,40 @@
+/* eslint-disable max-statements */
 import { ObjectId } from 'mongodb';
 import { DefaultEntitiesDataSource } from 'api/entities.v2/database/data_source_defaults';
 import { DefaultTransactionManager } from 'api/common.v2/database/data_source_defaults';
 import { testingEnvironment } from 'api/utils/testingEnvironment';
 import { getConnection } from 'api/common.v2/database/getConnectionForCurrentTenant';
-import { getFixturesFactory } from 'api/utils/fixturesFactory';
 import { DefaultFilesDataSource } from 'api/files.v2/database/data_source_defaults';
 import {
   mongoPXExtractorsCollection,
   MongoPXExtractorsDataSource,
 } from 'api/paragraphExtraction/infrastructure/MongoPXExtractorsDataSource';
-import { MongoPXExtractorDBO } from 'api/paragraphExtraction/infrastructure/MongoPXExtractorDBO';
 import { DefaultSettingsDataSource } from 'api/settings.v2/database/data_source_defaults';
 import { PXErrorCode } from 'api/paragraphExtraction/domain/PXValidationError';
-import { MongoSegmentationBuilder } from 'api/files.v2/database/specs/MongoSegmentationBuilder';
 import { DBFixture } from 'api/utils/testing_db';
 
-import { PXExtractionService } from 'api/paragraphExtraction/domain/PXExtractionService';
+import {
+  PXExtractionId,
+  PXExtractionService,
+} from 'api/paragraphExtraction/domain/PXExtractionService';
+import { Document } from 'api/files.v2/model/Document';
 import { PXExtractParagraphsFromEntity } from '../PXExtractParagraphFromEntity';
-
-const factory = getFixturesFactory();
-
-const defaultTemplate = factory.template('Default Template');
-const sourceTemplate = factory.template('Source Template', [factory.property('text', 'text')]);
-const targetTemplate = factory.template('Target Template', [
-  factory.property('rich_text', 'markdown'),
-]);
-
-const invalidEntity = factory.entity('invalidEntity', defaultTemplate.name);
-
-const entity = factory.entity('entity', sourceTemplate.name);
-
-const extractor: MongoPXExtractorDBO = {
-  _id: factory.id('extractor'),
-  sourceTemplateId: sourceTemplate._id,
-  targetTemplateId: targetTemplate._id,
-};
-
-const file = factory.document('file', { language: 'eng', entity: entity.sharedId });
-const file2 = factory.document('file2', { language: 'spa', entity: entity.sharedId });
-const fileWithLanguageNotConfigured = factory.document('fileWithLanguageNotConfigured', {
-  language: 'por',
-  entity: entity.sharedId,
-});
-
-const segmentation = MongoSegmentationBuilder.create().withFileId(file._id).build();
-
-const segmentation2 = MongoSegmentationBuilder.create().withFileId(file2._id).build();
-
-const fileWithLanguageNotConfiguredSegmentation = MongoSegmentationBuilder.create()
-  .withFileId(fileWithLanguageNotConfigured._id)
-  .build();
+import {
+  extractor,
+  sourceTemplate,
+  targetTemplate,
+  defaultTemplate,
+  entity,
+  invalidEntity,
+  file2,
+  fileWithLanguageNotConfigured,
+  segmentation,
+  segmentation2,
+  fileWithLanguageNotConfiguredSegmentation,
+  failedSegmentation,
+  processingSegmentation,
+  file,
+} from './fixtures';
 
 const createFixtures = (): DBFixture => ({
   [mongoPXExtractorsCollection]: [extractor],
@@ -58,7 +43,7 @@ const createFixtures = (): DBFixture => ({
   settings: [
     {
       languages: [
-        { label: 'English', key: 'en' },
+        { label: 'English', key: 'en', default: true },
         { label: 'Spanish', key: 'es' },
       ],
     },
@@ -139,26 +124,6 @@ describe('PXExtractParagraphsFromEntity', () => {
     });
   });
 
-  it('should call extract paragraph service with correct params', async () => {
-    const { extractParagraphs, extractionService } = setUpUseCase();
-
-    await extractParagraphs.execute({
-      entitySharedId: entity.sharedId!.toString()!,
-      extractorId: extractor._id.toString(),
-    });
-
-    expect(extractionService.extractParagraph).toHaveBeenCalledWith([
-      {
-        id: segmentation._id?.toString(),
-        fileId: segmentation.fileID?.toString(),
-      },
-      {
-        id: segmentation2._id?.toString(),
-        fileId: segmentation2.fileID?.toString(),
-      },
-    ]);
-  });
-
   it('should throw if any of the Documents do not have Segmentations', async () => {
     const fixtures = createFixtures();
     fixtures.segmentations = [segmentation];
@@ -177,5 +142,127 @@ describe('PXExtractParagraphsFromEntity', () => {
     });
 
     expect(extractionService.extractParagraph).not.toHaveBeenCalled();
+  });
+
+  it('should call extract paragraph service with correct params', async () => {
+    const { extractParagraphs, extractionService } = setUpUseCase();
+
+    await extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    expect(extractionService.extractParagraph).toHaveBeenCalledWith(
+      expect.objectContaining({
+        documents: expect.arrayContaining([expect.any(Document)]),
+        defaultLanguage: expect.any(String),
+        extractionId: expect.any(PXExtractionId),
+        segmentations: [
+          {
+            id: segmentation._id?.toString(),
+            fileId: segmentation.fileID?.toString(),
+            status: 'ready',
+            pageHeight: 0,
+            pageWidth: 0,
+            paragraphs: [],
+          },
+          {
+            id: segmentation2._id?.toString(),
+            fileId: segmentation2.fileID?.toString(),
+            status: 'ready',
+            pageHeight: 0,
+            pageWidth: 0,
+            paragraphs: [],
+          },
+        ],
+        xmlFilesPath: [],
+      })
+    );
+  });
+
+  it('should throw if no documents are found for the entity', async () => {
+    const fixtures = createFixtures();
+    fixtures.files = [];
+
+    await testingEnvironment.setFixtures(fixtures);
+
+    const { extractParagraphs } = setUpUseCase();
+
+    const promise = extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.DOCUMENTS_NOT_FOUND,
+    });
+  });
+
+  it('should throw if no valid segmentations are found', async () => {
+    const fixtures = createFixtures();
+    fixtures.segmentations = [failedSegmentation, processingSegmentation];
+
+    await testingEnvironment.setFixtures(fixtures);
+
+    const { extractParagraphs } = setUpUseCase();
+
+    const promise = extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.SEGMENTATIONS_UNAVAILABLE,
+    });
+  });
+
+  it('should throw if no installed languages are found', async () => {
+    const fixtures = createFixtures();
+    fixtures.settings = [];
+
+    await testingEnvironment.setFixtures(fixtures);
+
+    const { extractParagraphs } = setUpUseCase();
+
+    const promise = extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.LANGUAGES_NOT_FOUND,
+    });
+  });
+
+  it('should only work with valid Segmentations', async () => {
+    const fixtures = createFixtures();
+    fixtures.segmentations = [segmentation, failedSegmentation, processingSegmentation];
+    fixtures.files = [file];
+
+    await testingEnvironment.setFixtures(fixtures);
+
+    const { extractParagraphs, extractionService } = setUpUseCase();
+
+    await extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    expect(extractionService.extractParagraph).toHaveBeenCalledWith({
+      documents: expect.arrayContaining([expect.any(Document)]),
+      defaultLanguage: expect.any(String),
+      extractionId: expect.any(PXExtractionId),
+      segmentations: [
+        {
+          id: segmentation._id?.toString(),
+          fileId: segmentation.fileID?.toString(),
+          status: 'ready',
+          pageHeight: 0,
+          pageWidth: 0,
+          paragraphs: [],
+        },
+      ],
+      xmlFilesPath: [],
+    });
   });
 });

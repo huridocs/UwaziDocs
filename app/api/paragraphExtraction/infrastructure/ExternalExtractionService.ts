@@ -1,11 +1,9 @@
-import { Segmentation } from 'api/files.v2/model/Segmentation';
-import { PXExtractionService } from '../domain/PXExtractionService';
+import { HttpClient, HttpFile } from 'api/common.v2/contracts/HttpClient';
+import { ExtractParagraphInput, PXExtractionService } from '../domain/PXExtractionService';
 
 type SegmentBoxDTO = {
   left: number;
   top: number;
-  width: number;
-  height: number;
   page_number: number;
   type: string;
 };
@@ -23,15 +21,45 @@ type ExtractionDTO = {
 };
 
 type Dependencies = {
-  httpClient: typeof fetch;
+  url: string;
+  httpClient: HttpClient;
 };
 
 export class PXExternalExtractionService implements PXExtractionService {
-  private BASE_URL = 'extract_paragraphs';
-
   constructor(private dependencies: Dependencies) {}
 
-  extractParagraph(segmentations: Segmentation[]): Promise<void> {
-    throw new Error('Method not implemented.');
+  async extractParagraph({
+    segmentations,
+    defaultLanguage,
+    documents,
+    xmlFilesPath,
+    extractionId,
+  }: ExtractParagraphInput): Promise<void> {
+    const dto: ExtractionDTO = {
+      key: extractionId.id,
+      xmls_segments: segmentations.map(segmentation => {
+        const language = documents.find(document => document.id === segmentation.fileId)?.language!;
+
+        return {
+          language,
+          is_main_language: language === defaultLanguage,
+          xml_file_name: segmentation.xmlname!,
+          xml_segments_boxes: segmentation.paragraphs!.map(paragraph => ({
+            left: paragraph.left,
+            top: paragraph.top,
+            page_number: paragraph.pageNumber,
+            type: paragraph.type,
+          })),
+        };
+      }),
+    };
+
+    await this.dependencies.httpClient.postFormData({
+      url: `${this.dependencies.url}/extract_paragraphs`,
+      formData: {
+        json_data: dto,
+        xml_files: xmlFilesPath.map(path => new HttpFile({ filename: 'file', source: path })),
+      },
+    });
   }
 }
