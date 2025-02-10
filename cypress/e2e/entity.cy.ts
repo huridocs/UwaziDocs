@@ -1,5 +1,6 @@
 import { clearCookiesAndLogin } from './helpers/login';
 import {
+  changeLanguage,
   clickOnEditEntity,
   saveEntity,
 } from './helpers';
@@ -427,8 +428,59 @@ describe('Entities', () => {
 
     });
   });
+  describe('Entity Translations', () => {
+    it('should change the entity in Spanish', () => {
+      changeLanguage('Español');
+      cy.contains('.item-document:nth-child(1) span', 'Entity with all props').click();
+      clickOnEditEntity('Editar');
+      cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
+      cy.clearAndType('textarea[name="library.sidepanel.metadata.title"]', 'Entidad con todas las propiedades', {
+        delay: 0,
+      });
+      cy.get('input[name="library.sidepanel.metadata.metadata.text"]').click();
+      cy.clearAndType(
+        'input[name="library.sidepanel.metadata.metadata.text"]',
+        'Texto de prueba en Español',
+        { delay: 0 }
+      );
+      cy.contains('button', 'Guardar').click();
+    });
+
+    it('should check the values for the entity in Spanish', () => {
+      cy.contains('.item-document', 'Entidad con todas las propiedades').click();
+      cy.contains('h1.item-name', 'Entidad con todas las propiedades').should('exist');
+      cy.get('.metadata-type-text').should('contain.text', 'Texto de prueba en Español');
+    });
+
+    it('should edit the text field in English', () => {
+      changeLanguage('English');
+      cy.contains('.item-document', 'Entity with all props').click();
+      clickOnEditEntity();
+      cy.get('input[name="library.sidepanel.metadata.metadata.text"]').click();
+      cy.clearAndType(
+        'input[name="library.sidepanel.metadata.metadata.text"]',
+        'Demo text in english',
+        { delay: 0 }
+      );
+      saveEntity('Entity updated');
+      cy.waitForLegacyNotifications();
+      cy.contains('.item-document', 'Entity with all props').click();
+      cy.contains('h1.item-name', 'Entity with all props').should('exist');
+      cy.get('.metadata-type-text').should('contain.text', 'Demo text in english');
+    });
+
+    it('should not affect the text field in Spanish', () => {
+      cy.intercept('GET', 'es/library/*').as('getLibrary');
+      changeLanguage('Español');
+      cy.wait('@getLibrary');
+      cy.contains('Configuración de filtros');
+      cy.contains('.item-document:nth-child(1) span', 'Entidad con todas las propiedades').click();
+      cy.contains('.metadata-type-text > dd', 'Texto de prueba en Español').should('exist');
+    });
+  })
   describe('Empty properties', () => {
     it('should be able to remove all the values from properties.', () => {
+      changeLanguage('English');
       cy.contains('.item-document:nth-child(1) span', 'Entity with all props').click();
       clickOnEditEntity();
       cy.contains('Type');
