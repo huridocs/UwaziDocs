@@ -2,13 +2,13 @@ import { createStore } from 'jotai';
 import { isClient } from 'app/utils';
 import { store } from 'app/store';
 import { ClientSettings, ClientThesaurus, ClientUserSchema } from 'app/apiResponseTypes';
-import { ClientTemplateSchema } from 'app/istore';
+import { ClientTemplateSchema, ClientTranslationSchema } from 'app/istore';
 import { globalMatomoAtom } from './globalMatomoAtom';
 import { ciMatomoActiveAtom } from './ciMatomoActiveAtom';
 import { relationshipTypesAtom } from './relationshipTypes';
 import { settingsAtom } from './settingsAtom';
 import { templatesAtom } from './templatesAtom';
-import { translationsAtom } from './translationsAtom';
+import { translationsAtom, localeAtom } from './translationsAtoms';
 import { userAtom } from './userAtom';
 import { thesauriAtom } from './thesauriAtom';
 import { pdfScaleAtom } from './pdfScaleAtom';
@@ -21,6 +21,7 @@ type AtomStoreData = {
   templates?: ClientTemplateSchema[];
   user?: ClientUserSchema;
   ciMatomoActive?: boolean;
+  translations: ClientTranslationSchema[];
 };
 
 declare global {
@@ -38,7 +39,8 @@ const hydrateAtomStore = (data: AtomStoreData) => {
   if (data.thesauri) atomStore.set(thesauriAtom, data.thesauri);
   if (data.templates) atomStore.set(templatesAtom, data.templates);
   atomStore.set(userAtom, data.user);
-  atomStore.set(translationsAtom, { locale: data.locale || 'en' });
+  atomStore.set(translationsAtom, data.translations);
+  atomStore.set(localeAtom, data.locale || 'en');
 };
 
 if (isClient && window.__atomStoreData__) {
@@ -64,6 +66,10 @@ if (isClient && window.__atomStoreData__) {
   atomStore.sub(pdfScaleAtom, () => {
     const value = atomStore.get(pdfScaleAtom);
     store?.dispatch({ type: 'viewer/documentScale/SET', value });
+  });
+  atomStore.sub(translationsAtom, () => {
+    const value = atomStore.get(translationsAtom);
+    store?.dispatch({ type: 'translations', value });
   });
 }
 
