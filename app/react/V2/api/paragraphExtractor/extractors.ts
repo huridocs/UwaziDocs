@@ -7,20 +7,20 @@ import {
 } from 'app/V2/Routes/Settings/ParagraphExtraction/types';
 
 let dummyData = [
-  {
-    _id: '1',
-    templatesFrom: ['66fbe4f28542cc5545e05a46', '66fbe4d28542cc5545e0599c'],
-    templateTo: '66ffac5860f7ab062d87d13e',
-    documents: 831,
-    generatedEntities: 12000,
-  },
-  {
-    _id: '2',
-    templatesFrom: ['66fbe4d28542cc5545e0599c', 'Judge Documents'],
-    templateTo: '66ffac5860f7ab062d87d13e',
-    documents: 500,
-    generatedEntities: 12001,
-  },
+  // {
+  //   _id: '1',
+  //   templatesFrom: ['66fbe4f28542cc5545e05a46', '66fbe4d28542cc5545e0599c'],
+  //   templateTo: '66ffac5860f7ab062d87d13e',
+  //   documents: 831,
+  //   generatedEntities: 12000,
+  // },
+  // {
+  //   _id: '2',
+  //   templatesFrom: ['66fbe4d28542cc5545e0599c', 'Judge Documents'],
+  //   templateTo: '66ffac5860f7ab062d87d13e',
+  //   documents: 500,
+  //   generatedEntities: 12001,
+  // },
 ] as ParagraphExtractorApiResponse[];
 
 // const apiEndpoint = 'paragraph-extractor';
