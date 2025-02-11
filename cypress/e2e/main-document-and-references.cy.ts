@@ -167,12 +167,7 @@ describe('Entity with main documents', () => {
   });
 
   it('should create a reference from main document', () => {
-    cy.contains(
-      '.item-document',
-      'Entity with main documents'
-    )
-      .contains('View')
-      .click();
+    cy.contains('.item-document', 'Entity with main documents').contains('View').click();
     cy.contains('span', 'La Sentencia de fondo');
     cy.get('#p3R_mc24 > span:nth-child(2)').realClick({ clickCount: 3 });
     cy.get('.fa-file', { timeout: 5000 }).then(() => {
