@@ -1,7 +1,13 @@
+export type PXTemplate = {
+  _id: string;
+  name: string;
+  color: string;
+};
+
 export type ParagraphExtractorApiPayload = {
   _id?: string;
-  templatesFrom: string[];
-  templateTo: string;
+  sourceTemplateIds: string[];
+  targetTemplateId: string;
 };
 
 export type ParagraphExtractorApiResponse = ParagraphExtractorApiPayload & {
@@ -11,8 +17,8 @@ export type ParagraphExtractorApiResponse = ParagraphExtractorApiPayload & {
 
 export type PXTable = ParagraphExtractorApiResponse & {
   rowId: string;
-  targetTemplateName: string;
-  originTemplateNames: string[];
+  targetTemplate: PXTemplate;
+  sourceTemplates: PXTemplate[];
 };
 
 //

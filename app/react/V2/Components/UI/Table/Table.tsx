@@ -207,7 +207,7 @@ const Table = <T extends TableRow<T>>({
                       key={hdr.id}
                       colSpan={hdr.colSpan}
                       scope="col"
-                      className={`p-4 text-sm text-gray-500 uppercase border-b ${customClassName}`}
+                      className={`p-4 text-sm text-gray-500 uppercase border-b ${customClassName || ''}`}
                       onClick={headerSorting ? hdr.column.getToggleSortingHandler() : undefined}
                     >
                       <span
@@ -241,7 +241,7 @@ const Table = <T extends TableRow<T>>({
             )}
           </tbody>
         </table>
-        {footer && <div className="p-4">{footer}</div>}
+        {footer && dataState.length > 0 && <div className="p-4">{footer}</div>}
       </div>
     </DndContext>
   );
