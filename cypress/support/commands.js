@@ -205,4 +205,4 @@ Cypress.Commands.add('waitForLegacyNotifications', () => {
   });
 });
 
-export { };
+export {};
