@@ -116,7 +116,7 @@ jobs:
         run: sleep 5 && wget --waitretry=5 --retry-connrefused -v http://localhost:3000/
         timeout-minutes: 3
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v6.7.10
         with:
           browser: chrome
           component: false
