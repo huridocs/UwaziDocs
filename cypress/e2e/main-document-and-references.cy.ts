@@ -76,7 +76,9 @@ describe('text references', () => {
 
   it('should verify the reference to an entity', () => {
     cy.get('.metadata-sidepanel.is-active').within(() => {
-      cy.contains('Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016');
+      cy.contains(
+        'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+      );
       cy.contains('Chile');
     });
   });
@@ -84,45 +86,45 @@ describe('text references', () => {
   it('should display relationships on the sidepanel', () => {
     cy.contains('a', 'Library').click();
     cy.contains(
-      '.item-document:nth-child(5)',
-      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+      '.item-document:nth-child(1)',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
     ).click();
     cy.get('#tab-relationships').click();
-    cy.contains('#tabpanel-relationships', 'Relationships');
+    cy.contains('#tabpanel-relationships', 'Relacionado a');
     cy.contains(
       '.sidepanel-relationship-right-entity',
-      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
     );
     cy.contains('.sidepanel-relationship-right-entity', 'Chile');
+    cy.get('.metadata-sidepanel.is-active .closeSidepanel').eq(0).click();
   });
 
   it('should display entity relationship page', () => {
     cy.contains(
-      '.item-document:nth-child(5)',
-      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
+      '.item-document:nth-child(1)',
+      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
     )
       .contains('View')
       .click();
     cy.get('#tab-relationships').click();
     cy.contains(
       'div.relationshipsHub:nth-child(1)',
-      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
     );
-    cy.contains('div.relationshipsHub:nth-child(8)', 'Chile');
+    cy.contains('div.relationshipsHub:nth-child(5)', 'Chile');
   });
 
   it('should display the related entity on the sidepanel', () => {
+    cy.get('#tab-references').click();
     cy.contains(
-      'div.relationshipsHub:nth-child(1)',
-      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
-    ).click();
-    cy.contains(
-      '.sidepanel-body .item-name',
-      'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
+      'aside.side-panel',
+      'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
     ).should('be.visible');
+    cy.contains('aside.side-panel', 'Chile').should('be.visible');
   });
 
   it('should delete the reference to the entity', () => {
+    cy.contains('aside.side-panel', 'Chile').click();
     cy.contains('.relationship-active', 'Chile').within(() => {
       cy.get('.btn.delete').click();
     });
@@ -143,8 +145,9 @@ describe('text references', () => {
 
 describe('Entity with main documents', () => {
   it('Should create a new entity with a main documents', () => {
-    cy.get('.metadata-sidepanel.is-active .closeSidepanel').click();
+    cy.get('.metadata-sidepanel.is-active .closeSidepanel').eq(0).click();
     cy.contains('a', 'Library').click();
+    cy.contains('Filters');
     selectRestrictedEntities();
     clickOnCreateEntity();
     cy.get('textarea[name="library.sidepanel.metadata.title"]').click();
@@ -160,13 +163,16 @@ describe('Entity with main documents', () => {
       force: true,
     });
     saveEntity();
+    cy.waitForLegacyNotifications();
   });
 
   it('should create a reference from main document', () => {
-    cy.contains('a', 'Library').click();
-    cy.contains('.item-document', 'Entity with main documents').within(() => {
-      cy.get('.view-doc').click();
-    });
+    cy.contains(
+      '.item-document',
+      'Entity with main documents'
+    )
+      .contains('View')
+      .click();
     cy.contains('span', 'La Sentencia de fondo');
     cy.get('#p3R_mc24 > span:nth-child(2)').realClick({ clickCount: 3 });
     cy.get('.fa-file', { timeout: 5000 }).then(() => {
@@ -200,6 +206,7 @@ describe('Entity with main documents', () => {
       force: true,
     });
     saveEntity('Entity updated');
+    cy.waitForLegacyNotifications();
     cy.contains('.item-document', 'Entity with main documents').click();
     cy.contains('.file-originalname', 'Renamed file.pdf').should('exist');
     cy.contains('.file-originalname', 'invalid.pdf').should('exist');
