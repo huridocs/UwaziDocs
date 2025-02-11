@@ -26,6 +26,8 @@ import { IndeterminateCheckboxHeader, IndeterminateCheckboxRow } from './RowSele
 import { dndSortHandler, getRowIds } from './helpers';
 import { SortingChevrons } from './SortingChevrons';
 import { GroupCell, GroupHeader } from './GroupComponents';
+import { NoDataRow } from './NoDataRow';
+import { DefaultNoDataMessage } from './DefaultNoDataMessage';
 
 type TableRow<T> = {
   rowId: string;
@@ -51,6 +53,7 @@ type TableProps<T extends TableRow<T>> = {
   sortingFn?: (sorting: SortingState) => void;
   header?: React.ReactNode;
   footer?: React.ReactNode;
+  noDataMessage?: string | React.ReactNode;
   className?: string;
 };
 
@@ -65,11 +68,11 @@ const Table = <T extends TableRow<T>>({
   header,
   footer,
   className,
+  noDataMessage = <DefaultNoDataMessage />,
 }: TableProps<T>) => {
   const [dataState, setDataState] = useState(data);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sortingState, setSortingState] = useState<SortingState>(defaultSorting || []);
-
   const rowIds = useMemo(() => getRowIds(dataState), [dataState]);
   const { memoizedColumns, groupColumnIndex } = useMemo<{
     memoizedColumns: ColumnDef<T, any>[];
@@ -88,7 +91,6 @@ const Table = <T extends TableRow<T>>({
         meta: { headerClassName: 'w-0' },
       });
     }
-
     if (enableSelections) {
       calculatedIndex += 1;
       tableColumns.unshift({
@@ -98,7 +100,6 @@ const Table = <T extends TableRow<T>>({
         meta: { headerClassName: 'w-0' },
       });
     }
-
     if (dnd?.enable) {
       calculatedIndex += 1;
       tableColumns.unshift({
@@ -108,7 +109,6 @@ const Table = <T extends TableRow<T>>({
         meta: { headerClassName: 'w-0' },
       });
     }
-
     return {
       memoizedColumns: tableColumns,
       groupColumnIndex: calculatedIndex,
@@ -130,8 +130,7 @@ const Table = <T extends TableRow<T>>({
     getRowId: row => row.rowId,
     getSubRows: row => row.subRows || undefined,
     ...(enableSelections && {
-      //There seems to be a problem with react table types when using a function, typing as any
-      //fixes the issue
+      //There seems to be a problem with react table types when using a function, typing as any fixes the issue
       enableRowSelection: (row: any) => row.original.disableRowSelection !== true,
       onRowSelectionChange: setRowSelection,
     }),
@@ -151,7 +150,6 @@ const Table = <T extends TableRow<T>>({
         onChange({ rows: dataState, selectedRows: rowSelection, sortingState });
       }
     }
-    // 'onChange' and 'table' removed from deps to avoid infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataState, rowSelection, sortingState]);
 
@@ -198,20 +196,18 @@ const Table = <T extends TableRow<T>>({
       <div className="w-full overflow-auto rounded-md shadow">
         <table className={`w-full ${className || ''}`}>
           {header && <caption className="p-4">{header}</caption>}
-
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(hdr => {
                   const headerSorting = hdr.column.getCanSort();
                   const customClassName = hdr.column.columnDef.meta?.headerClassName;
-
                   return (
                     <th
                       key={hdr.id}
                       colSpan={hdr.colSpan}
                       scope="col"
-                      className={`p-4 text-sm text-gray-500 uppercase border-b ${customClassName}`}
+                      className={`p-4 text-sm text-gray-500 uppercase border-b ${customClassName || ''}`}
                       onClick={headerSorting ? hdr.column.getToggleSortingHandler() : undefined}
                     >
                       <span
@@ -227,24 +223,28 @@ const Table = <T extends TableRow<T>>({
             ))}
           </thead>
           <tbody>
-            <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
-              {table.getRowModel().rows.map(row => (
-                <DraggableRow
-                  key={row.id}
-                  row={row}
-                  colSpan={memoizedColumns.length}
-                  groupColumnIndex={groupColumnIndex}
-                  dndEnabled={!!dnd?.enable}
-                />
-              ))}
-            </SortableContext>
+            {dataState.length === 0 && (
+              <NoDataRow colSpan={memoizedColumns.length} DisplayElement={noDataMessage} />
+            )}
+            {dataState.length > 0 && (
+              <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
+                {table.getRowModel().rows.map(row => (
+                  <DraggableRow
+                    key={row.id}
+                    row={row}
+                    colSpan={memoizedColumns.length}
+                    groupColumnIndex={groupColumnIndex}
+                    dndEnabled={!!dnd?.enable}
+                  />
+                ))}
+              </SortableContext>
+            )}
           </tbody>
         </table>
-        {footer && <div className="p-4">{footer}</div>}
+        {footer && dataState.length > 0 && <div className="p-4">{footer}</div>}
       </div>
     </DndContext>
   );
 };
-
 export type { TableProps, TableRow };
 export { Table };

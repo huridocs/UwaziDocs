@@ -6,9 +6,9 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Modal, Button, MultiselectList } from 'V2/Components/UI';
 import { Translate } from 'app/I18N';
 import { Template } from 'app/apiResponseTypes';
+import { Link } from 'react-router-dom';
 import { ParagraphExtractorApiPayload } from '../types';
 import { NoQualifiedTemplatesMessage } from './NoQualifiedTemplate';
-import { Link } from 'react-router-dom';
 
 interface ExtractorModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -46,19 +46,23 @@ const ExtractorModal = ({
   extractor,
 }: ExtractorModalProps) => {
   const [step, setStep] = useState(1);
-  const [templatesFrom, setTemplatesFrom] = useState<string[]>(extractor?.templatesFrom || []);
-  const [templateTo, setTemplateTo] = useState<string>(extractor?.templateTo ?? '');
+  const [sourceTemplateIds, setSourceTemplateIds] = useState<string[]>(
+    extractor?.sourceTemplateIds || []
+  );
+  const [targetTemplateId, setTargetTemplateId] = useState<string>(
+    extractor?.targetTemplateId ?? ''
+  );
 
-  const [templateToOptions] = useState(formatOptions(templates.filter(templatesWithParagraph)));
-  const [templateFromOptions, setTemplateFromOptions] = useState(
-    formatOptions(templates.filter(template => template._id !== templateTo))
+  const [targetTemplateOptions] = useState(formatOptions(templates.filter(templatesWithParagraph)));
+  const [sourceTemplateOptions, setSourceTemplateOptions] = useState(
+    formatOptions(templates.filter(template => template._id !== targetTemplateId))
   );
 
   useEffect(() => {
-    setTemplateFromOptions(
-      formatOptions(templates.filter(template => template._id !== templateTo))
+    setSourceTemplateOptions(
+      formatOptions(templates.filter(template => template._id !== targetTemplateId))
     );
-  }, [templateTo, templates]);
+  }, [targetTemplateId, templates]);
 
   const handleClose = () => {
     onClose();
@@ -68,8 +72,8 @@ const ExtractorModal = ({
     try {
       const values = {
         ...extractor,
-        templatesFrom,
-        templateTo,
+        sourceTemplateIds,
+        targetTemplateId,
       };
       await extractorsAPI.save(values);
       handleClose();
@@ -82,54 +86,61 @@ const ExtractorModal = ({
   return (
     <Modal size="xxl">
       <Modal.Header>
-        <h1 className="text-xl font-medium text-gray-900">
+        <h1 className="text-lg font-semibold text-gray-900">
           {extractor ? (
             <Translate>Edit Extractor</Translate>
           ) : (
             (step === 1 && <Translate>Target template</Translate>) ||
-            (step === 2 && <Translate>Paragraph extractor</Translate>)
+            (step === 2 && <Translate>Source template</Translate>)
           )}
         </h1>
         <Modal.CloseButton onClick={() => setShowModal(false)} />
       </Modal.Header>
 
       <Modal.Body className="pt-0">
-        <div className={`${step !== 1 && 'hidden'}`}>
+        <div className={`${step !== 1 ? 'hidden' : ''}`}>
           <MultiselectList
-            value={[templateTo]}
-            items={templateToOptions}
+            value={[targetTemplateId]}
+            items={targetTemplateOptions}
             onChange={selected => {
-              setTemplateTo(selected[0]);
+              setTargetTemplateId(selected[0]);
             }}
             singleSelect
-            startOnSelected={!!templateTo}
+            startOnSelected={!!targetTemplateId}
             className="min-h-[327px]"
+            hideFilters
+            itemContainerClassName="max-h-[327px] overflow-y-auto my-4"
             blankState={<NoQualifiedTemplatesMessage />}
           />
         </div>
-        <div className={`${step !== 2 && 'hidden'}`}>
+        <div className={`${step !== 2 ? 'hidden' : ''}`}>
           <div>
             <MultiselectList
-              value={templatesFrom || []}
-              items={templateFromOptions}
-              onChange={setTemplatesFrom}
-              allowSelelectAll={templateFromOptions.length > 0}
-              startOnSelected={templatesFrom.length > 0}
+              value={sourceTemplateIds || []}
+              items={sourceTemplateOptions}
+              onChange={setSourceTemplateIds}
+              allowSelelectAll={false}
+              startOnSelected={sourceTemplateIds.length > 0}
+              itemContainerClassName="max-h-[327px] overflow-y-auto my-4"
               className="min-h-[327px]"
             />
           </div>
         </div>
 
         <div className="flex flex-col">
-          <div className="flex justify-center w-full gap-2">
+          <div
+            className={`flex justify-center w-full gap-2 ${targetTemplateOptions.length === 0 ? 'opacity-50' : ''}`}
+          >
             <div className={`w-2 h-2 rounded-full ${isActiveStepClassName(step === 1)}`} />
             <div className={`w-2 h-2 rounded-full ${isActiveStepClassName(step === 2)}`} />
           </div>
-          {templateToOptions.length !== 0 && step === 1 && (
-            <span className="mt-5 text-gray-500 font-light text-sm">
-              <Translate>Templates meeting required criteria</Translate>.{' '}
-              <Link to={linkPXTemplateCriteria} target="_blank">
-                <Translate className="underline">Read Documentation</Translate>
+          {step === 1 && (
+            <span
+              className={`mt-5 text-gray-500 font-light text-sm ${targetTemplateOptions.length === 0 ? 'invisible' : ''}`}
+            >
+              <Translate>Templates meeting</Translate>{' '}
+              <Link to={linkPXTemplateCriteria} target="_blank" className="underline">
+                <Translate>required criteria</Translate>
               </Link>
             </span>
           )}
@@ -144,7 +155,11 @@ const ExtractorModal = ({
                 <Button styling="light" onClick={() => setShowModal(false)} className="grow">
                   <Translate>Cancel</Translate>
                 </Button>
-                <Button className="grow" onClick={() => setStep(2)} disabled={!templateTo}>
+                <Button
+                  className="grow bg-indigo-800 disabled:opacity-50"
+                  onClick={() => setStep(2)}
+                  disabled={!targetTemplateId}
+                >
                   <span className="flex items-center justify-center gap-2 flex-nowrap">
                     <Translate>Next</Translate>
                     <ArrowRightIcon className="w-5" />
@@ -156,7 +171,11 @@ const ExtractorModal = ({
                 <Button styling="light" onClick={() => setStep(1)} className="grow">
                   <Translate>Back</Translate>
                 </Button>
-                <Button className="grow" onClick={async () => handleSubmit()} color="success">
+                <Button
+                  className="grow bg-indigo-800 disabled:opacity-50"
+                  onClick={async () => handleSubmit()}
+                  disabled={!sourceTemplateIds.length}
+                >
                   {extractor ? <Translate>Update</Translate> : <Translate>Add</Translate>}
                 </Button>
               </>

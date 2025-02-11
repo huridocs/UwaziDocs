@@ -9,15 +9,22 @@ import {
 let dummyData = [
   {
     _id: '1',
-    templatesFrom: ['66fbe4f28542cc5545e05a46', '66fbe4d28542cc5545e0599c'],
-    templateTo: '66ffac5860f7ab062d87d13e',
+    sourceTemplateIds: ['66fbe4f28542cc5545e05a46', '66fbe4d28542cc5545e0599c'],
+    targetTemplateId: '66ffac5860f7ab062d87d13e',
     documents: 831,
     generatedEntities: 12000,
   },
   {
     _id: '2',
-    templatesFrom: ['66fbe4d28542cc5545e0599c', 'Judge Documents'],
-    templateTo: '66ffac5860f7ab062d87d13e',
+    sourceTemplateIds: ['66fbe4d28542cc5545e0599c', 'Judge Documents'],
+    targetTemplateId: '66ffac5860f7ab062d87d13e',
+    documents: 500,
+    generatedEntities: 12001,
+  },
+  {
+    _id: '3',
+    sourceTemplateIds: ['66fbe4d28542cc5545e0599c', 'Judge Documents'],
+    targetTemplateId: '66ffac5860f7ab062d87d13e',
     documents: 500,
     generatedEntities: 12001,
   },
@@ -54,7 +61,7 @@ const save = async (
     ...extractorValues,
     documents: Math.floor(Math.random() * 1000),
     generatedEntities: Math.floor(Math.random() * 1000),
-    _id: extractorValues?._id ?? Math.floor(Math.random() * 100).toString(),
+    _id: Math.floor(Math.random() * 100).toString(),
   };
 
   dummyData.push(dummyEntry);
