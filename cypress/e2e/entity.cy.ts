@@ -236,7 +236,8 @@ describe('Entities', () => {
       addImage();
       addVideo('Add file');
       cy.addTimeLink(1000, 'Second one');
-      cy.get('.leaflet-container').click(200, 100).click(200, 100);
+      cy.get('.leaflet-container').click(200, 100);
+      cy.get('.leaflet-container').click(200, 100);
       cy.get('.leaflet-marker-icon').should('have.length', 1);
 
       cy.contains('.form-group.multiselect', 'Multiselect').within(() => {
@@ -254,9 +255,8 @@ describe('Entities', () => {
       });
       cy.get('.form-group.multidaterange button.btn.add').click();
       cy.get('.form-group.link #label').type('Huridocs', { delay: 0 });
-      cy.get('.form-group.link #url')
-        .scrollIntoView()
-        .type('https://www.huridocs.org/', { delay: 0 });
+      cy.get('.form-group.link #url').scrollIntoView();
+      cy.get('.form-group.link #url').type('https://www.huridocs.org/', { delay: 0 });
       cy.get(
         '.form-group.multidaterange .multidate-item:first-of-type div.DatePicker__From input'
       ).type('23/11/1963', { delay: 0 });
@@ -522,18 +522,21 @@ describe('Entities', () => {
       cy.get('.form-group.multiselect li.multiselectItem').contains('New Value').click();
       cy.get('.form-group.relationship li.multiselectItem').contains('19 Comerciantes').click();
 
-      cy.get('.form-group.date input').eq(0).scrollIntoView().clear();
+      cy.get('.form-group.date input').eq(0).scrollIntoView();
+      cy.get('.form-group.date input').eq(0).clear();
       cy.get('.form-group.daterange div.DatePicker__From input').clear();
       cy.get('.form-group.daterange div.DatePicker__To input').clear();
       cy.get('.form-group.multidate .multidate-item:nth-of-type(2) > button').click();
       cy.get('.form-group.multidate .multidate-item:first-of-type > button').click();
       cy.get('div.form-group.multidaterange .multidate-item:nth-child(2) > div > button').click();
       cy.get('div.form-group.multidaterange .multidate-item:nth-child(1) > div > button').click();
-      cy.get('.form-group.markdown textarea').scrollIntoView().clear();
+      cy.get('.form-group.markdown textarea').scrollIntoView();
+      cy.get('.form-group.markdown textarea').clear();
       cy.get('.form-group.link #label').clear();
       cy.get('.form-group.link #url').clear();
 
-      cy.get('.form-group #lat').scrollIntoView().clear();
+      cy.get('.form-group #lat').scrollIntoView();
+      cy.get('.form-group #lat').clear();
       cy.get('.form-group #lon').clear();
 
       saveEntity('Entity updated');

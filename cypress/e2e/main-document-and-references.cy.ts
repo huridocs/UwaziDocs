@@ -81,7 +81,7 @@ describe('text references', () => {
     });
   });
 
-  it('should display relationships on the sidepanel', async () => {
+  it('should display relationships on the sidepanel', () => {
     cy.contains('a', 'Library').click();
     cy.contains(
       '.item-document:nth-child(5)',
@@ -96,7 +96,7 @@ describe('text references', () => {
     cy.contains('.sidepanel-relationship-right-entity', 'Chile');
   });
 
-  it('should display entity relationship page', async () => {
+  it('should display entity relationship page', () => {
     cy.contains(
       '.item-document:nth-child(5)',
       'Artavia Murillo et al. Preliminary Objections, Merits, Reparations and Costs. Judgment. November 28, 2012'
@@ -111,7 +111,7 @@ describe('text references', () => {
     cy.contains('div.relationshipsHub:nth-child(8)', 'Chile');
   });
 
-  it('should display the related entity on the sidepanel', async () => {
+  it('should display the related entity on the sidepanel', () => {
     cy.contains(
       'div.relationshipsHub:nth-child(1)',
       'Artavia Murillo y otros. Resolución de la CorteIDH de 26 de febrero de 2016'
