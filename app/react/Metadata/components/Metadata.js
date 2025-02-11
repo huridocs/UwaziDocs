@@ -37,6 +37,15 @@ const renderRelationshipLinks = (linksProp, compact) => {
   return <ValueList compact={compact} property={hydratedProp} />;
 };
 
+const renderLink = (prop, compact) => {
+  const { url, label } = prop.value;
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      {label.length > 40 && compact ? `${label.substring(0, 40)}...` : label}
+    </a>
+  );
+};
+
 export const showByType = ({ prop, templateId = '', useV2Player = false, compact = false }) => {
   let result = prop.value;
 
@@ -48,11 +57,7 @@ export const showByType = ({ prop, templateId = '', useV2Player = false, compact
       result = <MarkdownViewer html markdown={prop.value} />;
       break;
     case 'link':
-      result = (
-        <a href={prop.value.url} target="_blank" rel="noopener noreferrer">
-          {prop.value.label ? prop.value.label : prop.value.url}
-        </a>
-      );
+      result = renderLink(prop, compact);
       break;
     case 'image':
       result = prop.value && (
