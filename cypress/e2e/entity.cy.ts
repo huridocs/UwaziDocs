@@ -1,5 +1,3 @@
-/* eslint-disable max-statements */
-/* eslint-disable max-lines */
 import { clearCookiesAndLogin } from './helpers/login';
 import { changeLanguage } from './helpers/language';
 import {
