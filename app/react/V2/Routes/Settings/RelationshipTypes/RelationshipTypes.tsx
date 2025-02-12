@@ -16,8 +16,8 @@ import { Form } from './components/Form';
 
 const relationshipTypesLoader =
   (headers?: IncomingHttpHeaders): LoaderFunction =>
-    async () =>
-      (await relationshipTypesAPI.get(headers)).map(rel => ({ ...rel, rowId: rel._id }));
+  async () =>
+    (await relationshipTypesAPI.get(headers)).map(rel => ({ ...rel, rowId: rel._id }));
 
 const RelationshipTypes = () => {
   const relationshipTypes = useLoaderData() as Relationships[];
