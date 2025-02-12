@@ -42,7 +42,7 @@ const s3 = () => {
   return s3Instance;
 };
 
-const paths: { [k in FileTypes]: (filename: string) => string } = {
+export const paths: { [k in FileTypes]: (filename: string) => string } = {
   custom: customUploadsPath,
   document: uploadsPath,
   segmentation: filename => uploadsPath(`segmentation/${filename}`),
@@ -59,7 +59,7 @@ const streamToBuffer = async (stream: Readable): Promise<Buffer> =>
     stream.on('error', (err: unknown) => reject(err));
   });
 
-const s3KeyWithPath = (filename: string, type: FileTypes) => {
+export const s3KeyWithPath = (filename: string, type: FileTypes) => {
   const sliceValue = type === 'segmentation' ? -3 : -2;
   return path.join(
     tenants.current().name,

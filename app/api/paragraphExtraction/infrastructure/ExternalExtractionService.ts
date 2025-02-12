@@ -1,4 +1,4 @@
-import { HttpClient, HttpFile } from 'api/common.v2/contracts/HttpClient';
+import { HttpClient } from 'api/common.v2/contracts/HttpClient';
 import { ExtractParagraphInput, PXExtractionService } from '../domain/PXExtractionService';
 
 type SegmentBoxDTO = {
@@ -32,7 +32,7 @@ export class PXExternalExtractionService implements PXExtractionService {
     segmentations,
     defaultLanguage,
     documents,
-    xmlFilesPath,
+    files,
     extractionId,
   }: ExtractParagraphInput): Promise<void> {
     const dto: ExtractionDTO = {
@@ -58,7 +58,7 @@ export class PXExternalExtractionService implements PXExtractionService {
       url: `${this.dependencies.url}/extract_paragraphs`,
       formData: {
         json_data: dto,
-        xml_files: xmlFilesPath.map(path => new HttpFile({ filename: 'file', source: path })),
+        xml_files: files,
       },
     });
   }

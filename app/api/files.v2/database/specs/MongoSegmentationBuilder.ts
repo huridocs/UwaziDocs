@@ -15,6 +15,7 @@ export class MongoSegmentationBuilder {
         page_width: 0,
         paragraphs: [],
       },
+      xmlname: 'default.txt',
     });
   }
 

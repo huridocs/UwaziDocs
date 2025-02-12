@@ -1,3 +1,4 @@
+import { FileBuilder } from 'api/files.v2/model/specs/utils/FileBuilder';
 import { MongoPXExtractorDBO } from 'api/paragraphExtraction/infrastructure/MongoPXExtractorDBO';
 import { getFixturesFactory } from 'api/utils/fixturesFactory';
 
@@ -47,3 +48,8 @@ export const processingSegmentation = factory.MongoSegmentationBuilder.create()
   .withFileId(file._id)
   .withStatus('processing')
   .build();
+
+export const files = [
+  FileBuilder.create().withFilename('file1.txt').build(),
+  FileBuilder.create().withFilename('file2.txt').build(),
+];

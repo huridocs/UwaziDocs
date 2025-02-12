@@ -16,13 +16,13 @@ const testingEnvironment = {
     await this.setElastic(elasticIndex);
   },
 
-  async setTenant(name?: string) {
+  async setTenant(name?: string, subPath = '') {
     testingTenants.mockCurrentTenant({
       name: name || testingDB.dbName || 'defaultDB',
       dbName: testingDB.dbName || name || 'defaultDB',
       indexName: 'index',
     });
-    await setupTestUploadedPaths();
+    await setupTestUploadedPaths(subPath);
   },
 
   async setFixtures(fixtures?: DBFixture) {

@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import multer from 'multer';
 import express from 'express';
 import { Server } from 'http';
@@ -9,9 +10,8 @@ import { Template } from 'api/templates.v2/model/Template';
 import { Property } from 'api/templates.v2/model/Property';
 import { HttpClientFactory } from 'api/common.v2/infrastructure/HttpClientFactory';
 import { PXExtractionId } from 'api/paragraphExtraction/domain/PXExtractionService';
+import { FileBuilder } from 'api/files.v2/model/specs/utils/FileBuilder';
 
-import { Readable } from 'stream';
-import { Buffer } from 'buffer';
 import { PXExternalExtractionService } from '../ExternalExtractionService';
 
 const document = new Document('any_id', 'any_entity', 0, 'any_file_name', 'pt');
@@ -81,10 +81,10 @@ describe('ExternalExtractionService', () => {
           entitySharedId: 'any_shared_id',
           extractorId: extractor.id,
         }),
-        xmlFilesPath: [
-          Readable.from([Buffer.from('file1')]),
-          Readable.from([Buffer.from('file2')]),
-          Readable.from([Buffer.from('file3')]),
+        files: [
+          FileBuilder.create().withFilename('file1.txt').build(),
+          FileBuilder.create().withFilename('file2.txt').build(),
+          FileBuilder.create().withFilename('file3.txt').build(),
         ],
       });
 
@@ -105,27 +105,27 @@ describe('ExternalExtractionService', () => {
       expect(files).toEqual([
         {
           fieldname: 'xml_files',
-          originalname: 'file',
+          originalname: 'file1.txt',
+          mimetype: 'text/plain',
           encoding: '7bit',
-          mimetype: 'application/octet-stream',
           buffer: expect.any(Buffer),
-          size: 5,
+          size: 15,
         },
         {
           fieldname: 'xml_files',
-          originalname: 'file',
+          originalname: 'file2.txt',
+          mimetype: 'text/plain',
           encoding: '7bit',
-          mimetype: 'application/octet-stream',
           buffer: expect.any(Buffer),
-          size: 5,
+          size: 15,
         },
         {
           fieldname: 'xml_files',
-          originalname: 'file',
+          originalname: 'file3.txt',
+          mimetype: 'text/plain',
           encoding: '7bit',
-          mimetype: 'application/octet-stream',
           buffer: expect.any(Buffer),
-          size: 5,
+          size: 15,
         },
       ]);
     });

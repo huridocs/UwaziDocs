@@ -17,6 +17,7 @@ import {
   PXExtractionId,
   PXExtractionService,
 } from 'api/paragraphExtraction/domain/PXExtractionService';
+import { FileStorage } from 'api/files.v2/contracts/FileStorage';
 import { Document } from 'api/files.v2/model/Document';
 import { PXExtractParagraphsFromEntity } from '../PXExtractParagraphFromEntity';
 import {
@@ -34,6 +35,7 @@ import {
   failedSegmentation,
   processingSegmentation,
   file,
+  files,
 } from './fixtures';
 
 const createFixtures = (): DBFixture => ({
@@ -57,6 +59,13 @@ const setUpUseCase = () => {
     extractParagraph: jest.fn(),
   };
 
+  const fileStorage: FileStorage = {
+    getFiles: jest.fn().mockResolvedValue(files),
+    getFile: jest.fn(),
+    getPath: jest.fn(),
+    list: jest.fn(),
+  };
+
   const db = getConnection();
   const transaction = DefaultTransactionManager();
   const entityDS = DefaultEntitiesDataSource(transaction);
@@ -64,15 +73,19 @@ const setUpUseCase = () => {
   const filesDS = DefaultFilesDataSource(transaction);
   const extractorsDS = new MongoPXExtractorsDataSource(db, transaction);
 
+  const extractParagraphs = new PXExtractParagraphsFromEntity({
+    entityDS,
+    extractorsDS,
+    filesDS,
+    settingsDS,
+    extractionService,
+    fileStorage,
+  });
+
   return {
     extractionService,
-    extractParagraphs: new PXExtractParagraphsFromEntity({
-      entityDS,
-      extractorsDS,
-      filesDS,
-      settingsDS,
-      extractionService,
-    }),
+    fileStorage,
+    extractParagraphs,
   };
 };
 
@@ -144,42 +157,6 @@ describe('PXExtractParagraphsFromEntity', () => {
     expect(extractionService.extractParagraph).not.toHaveBeenCalled();
   });
 
-  it('should call extract paragraph service with correct params', async () => {
-    const { extractParagraphs, extractionService } = setUpUseCase();
-
-    await extractParagraphs.execute({
-      entitySharedId: entity.sharedId!.toString()!,
-      extractorId: extractor._id.toString(),
-    });
-
-    expect(extractionService.extractParagraph).toHaveBeenCalledWith(
-      expect.objectContaining({
-        documents: expect.arrayContaining([expect.any(Document)]),
-        defaultLanguage: expect.any(String),
-        extractionId: expect.any(PXExtractionId),
-        segmentations: [
-          {
-            id: segmentation._id?.toString(),
-            fileId: segmentation.fileID?.toString(),
-            status: 'ready',
-            pageHeight: 0,
-            pageWidth: 0,
-            paragraphs: [],
-          },
-          {
-            id: segmentation2._id?.toString(),
-            fileId: segmentation2.fileID?.toString(),
-            status: 'ready',
-            pageHeight: 0,
-            pageWidth: 0,
-            paragraphs: [],
-          },
-        ],
-        xmlFilesPath: [],
-      })
-    );
-  });
-
   it('should throw if no documents are found for the entity', async () => {
     const fixtures = createFixtures();
     fixtures.files = [];
@@ -195,6 +172,21 @@ describe('PXExtractParagraphsFromEntity', () => {
 
     await expect(promise).rejects.toMatchObject({
       code: PXErrorCode.DOCUMENTS_NOT_FOUND,
+    });
+  });
+
+  it('should throw if there is no Segmentation Files to send', async () => {
+    const { extractParagraphs, fileStorage } = setUpUseCase();
+
+    fileStorage.getFiles = jest.fn().mockResolvedValue(() => []);
+
+    const promise = extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    await expect(promise).rejects.toMatchObject({
+      code: PXErrorCode.SEGMENTATION_FILES_NOT_FOUND,
     });
   });
 
@@ -234,6 +226,55 @@ describe('PXExtractParagraphsFromEntity', () => {
     });
   });
 
+  it('should call extract paragraph service with correct params', async () => {
+    const { extractParagraphs, extractionService, fileStorage } = setUpUseCase();
+
+    await extractParagraphs.execute({
+      entitySharedId: entity.sharedId!.toString()!,
+      extractorId: extractor._id.toString(),
+    });
+
+    expect(fileStorage.getFiles).toHaveBeenCalledWith([
+      {
+        type: 'segmentation',
+        filename: segmentation.xmlname,
+      },
+      {
+        type: 'segmentation',
+        filename: segmentation2.xmlname,
+      },
+    ]);
+
+    expect(extractionService.extractParagraph).toHaveBeenCalledWith(
+      expect.objectContaining({
+        documents: expect.arrayContaining([expect.any(Document)]),
+        defaultLanguage: expect.any(String),
+        extractionId: expect.any(PXExtractionId),
+        segmentations: [
+          {
+            id: segmentation._id?.toString(),
+            fileId: segmentation.fileID?.toString(),
+            status: 'ready',
+            pageHeight: 0,
+            pageWidth: 0,
+            paragraphs: [],
+            xmlname: 'default.txt',
+          },
+          {
+            id: segmentation2._id?.toString(),
+            fileId: segmentation2.fileID?.toString(),
+            status: 'ready',
+            pageHeight: 0,
+            pageWidth: 0,
+            paragraphs: [],
+            xmlname: 'default.txt',
+          },
+        ],
+        files,
+      })
+    );
+  });
+
   it('should only work with valid Segmentations', async () => {
     const fixtures = createFixtures();
     fixtures.segmentations = [segmentation, failedSegmentation, processingSegmentation];
@@ -260,9 +301,10 @@ describe('PXExtractParagraphsFromEntity', () => {
           pageHeight: 0,
           pageWidth: 0,
           paragraphs: [],
+          xmlname: 'default.txt',
         },
       ],
-      xmlFilesPath: [],
+      files,
     });
   });
 });

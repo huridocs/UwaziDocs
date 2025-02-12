@@ -1,10 +1,11 @@
 import superagent from 'superagent';
-import { HttpClient, HttpFile, PostInput } from '../contracts/HttpClient';
+import { File } from 'api/files.v2/model/File';
+import { HttpClient, PostFormDataInput } from '../contracts/HttpClient';
 
 export class SuperAgentHttpClient implements HttpClient {
   private client = superagent;
 
-  async postFormData<T>({ url, formData }: PostInput): Promise<T> {
+  async postFormData<T>({ url, formData }: PostFormDataInput): Promise<T> {
     const request = this.client.post(url);
 
     await this.appendFormDataToRequest(request, formData);
@@ -25,7 +26,7 @@ export class SuperAgentHttpClient implements HttpClient {
   }
 
   private async appendFormData(request: superagent.Request, key: string, value: any) {
-    if (value instanceof HttpFile) {
+    if (value instanceof File) {
       await this.attachFile(request, key, value);
     } else if (Array.isArray(value)) {
       await this.appendArray(request, key, value);
@@ -36,7 +37,7 @@ export class SuperAgentHttpClient implements HttpClient {
     }
   }
 
-  private async attachFile(request: superagent.Request, key: string, file: HttpFile) {
+  private async attachFile(request: superagent.Request, key: string, file: File) {
     const fileBuffer = await file.toBuffer();
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     request.attach(key, fileBuffer, file.filename);
