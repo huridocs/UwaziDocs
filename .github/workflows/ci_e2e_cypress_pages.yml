@@ -45,12 +45,12 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: install dependencies
+        run: yarn install
       - uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-      - name: install dependencies
-        run: yarn install
       - run: sudo apt update
       - run: sudo apt-get install poppler-utils
       - name: Cache build
