@@ -29,6 +29,7 @@ import {
   template2Id,
   textFile,
 } from './entitySavingManagerFixtures';
+import { testingEnvironment } from 'api/utils/testingEnvironment';
 
 const validPdfString = `
 %PDF-1.0
@@ -66,12 +67,12 @@ describe('entitySavingManager', () => {
   });
 
   beforeEach(async () => {
-    await db.setupFixturesAndContext(fixtures);
+    await testingEnvironment.setUp(fixtures);
     jest.spyOn(search, 'indexEntities').mockImplementation(async () => Promise.resolve());
   });
 
   afterAll(async () => {
-    await db.disconnect();
+    await testingEnvironment.tearDown();
   });
 
   afterEach(() => {
@@ -560,7 +561,7 @@ describe('entitySavingManager', () => {
         it('should not reprocess existing documents', async () => {
           jest
             .spyOn(processDocumentApi, 'processDocument')
-            .mockResolvedValueOnce({ _id: db.id() as ObjectId });
+            .mockResolvedValueOnce({ __v: 1, _id: db.id() as ObjectId });
 
           const changedFile = { ...mainPdfFile, originalname: 'Renamed main pdf.pdf' };
 

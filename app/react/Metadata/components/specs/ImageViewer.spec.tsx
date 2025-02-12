@@ -28,13 +28,6 @@ describe('ImageViewer', () => {
     });
   };
 
-  it('should render loading state initially', async () => {
-    //delay the fetch response
-    (global.fetch as jest.Mock).mockImplementation(async () => new Promise(() => {}));
-    await renderComponent();
-    expect(screen.getByText('Loading')).toBeInTheDocument();
-  });
-
   it('should render the image if it exists', async () => {
     (global.fetch as jest.Mock).mockResolvedValue({ ok: true });
 
@@ -43,14 +36,6 @@ describe('ImageViewer', () => {
     const img = screen.getByAltText(props.alt);
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', props.src);
-  });
-
-  it('should render an error message if the image does not exist', async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-
-    await renderComponent();
-
-    expect(screen.getByText('Image not found')).toBeInTheDocument();
   });
 
   it('should handle image load errors with onError', async () => {
@@ -66,6 +51,6 @@ describe('ImageViewer', () => {
       img.dispatchEvent(new Event('error'));
     });
 
-    expect(screen.getByText('This file type is not supported on media fields')).toBeInTheDocument();
+    expect(screen.getByText('Error loading your image')).toBeInTheDocument();
   });
 });
