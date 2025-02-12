@@ -140,8 +140,8 @@ export class InvalidUserIdError extends Error {
 export class ModelWithPermissions<T> extends OdmModel<WithPermissions<T>> {
   private static validateUser(user: DataType<UserSchema> | undefined) {
     try {
-      if (typeof user === 'undefined') return;
-      ObjectId.createFromHexString(user?._id?.toString()!);
+      if (typeof user?._id === 'undefined') return;
+      ObjectId.createFromHexString(user._id.toString());
     } catch (e) {
       throw new InvalidUserIdError();
     }
