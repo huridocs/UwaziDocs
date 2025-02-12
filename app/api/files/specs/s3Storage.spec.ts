@@ -1,13 +1,16 @@
+// eslint-disable-next-line max-classes-per-file
 import { S3Storage, S3Error } from '../S3Storage';
 
+const expectedMetadata = {
+  requestId: 'mock-request-123',
+  cfId: 'mock-cf-456',
+  httpStatusCode: 500,
+  attempts: 3,
+  totalRetryDelay: 1000,
+};
+
 class MockS3Error extends Error {
-  $metadata = {
-    requestId: 'mock-request-123',
-    cfId: 'mock-cf-456',
-    httpStatusCode: 500,
-    attempts: 3,
-    totalRetryDelay: 1000,
-  };
+  $metadata = expectedMetadata;
 
   constructor() {
     super('Mock S3 Error');
@@ -16,6 +19,7 @@ class MockS3Error extends Error {
 }
 
 class MockS3Client {
+  // eslint-disable-next-line class-methods-use-this
   send() {
     throw new MockS3Error();
   }
@@ -25,16 +29,9 @@ describe('s3Storage error handling', () => {
   let s3Storage: S3Storage;
 
   beforeEach(() => {
+    // @ts-ignore
     s3Storage = new S3Storage(new MockS3Client());
   });
-
-  const expectedMetadata = {
-    requestId: 'mock-request-123',
-    cfId: 'mock-cf-456',
-    httpStatusCode: 500,
-    attempts: 3,
-    totalRetryDelay: 1000,
-  };
 
   describe('error wrapping', () => {
     it('should wrap S3 errors with metadata for get operation', async () => {
