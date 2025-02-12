@@ -18,7 +18,8 @@ describe('ModelWithPermissions', () => {
     permissions: { type: mongoose.Schema.Types.Mixed, select: false },
     fixed: Boolean,
   });
-  const userId = testingDB.id();
+  const userId1 = testingDB.id();
+  const userId2 = testingDB.id();
   const readDocId = testingDB.id();
   const writeDocId = testingDB.id();
   const writeDoc2Id = testingDB.id();
@@ -35,7 +36,7 @@ describe('ModelWithPermissions', () => {
       name: 'readDoc',
       published: false,
       permissions: [
-        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.READ },
+        { refId: userId1.toString(), type: PermissionType.USER, level: AccessLevels.READ },
       ],
       fixed: true,
     },
@@ -43,7 +44,7 @@ describe('ModelWithPermissions', () => {
       _id: writeDocId,
       name: 'writeDoc',
       permissions: [
-        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+        { refId: userId1.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
       ],
       fixed: true,
     },
@@ -51,7 +52,7 @@ describe('ModelWithPermissions', () => {
       _id: writeDoc2Id,
       name: 'writeDoc2',
       permissions: [
-        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+        { refId: userId1.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
       ],
       fixed: true,
     },
@@ -64,7 +65,9 @@ describe('ModelWithPermissions', () => {
     {
       _id: otherOwnerId,
       name: 'no shared with user',
-      permissions: [{ refId: 'user2', type: PermissionType.USER, level: AccessLevels.WRITE }],
+      permissions: [
+        { refId: userId2.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+      ],
       fixed: true,
     },
     {
@@ -88,7 +91,7 @@ describe('ModelWithPermissions', () => {
       _id: deleteDocId,
       name: 'docToDelete',
       permissions: [
-        { refId: userId.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
+        { refId: userId1.toString(), type: PermissionType.USER, level: AccessLevels.WRITE },
       ],
     },
     {
@@ -112,7 +115,7 @@ describe('ModelWithPermissions', () => {
     describe('collaborator user', () => {
       beforeAll(async () => {
         jest.spyOn(permissionsContext, 'getUserInContext').mockReturnValue({
-          _id: userId,
+          _id: userId1,
           username: 'User 1',
           email: 'user@test.test',
           role: 'collaborator',
@@ -240,7 +243,7 @@ describe('ModelWithPermissions', () => {
           expect(saved).toEqual(
             expect.objectContaining({
               name: 'newDoc',
-              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
+              permissions: [{ refId: userId1.toString(), type: 'user', level: 'write' }],
             })
           );
         });
@@ -311,11 +314,11 @@ describe('ModelWithPermissions', () => {
           expect(saved).toMatchObject([
             {
               name: 'newDoc',
-              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
+              permissions: [{ refId: userId1.toString(), type: 'user', level: 'write' }],
             },
             {
               name: 'newDoc2',
-              permissions: [{ refId: userId.toString(), type: 'user', level: 'write' }],
+              permissions: [{ refId: userId1.toString(), type: 'user', level: 'write' }],
             },
           ]);
         });
