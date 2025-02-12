@@ -130,6 +130,7 @@ describe('Table view', () => {
       await expect(page.click('.btn-load-more'));
       await page.waitForNavigation();
       await disableTransitions();
+      await expect(page).toMatchElement('span', { text: '60 shown of' });
       await page.waitForSelector(rowSelector);
       expect((await page.$$(rowSelector)).length).toBe(60);
     });
