@@ -15,7 +15,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 import { Provider } from 'jotai';
-import { omit, isEmpty } from 'lodash';
+import { omit, isEmpty, sortBy } from 'lodash';
 import { Provider as ReduxProvider } from 'react-redux';
 import api from 'app/utils/api';
 import { RequestParams } from 'app/utils/RequestParams';
@@ -160,9 +160,9 @@ const prepareStores = async (req: ExpressRequest, settings: ClientSettings, lang
 
   const reduxData = {
     user: userApiResponse.json,
-    templates: templatesApiResponse.json.rows,
+    templates: sortBy(templatesApiResponse.json.rows, 'name'),
     thesauris: thesaurisApiResponse.json.rows,
-    relationTypes: relationTypesApiResponse.json.rows,
+    relationTypes: sortBy(relationTypesApiResponse.json.rows, 'name'),
     translations: translationsApiResponse.json.rows,
     settings: {
       collection: { ...settingsApiResponse.json, links: settingsApiResponse.json.links || [] },

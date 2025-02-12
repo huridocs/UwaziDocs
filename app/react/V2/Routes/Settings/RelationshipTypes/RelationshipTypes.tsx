@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http';
 import { LoaderFunction, useLoaderData, useRevalidator } from 'react-router';
 import { Row } from '@tanstack/react-table';
 import { useSetAtom, useAtomValue } from 'jotai';
-import { Translate } from 'app/I18N';
+import { t, Translate } from 'app/I18N';
 import * as relationshipTypesAPI from 'app/V2/api/relationshiptypes';
 import { Template } from 'app/apiResponseTypes';
 import { notificationAtom, templatesAtom, relationshipTypesAtom } from 'app/V2/atoms';
@@ -39,23 +39,26 @@ const RelationshipTypes = () => {
 
   useEffect(() => {
     setTableRelationshipTypes(
-      relationshipTypes.map(relationshipType => {
-        const templatesUsingIt = templates
-          .map(t => {
-            const usingIt = t.properties?.some(
-              property => property.relationType === relationshipType._id
-            );
-            return usingIt ? t : null;
-          })
-          .filter(t => t) as Template[];
+      relationshipTypes
+        .map(relationshipType => {
+          const templatesUsingIt = templates
+            .map(tmpl => {
+              const usingIt = tmpl.properties?.some(
+                property => property.relationType === relationshipType._id
+              );
+              return usingIt ? tmpl : null;
+            })
+            .filter(tmpl => tmpl) as Template[];
 
-        return {
-          ...relationshipType,
-          rowId: relationshipType._id,
-          templates: templatesUsingIt,
-          disableRowSelection: Boolean(templatesUsingIt.length),
-        };
-      })
+          return {
+            ...relationshipType,
+            rowId: relationshipType._id,
+            translation: t(relationshipType._id, relationshipType.name, null, false),
+            templates: templatesUsingIt,
+            disableRowSelection: Boolean(templatesUsingIt.length),
+          };
+        })
+        .sort((a, b) => a.translation.localeCompare(b.translation))
     );
   }, [relationshipTypes, templates]);
 
