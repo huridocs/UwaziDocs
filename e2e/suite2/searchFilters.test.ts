@@ -137,7 +137,7 @@ describe('search filters path', () => {
       try {
         await page.waitForSelector('.react-datepicker__day--selected');
         await page.click('.react-datepicker__day--selected');
-      } catch (_ex) { }
+      } catch (_ex) {}
     };
 
     it('should filter by a date for Ordenes de la corte', async () => {
