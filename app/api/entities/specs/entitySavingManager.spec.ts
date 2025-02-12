@@ -88,7 +88,7 @@ describe('entitySavingManager', () => {
         const { entity: savedEntity } = await saveEntity(entity, { ...reqData });
 
         expect(savedEntity.permissions).toEqual([
-          { level: 'write', refId: mockedUser._id?.toString(), type: 'user' },
+          { level: 'write', refId: mockedUser._id.toString(), type: 'user' },
         ]);
       });
 
